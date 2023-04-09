@@ -1,0 +1,12 @@
+#
+#spring:
+#  datasource:
+#    url: jdbc:[Database]://localhost:3306/[Database???]
+#    username: [DB ???]
+#    password: [DB ????]
+#    driver-class-name: [JDBC ????]
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
