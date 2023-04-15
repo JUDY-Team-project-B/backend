@@ -1,4 +1,4 @@
-package com.hangout.hangout.user.domain.entity;
+package com.hangout.hangout.domain.user.entity;
 
 import com.hangout.hangout.global.common.domain.BaseEntity;
 import lombok.AccessLevel;

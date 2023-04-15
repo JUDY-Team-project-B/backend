@@ -1,4 +1,4 @@
-package com.hangout.hangout.Post.domain.entity;
+package com.hangout.hangout.domain.post.entity;
 
 import com.hangout.hangout.global.common.domain.Tag;
 import lombok.AccessLevel;
