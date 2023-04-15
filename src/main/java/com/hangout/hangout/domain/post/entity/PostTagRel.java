@@ -18,11 +18,11 @@ public class PostTagRel { // 게시물과 태그의 many to many로 인한 테�
     @Column(name = "POST_TAG_REL_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
