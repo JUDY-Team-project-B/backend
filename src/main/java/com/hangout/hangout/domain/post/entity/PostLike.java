@@ -25,14 +25,14 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
-    @ColumnDefault("0")
-    private int likeCnt; // 게시글 좋아요 개수 default 0
+
+    //@ColumnDefault("0")
+    //private int likeCnt; // 게시글 좋아요 개수 default 0
 
     @Builder
-    public PostLike(Long id, Post post, User user, int likeCnt) {
+    public PostLike(Long id, Post post, User user) {
         this.id = id;
         this.post = post;
         this.user = user;
-        this.likeCnt = likeCnt;
     }
 }
