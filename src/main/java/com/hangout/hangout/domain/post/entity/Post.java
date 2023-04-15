@@ -28,6 +28,4 @@ public class Post extends BaseEntity {
     @Lob
     private String context;
 
-    private String createdBy; // 작성한 사람 이름 // User에서 가져올 수 있지 않을까?
-
 }

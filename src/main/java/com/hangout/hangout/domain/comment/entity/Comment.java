@@ -53,5 +53,4 @@ public class Comment extends BaseEntity {
 
     @ColumnDefault("0")
     private int reportCnt;
-    private String createdBy; // 유저 name 이것도 User 에서 가져오면 되는 것 같은데
 }
