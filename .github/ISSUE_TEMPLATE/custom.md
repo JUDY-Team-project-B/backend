@@ -1,0 +1,16 @@
+---
+name: Custom issue template
+about: github issue 등록을 위한 공통 템플릿
+title: ''
+labels: ''
+assignees: Kim-Hye-Lin
+
+---
+
+## 📌 구현할 기능
+> 
+
+## 🔨 상세 작업 내용
+- []
+
+## 📄 참고 사항
