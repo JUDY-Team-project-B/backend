@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.comment.entity;
 
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.report.entity.CommentReport;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.BaseEntity;
 import com.hangout.hangout.global.common.domain.Status;
@@ -47,10 +48,18 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<Comment> children = new ArrayList<>();
 
+    // 좋아요 기능 추가를 위해 commentLikes 와 연결
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
+    // 신고 기능 추가를 위해 commentReport 와 연결
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<CommentReport> commentReports = new ArrayList<>();
+
     @Lob
     @Column(name = "CONTENT", nullable = false)
     private String content;
 
-    @ColumnDefault("0")
-    private int reportCnt;
+    //@ColumnDefault("0")
+    //private int reportCnt;
 }

@@ -27,6 +27,6 @@ public class CommentLike extends BaseEntity {
     @JoinColumn(name = "COMMENT_ID")
     private Comment comment; // one to one 이 아니라 Many to One 인 이유가 있나요?
 
-    @ColumnDefault("0")
-    private int likeCnt; // 추천 수
+    //@ColumnDefault("0")
+    //private int likeCnt; // 추천 수
 }
