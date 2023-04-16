@@ -1,4 +1,4 @@
-package com.hangout.hangout.global.common.domain;
+package com.hangout.hangout.global.error;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

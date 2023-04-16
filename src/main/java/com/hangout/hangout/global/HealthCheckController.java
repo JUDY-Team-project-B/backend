@@ -1,6 +1,6 @@
 package com.hangout.hangout.global;
 
-import com.hangout.hangout.global.common.domain.ResponseEntity;
+import com.hangout.hangout.global.error.ResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

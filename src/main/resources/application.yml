@@ -1,12 +1,21 @@
-#
-#spring:
-#  datasource:
-#    url: jdbc:[Database]://localhost:3306/[Database???]
-#    username: [DB ???]
-#    password: [DB ????]
-#    driver-class-name: [JDBC ????]
-
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hangout?serverTimezone=Asia/Seoul
+    username:
+    password:
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
