@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.post.entity;
 
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "POST_LIKE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostLike {
+public class PostLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_LIKE_ID")
@@ -22,12 +23,13 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    //@ColumnDefault("0")
-    //private int likeCnt; // 게시글 좋아요 개수 default 0
+    @ColumnDefault("0")
+    private int likeCnt; // 게시글 좋아요 개수 default 0
 
     @Builder
     public PostLike(Long id, Post post, User user) {

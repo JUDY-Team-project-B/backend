@@ -21,12 +21,12 @@ public class CommentLike extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    private User user; // user와 조인을 해야 하는 이유가 무엇인가요?
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COMMENT_ID")
-    private Comment comment; // one to one 이 아니라 Many to One 인 이유가 있나요?
+    private Comment comment;
 
-    //@ColumnDefault("0")
-    //private int likeCnt; // 추천 수
+    @ColumnDefault("0")
+    private int likeCnt; // 추천 수
 }
