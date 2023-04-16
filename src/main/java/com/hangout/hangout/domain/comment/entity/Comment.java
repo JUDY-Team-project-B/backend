@@ -35,7 +35,7 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
-    private Status status; // 댓글에 상태는 하나만 존재해야 해서 OneToOne이 아닌가요?
+    private Status status;
 
     // 40 ~ 48 : Self Join
     @Column(name = "PARENT_ID")
@@ -60,6 +60,4 @@ public class Comment extends BaseEntity {
     @Column(name = "CONTENT", nullable = false)
     private String content;
 
-    //@ColumnDefault("0")
-    //private int reportCnt;
 }

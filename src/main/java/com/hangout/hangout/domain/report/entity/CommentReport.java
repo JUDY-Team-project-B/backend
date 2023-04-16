@@ -33,6 +33,7 @@ public class CommentReport extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
+
     private String title;
     @Lob
     private String content;
