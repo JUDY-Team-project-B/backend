@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.post.entity;
 
+import com.hangout.hangout.global.common.domain.BaseEntity;
 import com.hangout.hangout.global.common.domain.Map;
 import com.hangout.hangout.global.common.domain.Status;
 import com.hangout.hangout.domain.user.entity.Gender;
@@ -14,7 +15,7 @@ import java.util.Date;
 @Getter
 @Table(name = "POST_INFO")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostInfo {
+public class PostInfo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_INFO_ID")
@@ -31,13 +32,16 @@ public class PostInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
+
     private String postImage; // 이미지 가져올 url
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TRAVEL_GENDER", nullable = false)
     private Gender travelGender; // 성별
+
     @Column(name = "TRAVEL_AGE", nullable = false)
     private String travelAge; // 연령대
+
     @Column(name = "TRAVEL_AT", nullable = false)
     private String travelAt; // 여행지
 
@@ -47,8 +51,8 @@ public class PostInfo {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date travelDataStart; // 여행 시작 날짜
+
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date travelDateEnd; // 여행 종료 날짜
-
 }

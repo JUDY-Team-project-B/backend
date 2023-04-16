@@ -23,6 +23,7 @@ public class User extends BaseEntity {
 
     @Column(name = "EMAIL" , nullable = false)
     private String email; // 이메일(ID)
+
     @Column(name = "PASSWORD", nullable = false)
     private String password; // 비밀번호
 

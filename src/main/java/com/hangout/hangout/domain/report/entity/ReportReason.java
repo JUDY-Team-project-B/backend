@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.report.entity;
 
+import com.hangout.hangout.global.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "REPORT_REASON")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReportReason {
+public class ReportReason extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

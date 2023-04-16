@@ -2,6 +2,7 @@ package com.hangout.hangout.domain.report.entity;
 
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.common.domain.BaseEntity;
 import com.hangout.hangout.global.common.domain.Status;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "POST_REPORT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostReport {
+public class PostReport extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_REPORT_ID")
@@ -31,6 +32,7 @@ public class PostReport {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
+
     private String title;
     @Lob
     private String content;

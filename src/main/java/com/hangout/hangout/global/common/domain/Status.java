@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "STATUS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Status {
+public class Status extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
