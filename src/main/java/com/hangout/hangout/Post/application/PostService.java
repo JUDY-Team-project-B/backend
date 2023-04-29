@@ -15,8 +15,8 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void createNewPost(PostCreateRequest postCreateRequest, User user) {
-        Post post = postCreateRequest.toEntity(user);
+    public void createNewPost(PostCreateRequest postCreateRequest) {
+        Post post = postCreateRequest.toEntity();
         postRepository.save(post);
     }
 }
