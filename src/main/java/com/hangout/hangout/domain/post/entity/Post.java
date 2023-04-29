@@ -29,7 +29,8 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToOne(mappedBy = "post")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "POST_INFO_ID", nullable = false, referencedColumnName = "POST_INFO_ID")
     private PostInfo postInfo;
 
     // 좋아요 기능 추가를 위해 PostLike 와 연결
