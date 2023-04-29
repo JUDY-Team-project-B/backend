@@ -1,10 +1,13 @@
 package com.hangout.hangout.global.common.domain;
 
+import com.hangout.hangout.domain.post.entity.PostTagRel;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,4 +22,7 @@ public class Tag extends BaseEntity{
 
     @Column(name = "TAG_TYPE", nullable = false)
     private String type;
+
+    @OneToMany(mappedBy = "tag")
+    private List<PostTagRel> posts = new ArrayList<>();
 }

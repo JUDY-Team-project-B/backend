@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.user.entity;
 
+import com.hangout.hangout.domain.post.entity.PostHits;
 import com.hangout.hangout.global.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +29,10 @@ public class User extends BaseEntity {
 
     @Column(name = "PASSWORD", nullable = false)
     private String password; // 비밀번호
+
+    // ManyToMany 관계를 위해서 일대다로 관계맺어준 컬럼
+    @OneToMany(mappedBy = "user")
+    private List<PostHits> hits = new ArrayList<>();
 
     @Builder
     public User(String email, String password) {
