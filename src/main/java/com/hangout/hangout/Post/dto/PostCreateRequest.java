@@ -3,12 +3,14 @@ package com.hangout.hangout.Post.dto;
 
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
+import com.hangout.hangout.domain.user.entity.Gender;
 import com.hangout.hangout.domain.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Getter
@@ -21,24 +23,35 @@ public class PostCreateRequest {
     private String title;
     @NotEmpty
     private String context;
+
     // -- postInfo 정보들
+    @NotNull
+    private String travelGender; // 성별
     @NotEmpty
     private String travelAt; // 여행 지역
     @NotEmpty
-    private Date travelDataStart; // 여행 시작 날짜
-    @NotEmpty
+    private String travelAge; // 연령대
+    @NotNull
+    private Date travelDateStart; // 여행 시작 날짜
+    @NotNull
     private Date travelDateEnd; // 여행 종료 날짜
-    @NotEmpty
+    @NotNull
     private int travelMember; // 여행 모집 인원
 
-    public Post toEntity(User user) {
+    public Gender trueGender(String string) {
+        if(string.equals(Gender.MAN.getGender())) return Gender.MAN;
+        else return Gender.WOMAN;
+    }
+
+    public Post toEntity() {
         return Post.builder()
-                .user(user)
                 .title(this.title)
                 .context(this.context)
                 .postInfo(PostInfo.builder()
                         .travelAt(travelAt)
-                        .travelDataStart(travelDataStart)
+                        .travelAge(travelAge)
+                        .travelGender(trueGender(travelGender))
+                        .travelDataStart(travelDateStart)
                         .travelDateEnd(travelDateEnd)
                         .travelMember(travelMember)
                         .build())
