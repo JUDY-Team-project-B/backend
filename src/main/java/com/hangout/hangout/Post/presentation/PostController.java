@@ -1,9 +1,8 @@
 package com.hangout.hangout.Post.presentation;
 
 import com.hangout.hangout.Post.application.PostService;
-import com.hangout.hangout.Post.dto.PostCreateRequest;
+import com.hangout.hangout.Post.dto.PostRequest;
 import com.hangout.hangout.Post.dto.PostResponse;
-import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,9 +19,9 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createNewPost(@RequestBody @Valid PostCreateRequest
-                                                    postCreateRequest) {
-        postService.createNewPost(postCreateRequest);
+    public ResponseEntity<HttpStatus> createNewPost(@RequestBody @Valid PostRequest
+                                                    postRequest) {
+        postService.createNewPost(postRequest);
 
         return successResponse();
     }
