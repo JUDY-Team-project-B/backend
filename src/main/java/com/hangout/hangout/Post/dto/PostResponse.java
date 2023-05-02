@@ -25,7 +25,7 @@ public class PostResponse {
     private final String user;
     private final String context;
     private final Set<PostTagRel> tags;
-    private final Status status;
+    private final String statusType;
     private final Gender travelGender;
     private final String travelAge;
     private final String travelAt;
@@ -42,7 +42,7 @@ public class PostResponse {
                 .title(post.getTitle())
                 .context(post.getContext())
                 .tags(post.getTags())
-                .status(post.getPostInfo().getStatus())
+                .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
                 .travelAge(post.getPostInfo().getTravelAge())
                 .travelAt(post.getPostInfo().getTravelAt())
