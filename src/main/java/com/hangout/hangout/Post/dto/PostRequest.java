@@ -43,19 +43,4 @@ public class PostRequest {
         if(string.equals(Gender.MAN.getGender())) return Gender.MAN;
         else return Gender.WOMAN;
     }
-
-    public Post toEntity() {
-        return Post.builder()
-                .title(this.title)
-                .context(this.context)
-                .postInfo(PostInfo.builder()
-                        .travelAt(travelAt)
-                        .travelAge(travelAge)
-                        .travelGender(trueGender(travelGender))
-                        .travelDateStart(travelDateStart)
-                        .travelDateEnd(travelDateEnd)
-                        .travelMember(travelMember)
-                        .build())
-                .build();
-    }
 }

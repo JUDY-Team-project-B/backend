@@ -32,22 +32,4 @@ public class PostResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    @Builder
-    public static PostResponse of(Post post) { // 유저 정보 추가 예정
-        return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .context(post.getContext())
-                .tags(post.getTags())
-                .statusType(post.getPostInfo().getStatus().getType())
-                .travelGender(post.getPostInfo().getTravelGender())
-                .travelAge(post.getPostInfo().getTravelAge())
-                .travelAt(post.getPostInfo().getTravelAt())
-                .travelMember(post.getPostInfo().getTravelMember())
-                .travelDateStart(post.getPostInfo().getTravelDateStart())
-                .travelDateEnd(post.getPostInfo().getTravelDateEnd())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .build();
-    }
 }
