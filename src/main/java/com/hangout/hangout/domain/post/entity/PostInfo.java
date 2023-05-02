@@ -81,4 +81,8 @@ public class PostInfo extends BaseEntity {
         this.travelDateStart = postRequest.getTravelDateStart();
         this.travelDateEnd = postRequest.getTravelDateEnd();
     }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

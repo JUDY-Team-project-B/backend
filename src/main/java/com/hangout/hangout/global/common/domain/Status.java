@@ -19,5 +19,8 @@ public class Status {
 
     @Column(name = "STATUS_TYPE", nullable = false)
     private String type; // 1: 공개, 2 : 삭제, 3: 관리자 삭제
-    
+
+    public void updateStatus(Long statusId) {
+        this.id = statusId;
+    }
 }
