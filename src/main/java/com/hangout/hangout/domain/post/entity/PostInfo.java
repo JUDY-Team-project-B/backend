@@ -5,6 +5,7 @@ import com.hangout.hangout.global.common.domain.Map;
 import com.hangout.hangout.global.common.domain.Status;
 import com.hangout.hangout.domain.user.entity.Gender;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,8 +22,7 @@ public class PostInfo extends BaseEntity {
     @Column(name = "POST_INFO_ID")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "POST_ID", nullable = false)
+    @OneToOne(mappedBy = "postInfo")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,4 +55,20 @@ public class PostInfo extends BaseEntity {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date travelDateEnd; // 여행 종료 날짜
+
+    @Builder
+    public PostInfo(Post post, Map map, Status status, String postImage,
+                    Gender travelGender, String travelAge, String travelAt, int travelMember,
+                    Date travelDataStart, Date travelDateEnd){
+        this.post = post;
+        this.map = map;
+        this.status = status;
+        this.postImage = postImage;
+        this.travelGender = travelGender;
+        this.travelAge = travelAge;
+        this.travelAt = travelAt;
+        this.travelMember = travelMember;
+        this.travelDataStart = travelDataStart;
+        this.travelDateEnd = travelDateEnd;
+    }
 }
