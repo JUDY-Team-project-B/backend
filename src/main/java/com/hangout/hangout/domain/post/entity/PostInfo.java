@@ -50,7 +50,7 @@ public class PostInfo extends BaseEntity {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date travelDataStart; // 여행 시작 날짜
+    private Date travelDateStart; // 여행 시작 날짜
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
@@ -59,7 +59,7 @@ public class PostInfo extends BaseEntity {
     @Builder
     public PostInfo(Post post, Map map, Status status, String postImage,
                     Gender travelGender, String travelAge, String travelAt, int travelMember,
-                    Date travelDataStart, Date travelDateEnd){
+                    Date travelDateStart, Date travelDateEnd){
         this.post = post;
         this.map = map;
         this.status = status;
@@ -68,7 +68,7 @@ public class PostInfo extends BaseEntity {
         this.travelAge = travelAge;
         this.travelAt = travelAt;
         this.travelMember = travelMember;
-        this.travelDataStart = travelDataStart;
+        this.travelDateStart = travelDateStart;
         this.travelDateEnd = travelDateEnd;
     }
 }

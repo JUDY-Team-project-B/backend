@@ -24,6 +24,8 @@ public class PostCreateRequest {
     @NotEmpty
     private String context;
 
+    private String[] tags; // 태그들
+
     // -- postInfo 정보들
     @NotNull
     private String travelGender; // 성별
@@ -51,7 +53,7 @@ public class PostCreateRequest {
                         .travelAt(travelAt)
                         .travelAge(travelAge)
                         .travelGender(trueGender(travelGender))
-                        .travelDataStart(travelDateStart)
+                        .travelDateStart(travelDateStart)
                         .travelDateEnd(travelDateEnd)
                         .travelMember(travelMember)
                         .build())
