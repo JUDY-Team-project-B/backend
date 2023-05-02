@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.post.entity;
 
+import com.hangout.hangout.Post.dto.PostRequest;
 import com.hangout.hangout.domain.report.entity.PostReport;
 import com.hangout.hangout.global.common.domain.BaseEntity;
 import com.hangout.hangout.domain.user.entity.User;
@@ -10,7 +11,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -44,7 +47,7 @@ public class Post extends BaseEntity {
 
     // ManyToMany 관계를 위해서 일대다로 관계맺어준 컬럼
     @OneToMany(mappedBy = "post")
-    private List<PostTagRel> tags = new ArrayList<>();
+    private Set<PostTagRel> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "post")
     private List<PostHits> postHits = new ArrayList<>();
@@ -61,5 +64,10 @@ public class Post extends BaseEntity {
         this.postLikes = postLikes;
         this.postReports = postReports;
         this.context = context;
+    }
+
+    public void updatePost(PostRequest postRequest) {
+        this.title = postRequest.getTitle();
+        this.context = postRequest.getContext();
     }
 }

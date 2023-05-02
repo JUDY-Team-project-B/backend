@@ -30,17 +30,16 @@ public class PostResponse {
     private final String travelAge;
     private final String travelAt;
     private final int travelMember;
-    private Date travelDateStart;
-    private Date travelDateEnd;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final Date travelDateStart;
+    private final Date travelDateEnd;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     @Builder
-    public static PostResponse of(Post post) {
+    public static PostResponse of(Post post) { // 유저 정보 추가 예정
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
-                .user(post.getUser().getEmail())
                 .context(post.getContext())
                 .tags(post.getTags())
                 .status(post.getPostInfo().getStatus())

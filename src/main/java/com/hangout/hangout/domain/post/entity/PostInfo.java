@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.post.entity;
 
+import com.hangout.hangout.Post.dto.PostRequest;
 import com.hangout.hangout.global.common.domain.BaseEntity;
 import com.hangout.hangout.global.common.domain.Map;
 import com.hangout.hangout.global.common.domain.Status;
@@ -70,5 +71,14 @@ public class PostInfo extends BaseEntity {
         this.travelMember = travelMember;
         this.travelDateStart = travelDateStart;
         this.travelDateEnd = travelDateEnd;
+    }
+
+    public void updatePostInfo(PostRequest postRequest) {
+        this.travelGender = postRequest.trueGender(postRequest.getTravelGender());
+        this.travelAt = postRequest.getTravelAt();
+        this.travelAge = postRequest.getTravelAge();
+        this.travelMember = postRequest.getTravelMember();
+        this.travelDateStart = postRequest.getTravelDateStart();
+        this.travelDateEnd = postRequest.getTravelDateEnd();
     }
 }
