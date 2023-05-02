@@ -1,6 +1,8 @@
 package com.hangout.hangout.Post.application;
 
+import com.hangout.hangout.Post.PostMapper;
 import com.hangout.hangout.Post.domain.repository.PostRepository;
+import com.hangout.hangout.Post.dto.PostListResponse;
 import com.hangout.hangout.Post.dto.PostRequest;
 import com.hangout.hangout.Post.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.entity.Post;
@@ -9,8 +11,11 @@ import com.hangout.hangout.global.common.domain.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -19,9 +24,11 @@ public class PostService {
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
 
+    private final PostMapper mapper;
+
     @Transactional
     public void createNewPost(PostRequest postRequest) {
-        Post post = postRequest.toEntity();
+        Post post = mapper.toEntity(postRequest);
         Long newStatus = 1L;
         Status status = statusRepository.findStatusById(newStatus).orElseThrow(StatusNotFoundException::new);
         post.getPostInfo().setStatus(status);
@@ -33,6 +40,11 @@ public class PostService {
 
     public Status findPostStatusById(Long statusId) {
         return statusRepository.findStatusById(statusId).orElseThrow(StatusNotFoundException::new);
+    }
+
+    public List<PostListResponse> getPosts(PageRequest pageRequest) {
+        List<Post> posts = postRepository.findAll(pageRequest).getContent();
+        return mapper.toDtoList(posts);
     }
 
     @Transactional
