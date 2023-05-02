@@ -37,8 +37,15 @@ public class PostController {
                                                  @RequestBody @Valid PostRequest postRequest) {
         Post post = postService.findPostById(postId);
 
-        // 유저 기능 추가 시 유저가 존재하지 않을 경우의 에러 처리 추가 예정
         postService.updatePost(post, post.getPostInfo(), postRequest);
+
+        return successResponse();
+    }
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<HttpStatus> deletePost(@PathVariable Long postId) {
+        Post post = postService.findPostById(postId);
+
+        postService.deletePost(post);
 
         return successResponse();
     }

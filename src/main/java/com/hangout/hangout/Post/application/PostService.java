@@ -5,6 +5,9 @@ import com.hangout.hangout.Post.dto.PostRequest;
 import com.hangout.hangout.Post.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
+import com.hangout.hangout.global.common.domain.Status;
+import com.hangout.hangout.global.common.domain.repository.StatusRepository;
+import com.hangout.hangout.global.exception.StatusNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,19 +17,37 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final StatusRepository statusRepository;
 
     @Transactional
     public void createNewPost(PostRequest postRequest) {
         Post post = postRequest.toEntity();
+        Long newStatus = 1L;
+        Status status = statusRepository.findStatusById(newStatus).orElseThrow(StatusNotFoundException::new);
+        post.getPostInfo().setStatus(status);
         postRepository.save(post);
     }
     public Post findPostById(Long postId) {
         return postRepository.findPostById(postId).orElseThrow(PostNotFoundException::new);
     }
+
+    public Status findPostStatusById(Long statusId) {
+        return statusRepository.findStatusById(statusId).orElseThrow(StatusNotFoundException::new);
+    }
+
     @Transactional
     public void updatePost(Post post, PostInfo postInfo, PostRequest postRequest) {
         // 태그 업데이트 기능은 추가 예정
+        // 유저 기능 완료 후 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직 구현 예정
         post.updatePost(postRequest);
         postInfo.updatePostInfo(postRequest);
+    }
+    @Transactional
+    public void deletePost(Post post) {
+        // 유저 기능 완료 후 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직 구현 예정
+        Long deleteStatus = 2L;
+        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(StatusNotFoundException::new);
+        post.getPostInfo().setStatus(status);
+        postRepository.save(post);
     }
 }
