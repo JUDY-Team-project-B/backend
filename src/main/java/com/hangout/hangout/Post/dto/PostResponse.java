@@ -1,11 +1,8 @@
 package com.hangout.hangout.Post.dto;
 
 import com.hangout.hangout.domain.post.entity.Post;
-import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.post.entity.PostTagRel;
 import com.hangout.hangout.domain.user.entity.Gender;
-import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.global.common.domain.Status;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
