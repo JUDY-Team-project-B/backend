@@ -2,6 +2,7 @@ package com.hangout.hangout.Post.presentation;
 
 import com.hangout.hangout.Post.application.PostService;
 import com.hangout.hangout.Post.dto.PostCreateRequest;
+import com.hangout.hangout.Post.dto.PostResponse;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseEntity;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,10 @@ public class PostController {
         postService.createNewPost(postCreateRequest);
 
         return successResponse();
+    }
+
+    @GetMapping("/{postId}")
+    public org.springframework.http.ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
+        return org.springframework.http.ResponseEntity.ok(PostResponse.of(postService.findPostById(postId)));
     }
 }
