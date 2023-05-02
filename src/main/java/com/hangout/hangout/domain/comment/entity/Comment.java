@@ -39,7 +39,7 @@ public class Comment extends BaseEntity {
 
     // 40 ~ 48 : Self Join
     @Column(name = "PARENT_ID")
-    private String parentId;
+    private Long parentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID", referencedColumnName = "COMMENT_ID", insertable = false, updatable = false)
