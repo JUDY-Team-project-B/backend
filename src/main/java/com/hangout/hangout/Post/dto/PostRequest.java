@@ -22,25 +22,25 @@ public class PostRequest {
     // 프론트엔드 퍼블리싱이 완전히 끝난 후 다른 점이 있으면 추가 작업할 예정입니다.
     @NotEmpty
     @Length(max = 100, message = "제목은 최대 100자를 넘을 수 없습니다.")
-    private String title;
+    private final String title;
     @NotEmpty
-    private String context;
+    private final String context;
 
-    private String[] tags; // 태그들
+    private final String[] tags; // 태그들
 
     // -- postInfo 정보들
     @NotNull
-    private String travelGender; // 성별
+    private final String travelGender; // 성별
     @NotEmpty
-    private String travelAt; // 여행 지역
+    private final String travelAt; // 여행 지역
     @NotEmpty
-    private String travelAge; // 연령대
+    private final String travelAge; // 연령대
     @NotNull
-    private Date travelDateStart; // 여행 시작 날짜
+    private final Date travelDateStart; // 여행 시작 날짜
     @NotNull
-    private Date travelDateEnd; // 여행 종료 날짜
+    private final Date travelDateEnd; // 여행 종료 날짜
     @NotNull
-    private int travelMember; // 여행 모집 인원
+    private final int travelMember; // 여행 모집 인원
 
     public Gender trueGender(String string) {
         if(string.equals(Gender.MAN.getGender())) return Gender.MAN;
