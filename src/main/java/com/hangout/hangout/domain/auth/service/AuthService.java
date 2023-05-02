@@ -24,7 +24,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse signUp(SignUpRequest request) {
+    public AuthResponse signup(SignUpRequest request) {
         User user = User.builder()
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
@@ -36,8 +36,10 @@ public class AuthService {
         userRepository.save(user);
 
         String jwtToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
         return AuthResponse.builder()
             .token(jwtToken)
+            .refreshToken(refreshToken)
             .build();
 
     }
@@ -50,11 +52,14 @@ public class AuthService {
             )
         );
         User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(()-> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
+            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
 
         String jwtToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
         return AuthResponse.builder()
             .token(jwtToken)
+            .refreshToken(refreshToken)
             .build();
     }
 }

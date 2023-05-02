@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthResponse {
     private String token;
+    private String refreshToken;
 }
