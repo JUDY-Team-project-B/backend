@@ -4,8 +4,10 @@ package com.hangout.hangout.Post.dto;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.user.entity.Gender;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
@@ -13,7 +15,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Getter
-@NoArgsConstructor
+@Builder
+@RequiredArgsConstructor
 public class PostRequest {
     // 클라이언트로부터 포스트 등록을 위해 값을 전달받을 객체 생성
     // 프론트엔드 퍼블리싱이 완전히 끝난 후 다른 점이 있으면 추가 작업할 예정입니다.
