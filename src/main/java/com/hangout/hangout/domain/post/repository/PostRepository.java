@@ -1,4 +1,4 @@
-package com.hangout.hangout.Post.domain.repository;
+package com.hangout.hangout.domain.post.repository;
 
 import com.hangout.hangout.domain.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.hangout.hangout.Post.exception;
+package com.hangout.hangout.global.exception;
 
 public class PostNotFoundException extends RuntimeException {
 

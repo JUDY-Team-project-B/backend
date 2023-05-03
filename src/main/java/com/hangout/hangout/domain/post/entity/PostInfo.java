@@ -1,9 +1,9 @@
 package com.hangout.hangout.domain.post.entity;
 
-import com.hangout.hangout.Post.dto.PostRequest;
-import com.hangout.hangout.global.common.domain.BaseEntity;
-import com.hangout.hangout.global.common.domain.Map;
-import com.hangout.hangout.global.common.domain.Status;
+import com.hangout.hangout.domain.post.dto.PostRequest;
+import com.hangout.hangout.global.common.domain.entity.BaseEntity;
+import com.hangout.hangout.global.common.domain.entity.Map;
+import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.domain.user.entity.Gender;
 import lombok.AccessLevel;
 import lombok.Builder;

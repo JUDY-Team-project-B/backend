@@ -1,7 +1,7 @@
 package com.hangout.hangout.domain.user.entity;
 
 import com.hangout.hangout.domain.post.entity.PostHits;
-import com.hangout.hangout.global.common.domain.BaseEntity;
+import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.InvalidFormatException;
 import lombok.*;
@@ -14,7 +14,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -37,7 +36,27 @@ public class User extends BaseEntity implements UserDetails {
     private String password; // 비밀번호
 
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private List<PostHits> hits = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
+    private String image;
+
+    private String information;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private int age;
+
+    public void updateNickName(final String nickname) {
+        validateNickname(nickname);
+        this.nickname = nickname;
     }
 
     public void updatePassword(String password) {

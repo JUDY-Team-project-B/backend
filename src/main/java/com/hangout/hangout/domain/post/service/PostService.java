@@ -1,13 +1,13 @@
-package com.hangout.hangout.Post.application;
+package com.hangout.hangout.domain.post.service;
 
-import com.hangout.hangout.Post.PostMapper;
-import com.hangout.hangout.Post.domain.repository.PostRepository;
-import com.hangout.hangout.Post.dto.PostListResponse;
-import com.hangout.hangout.Post.dto.PostRequest;
-import com.hangout.hangout.Post.exception.PostNotFoundException;
+import com.hangout.hangout.domain.post.PostMapper;
+import com.hangout.hangout.domain.post.repository.PostRepository;
+import com.hangout.hangout.domain.post.dto.PostListResponse;
+import com.hangout.hangout.domain.post.dto.PostRequest;
+import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
-import com.hangout.hangout.global.common.domain.Status;
+import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import lombok.RequiredArgsConstructor;

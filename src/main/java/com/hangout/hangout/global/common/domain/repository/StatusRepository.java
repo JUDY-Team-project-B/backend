@@ -1,6 +1,6 @@
 package com.hangout.hangout.global.common.domain.repository;
 
-import com.hangout.hangout.global.common.domain.Status;
+import com.hangout.hangout.global.common.domain.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

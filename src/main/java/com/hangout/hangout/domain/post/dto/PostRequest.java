@@ -1,4 +1,4 @@
-package com.hangout.hangout.Post.dto;
+package com.hangout.hangout.domain.post.dto;
 
 
 import com.hangout.hangout.domain.post.entity.Post;

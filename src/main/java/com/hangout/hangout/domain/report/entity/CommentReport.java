@@ -2,15 +2,14 @@ package com.hangout.hangout.domain.report.entity;
 
 import com.hangout.hangout.domain.comment.entity.Comment;
 import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.global.common.domain.BaseEntity;
-import com.hangout.hangout.global.common.domain.Status;
+import com.hangout.hangout.global.common.domain.entity.BaseEntity;
+import com.hangout.hangout.global.common.domain.entity.Status;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

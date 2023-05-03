@@ -1,8 +1,8 @@
-package com.hangout.hangout.Post;
+package com.hangout.hangout.domain.post;
 
-import com.hangout.hangout.Post.dto.PostListResponse;
-import com.hangout.hangout.Post.dto.PostRequest;
-import com.hangout.hangout.Post.dto.PostResponse;
+import com.hangout.hangout.domain.post.dto.PostListResponse;
+import com.hangout.hangout.domain.post.dto.PostRequest;
+import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import org.springframework.stereotype.Component;

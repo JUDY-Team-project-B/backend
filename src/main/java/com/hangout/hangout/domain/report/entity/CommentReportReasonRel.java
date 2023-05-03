@@ -1,6 +1,6 @@
 package com.hangout.hangout.domain.report.entity;
 
-import com.hangout.hangout.global.common.domain.BaseEntity;
+import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,13 +3,12 @@ package com.hangout.hangout.domain.comment.entity;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.report.entity.CommentReport;
 import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.global.common.domain.BaseEntity;
-import com.hangout.hangout.global.common.domain.Status;
+import com.hangout.hangout.global.common.domain.entity.BaseEntity;
+import com.hangout.hangout.global.common.domain.entity.Status;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
-package com.hangout.hangout.Post.presentation;
+package com.hangout.hangout.domain.post.controller;
 
-import com.hangout.hangout.Post.PostMapper;
-import com.hangout.hangout.Post.application.PostService;
-import com.hangout.hangout.Post.dto.PostListResponse;
-import com.hangout.hangout.Post.dto.PostRequest;
-import com.hangout.hangout.Post.dto.PostResponse;
+import com.hangout.hangout.domain.post.PostMapper;
+import com.hangout.hangout.domain.post.service.PostService;
+import com.hangout.hangout.domain.post.dto.PostListResponse;
+import com.hangout.hangout.domain.post.dto.PostRequest;
+import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.global.error.ResponseEntity;
 import lombok.RequiredArgsConstructor;
