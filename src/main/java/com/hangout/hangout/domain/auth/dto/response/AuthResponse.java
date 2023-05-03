@@ -1,4 +1,4 @@
-package com.hangout.hangout.domain.auth.response;
+package com.hangout.hangout.domain.auth.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthResponse {
-    private String token;
+    private String accessToken;
     private String refreshToken;
 }

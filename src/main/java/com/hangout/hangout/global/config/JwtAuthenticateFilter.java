@@ -1,5 +1,6 @@
 package com.hangout.hangout.global.config;
 
+import com.hangout.hangout.domain.auth.repository.TokenRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ public class JwtAuthenticateFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenRepository tokenRepository;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -42,7 +44,10 @@ public class JwtAuthenticateFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             // token 유효 여부
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            Boolean isTokenValid = tokenRepository.findByToken(jwt)
+                .map(t -> !t.isExpired() && !t.isRevoked())
+                .orElse(false);
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
@@ -51,12 +56,9 @@ public class JwtAuthenticateFilter extends OncePerRequestFilter {
                 authToken.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-                // update context holder
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-            filterChain.doFilter(request, response);
         }
-
-
+        filterChain.doFilter(request, response);
     }
 }

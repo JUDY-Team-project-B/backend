@@ -1,4 +1,4 @@
-package com.hangout.hangout.domain.auth.request;
+package com.hangout.hangout.domain.auth.dto.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
