@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "STATUS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Status extends BaseEntity{
+public class Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,5 +18,9 @@ public class Status extends BaseEntity{
     private Long id;
 
     @Column(name = "STATUS_TYPE", nullable = false)
-    private String type;
+    private String type; // 1: 공개, 2 : 삭제, 3: 관리자 삭제
+
+    public void updateStatus(Long statusId) {
+        this.id = statusId;
+    }
 }
