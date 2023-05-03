@@ -7,6 +7,7 @@ import com.hangout.hangout.global.common.domain.BaseEntity;
 import com.hangout.hangout.global.common.domain.Status;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -39,7 +40,7 @@ public class Comment extends BaseEntity {
 
     // 40 ~ 48 : Self Join
     @Column(name = "PARENT_ID")
-    private String parentId;
+    private Long parentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID", referencedColumnName = "COMMENT_ID", insertable = false, updatable = false)
@@ -60,4 +61,14 @@ public class Comment extends BaseEntity {
     @Column(name = "CONTENT", nullable = false)
     private String content;
 
+    public void setContent(String content){this.content = content;}
+
+    @Builder
+    public Comment(User user, Post post, Status status, Long parentId, String content) {
+        this.user = user;
+        this.post = post;
+        this.status = status;
+        this.parentId = parentId;
+        this.content = content;
+    }
 }
