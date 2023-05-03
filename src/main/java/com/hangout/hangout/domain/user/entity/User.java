@@ -41,6 +41,8 @@ public class User extends BaseEntity implements UserDetails {
 
     private String image;
 
+    private String information;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
