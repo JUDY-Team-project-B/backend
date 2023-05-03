@@ -2,13 +2,17 @@ package com.hangout.hangout.domain.user.entity;
 
 import com.hangout.hangout.domain.post.entity.PostHits;
 import com.hangout.hangout.global.common.domain.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.InvalidFormatException;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,29 +21,67 @@ import java.util.List;
 @Table(name = "USER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class User extends BaseEntity {
+@AllArgsConstructor
+@Builder
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "EMAIL" , nullable = false)
+    @Column(nullable = false, unique = true)
     private String email; // 이메일(ID)
 
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(nullable = false)
     private String password; // 비밀번호
 
-    // ManyToMany 관계를 위해서 일대다로 관계맺어준 컬럼
     @OneToMany(mappedBy = "user")
     private List<PostHits> hits = new ArrayList<>();
-
-    @Builder
-    public User(String email, String password) {
-        this.email=email;
-        this.password= password;
     }
+
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    private void validateNickname(final String nickname) {
+        if (nickname.length() > 100) {
+            throw new InvalidFormatException(ResponseType.INVALID_FORMAT);
+        }
     }
 }
