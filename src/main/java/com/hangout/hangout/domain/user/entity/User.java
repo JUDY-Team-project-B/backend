@@ -47,16 +47,31 @@ public class User extends BaseEntity implements UserDetails {
 
     private String image;
 
-    private String information;
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private int age;
 
-    public void updateNickName(final String nickname) {
+    public void updateNickname(String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
+    }
+    public void updateProfileImage(String image) {
+        this.image = image;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void updateAge(int age) {
+        this.age = age;
     }
 
     public void updatePassword(String password) {

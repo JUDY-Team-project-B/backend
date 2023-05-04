@@ -34,6 +34,6 @@ public class SignUpRequest {
     private int age;
 
     private String image;
-    private String information;
+    private String description;
 
 }
