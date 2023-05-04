@@ -4,7 +4,7 @@ import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
 import com.hangout.hangout.domain.auth.entity.Token;
 import com.hangout.hangout.domain.auth.entity.TokenType;
 import com.hangout.hangout.domain.auth.repository.TokenRepository;
-import com.hangout.hangout.domain.user.mapper.UserMapper;
+import com.hangout.hangout.domain.user.entity.Role;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
@@ -32,13 +33,21 @@ public class AuthService {
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final UserMapper userMapper;
-
+    private final PasswordEncoder passwordEncoder;
     public Long signup(SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AuthException(ResponseType.USER_NOT_EXIST_EMAIL);
         }
-        User user = userMapper.toEntity(request);
+        User user = User.builder()
+            .email(request.getEmail())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .nickname(request.getNickname())
+            .gender(request.getGender())
+            .image(request.getImage())
+            .description(request.getDescription())
+            .role(Role.USER)
+            .age(request.getAge())
+            .build();
         User savedUser = userRepository.save(user);
         return savedUser.getId();
     }
