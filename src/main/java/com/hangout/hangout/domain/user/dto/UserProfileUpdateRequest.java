@@ -18,5 +18,5 @@ public class UserProfileUpdateRequest {
   private String image;
   private String description;
   private Gender gender;
-  private int age;
+  private Integer age;
 }

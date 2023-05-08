@@ -1,7 +1,8 @@
 package com.hangout.hangout.domain.user.service;
+
+import com.hangout.hangout.domain.user.dto.UserProfileUpdateRequest;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
-import com.hangout.hangout.global.config.AuthenticationFacade;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.NotFoundException;
 import java.util.Optional;
@@ -14,31 +15,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserService {
 
-  private final UserRepository userRepository;
-  private final AuthenticationFacade authenticationFacade;
+    private final UserRepository userRepository;
 
-  @Transactional
-  public void updateNickname(String nickname) {
-    User user = authenticationFacade.getCurrentUser();
-    user.updateNickname(nickname);
-  }
+    public Optional<User> getUserByEmail(String userEmail) {
+        return userRepository.findByEmail(userEmail);
+    }
 
-  @Transactional
-  public void updateDescription(String description) {
-    User user = authenticationFacade.getCurrentUser();
-    user.updateDescription(description);
-  }
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_ID));
+    }
 
-  @Transactional
-  public void updatePassword(String email, String exPassword, String newPassword) {
-    User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
-  }
 
-  public Optional<User> findByEmail(String userEmail) {
-    return userRepository.findByEmail(userEmail);
-  }
+    @Transactional
+    public void updateProfile(User user, UserProfileUpdateRequest request) {
 
-  public User findById(Long id) {
-    return userRepository.findById(id).orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_ID));
-  }
+        User updatedUser = User.builder().id(user.getId()).email(user.getEmail())
+            .nickname(request.getNickname() != null ? request.getNickname() : user.getNickname())
+            .image(request.getImage() != null ? request.getImage() : user.getImage()).description(
+                request.getDescription() != null ? request.getDescription() : user.getDescription())
+            .gender(request.getGender() != null ? request.getGender() : user.getGender())
+            .age(request.getAge() != null ? request.getAge() : user.getAge()).build();
+        userRepository.save(updatedUser);
+    }
 }
