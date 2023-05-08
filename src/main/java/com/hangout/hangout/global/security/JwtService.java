@@ -1,4 +1,4 @@
-package com.hangout.hangout.global.config;
+package com.hangout.hangout.global.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -33,10 +33,15 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
     public String generateToken(
+        Map<String, Object> extraClaims,
         UserDetails userDetails
     ) {
-        return buildToken(new HashMap<>(),userDetails, jwtExpiration);
+        return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
     public String generateRefreshToken(
@@ -65,10 +70,10 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpriation(token).before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpriation(String token) {
+    private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
