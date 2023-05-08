@@ -13,6 +13,7 @@ import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.AuthException;
 import com.hangout.hangout.global.exception.NotFoundException;
 import com.hangout.hangout.global.security.JwtService;
+import com.hangout.hangout.global.security.UserPrincipal;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -55,8 +56,8 @@ public class AuthService {
 
         User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
-        String jwtToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        String jwtToken = jwtService.generateToken(UserPrincipal.create(user));
+        String refreshToken = jwtService.generateRefreshToken(UserPrincipal.create(user));
         revokeAllUserTokens(user);
         saveUserToken(user, refreshToken);
         return createAuthResponse(jwtToken, refreshToken);
@@ -109,12 +110,12 @@ public class AuthService {
             return;
         }
         refreshToken = authHeader.substring(7);
-        userEmail = jwtService.extractUserName(refreshToken);
+        userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
             User user = this.userRepository.findByEmail(userEmail)
                 .orElseThrow();
-            if (jwtService.isTokenValid(refreshToken, user)) {
-                String accessToken = jwtService.generateToken(user);
+            if (jwtService.isTokenValid(refreshToken, UserPrincipal.create(user))) {
+                String accessToken = jwtService.generateToken(UserPrincipal.create(user));
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
                 var authResponse = AuthResponse.builder()

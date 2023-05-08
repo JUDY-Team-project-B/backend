@@ -1,5 +1,6 @@
 package com.hangout.hangout.global.config;
 
+import com.hangout.hangout.global.security.JwtAuthenticateFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +16,12 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     private final JwtAuthenticateFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
-
+    public static final String[] whiteListedRoutes = new String[]{"/api/v1/auth/**"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,7 +31,9 @@ public class SecurityConfiguration {
             .authorizeHttpRequests()
             .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
             .permitAll()
-            .requestMatchers(request -> request.getServletPath().startsWith("/api/v1/auth"))
+//            .requestMatchers(whiteListedRoutes)
+            //todo
+            .requestMatchers(request -> request.getServletPath().startsWith("/api/v1"))
             .permitAll()
             .anyRequest()
             .authenticated()
@@ -44,7 +47,8 @@ public class SecurityConfiguration {
             .logoutUrl("/api/v1/auth/logout")
             .addLogoutHandler(logoutHandler)
             .logoutSuccessHandler(
-                (request, response, authentication) -> SecurityContextHolder.clearContext());
+                (request, response, authentication) -> SecurityContextHolder.clearContext())
+        ;
 
         return http.build();
     }
