@@ -62,6 +62,10 @@ public class Comment extends BaseEntity {
 
     public void setContent(String content){this.content = content;}
 
+    public void update(String content){
+        this.content = content;
+    }
+
     @Builder
     public Comment(User user, Post post, Status status, Long parentId, String content) {
         this.user = user;
