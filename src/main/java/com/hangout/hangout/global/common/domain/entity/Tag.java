@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Table(name = "TAG")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Tag extends BaseEntity{
+public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,4 @@ public class Tag extends BaseEntity{
     @Column(name = "TAG_TYPE", nullable = false)
     private String type;
 
-    @OneToMany(mappedBy = "tag")
-    private List<PostTagRel> posts = new ArrayList<>();
 }

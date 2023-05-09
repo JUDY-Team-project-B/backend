@@ -44,11 +44,7 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<PostReport> postReports = new ArrayList<>();
 
-
     // ManyToMany 관계를 위해서 일대다로 관계맺어준 컬럼
-    @OneToMany(mappedBy = "post")
-    private Set<PostTagRel> tags = new HashSet<>();
-
     @OneToMany(mappedBy = "post")
     private List<PostHits> postHits = new ArrayList<>();
 
