@@ -5,6 +5,7 @@ import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
+import com.hangout.hangout.domain.user.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,10 +13,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class PostMapper {
-    public Post toEntity(PostRequest postRequest) {
+    public Post toEntity(PostRequest postRequest, User user) {
         return Post.builder()
                 .title(postRequest.getTitle())
                 .context(postRequest.getContext())
+                .user(user)
                 .postInfo(PostInfo.builder()
                         .travelAt(postRequest.getTravelAt())
                         .travelAge(postRequest.getTravelAge())
@@ -27,11 +29,12 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostResponse of(Post post) { // 유저 정보 추가 예정 // 목록 상세 조회 시 사용
+    public static PostResponse of(Post post) { // 목록 상세 조회 시 사용
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .context(post.getContext())
+                .nickname(post.getUser().getNickname())
                 .tags(post.getTags())
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
@@ -49,6 +52,7 @@ public class PostMapper {
         return PostListResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
+                .nickname(post.getUser().getNickname())
                 .tags(post.getTags())
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class PostListResponse {
     private final Long id;
     private final String title;
-    private final String user;
+    private final String nickname;
     private final Set<PostTagRel> tags;
 
     private final String statusType;
