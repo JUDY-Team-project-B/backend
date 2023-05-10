@@ -19,19 +19,26 @@ import java.util.List;
 
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
+
+    private final PostTagService postTagService;
 
     private final PostMapper mapper;
 
     @Transactional
     public void createNewPost(PostRequest postRequest) {
         Post post = mapper.toEntity(postRequest);
+
         Long newStatus = 1L;
         Status status = statusRepository.findStatusById(newStatus).orElseThrow(StatusNotFoundException::new);
         post.getPostInfo().setStatus(status);
+
+        postTagService.saveTag(post, postRequest.getTags());
+
         postRepository.save(post);
     }
     public Post findPostById(Long postId) {
