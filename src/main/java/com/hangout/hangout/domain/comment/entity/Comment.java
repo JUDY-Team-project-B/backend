@@ -66,6 +66,8 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
+    public void delete(Status status){this.status=status;}
+
     @Builder
     public Comment(User user, Post post, Status status, Long parentId, String content) {
         this.user = user;

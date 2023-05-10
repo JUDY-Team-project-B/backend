@@ -1,8 +1,10 @@
     package com.hangout.hangout.domain.comment.controller;
 
 
+    import com.hangout.hangout.domain.comment.dto.CommentDeleteDto;
     import com.hangout.hangout.domain.comment.dto.CommentSaveRequestDto;
     import com.hangout.hangout.domain.comment.dto.CommentUpdateRequestDto;
+    import com.hangout.hangout.domain.comment.entity.Comment;
     import com.hangout.hangout.domain.comment.service.CommentService;
     import com.hangout.hangout.domain.post.entity.Post;
     import com.hangout.hangout.domain.post.repository.PostRepository;
@@ -38,5 +40,14 @@
             commentService.updateComment(id,commentUpdateRequestDto);
 
             return ResponseEntity.successResponse();
+        }
+
+        @DeleteMapping("api/v1/comment/{id}")
+        public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id){
+
+            commentService.deleteComment(id);
+
+            return ResponseEntity.successResponse();
+
         }
     }
