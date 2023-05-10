@@ -2,6 +2,7 @@ package com.hangout.hangout.global.common.domain.entity;
 
 import com.hangout.hangout.domain.post.entity.PostTagRel;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Table(name = "TAG")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Tag {
+public class Tag extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +24,11 @@ public class Tag {
     @Column(name = "TAG_TYPE", nullable = false)
     private String type;
 
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostTagRel> postTags;
+
+    @Builder
+    public Tag(String type) {
+        this.type = type;
+    }
 }

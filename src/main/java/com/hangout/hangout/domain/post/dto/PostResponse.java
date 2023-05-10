@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Builder
@@ -21,7 +21,6 @@ public class PostResponse {
     private final String title;
     private final String user;
     private final String context;
-    private final Set<PostTagRel> tags;
     private final String statusType;
     private final Gender travelGender;
     private final String travelAge;

@@ -45,6 +45,9 @@ public class Post extends BaseEntity {
     private List<PostReport> postReports = new ArrayList<>();
 
     // ManyToMany 관계를 위해서 일대다로 관계맺어준 컬럼
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostTagRel> Tags;
+
     @OneToMany(mappedBy = "post")
     private List<PostHits> postHits = new ArrayList<>();
 
