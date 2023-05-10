@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.user.entity;
 
+import com.hangout.hangout.domain.auth.entity.oauth2.OAuth2UserInfo;
 import com.hangout.hangout.domain.post.entity.PostHits;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import com.hangout.hangout.global.error.ResponseType;
@@ -54,6 +55,14 @@ public class User extends BaseEntity implements UserDetails {
 
     private int age;
 
+    @Column(unique = true, nullable = false)
+    private String oAuth2Id;
+
+    public User update(OAuth2UserInfo oAuth2UserInfo) {
+        this.oAuth2Id = oAuth2UserInfo.getOAuth2Id();
+        return this;
+    }
+
     public void updateNickName(final String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
@@ -103,4 +112,5 @@ public class User extends BaseEntity implements UserDetails {
             throw new InvalidFormatException(ResponseType.INVALID_FORMAT);
         }
     }
+
 }
