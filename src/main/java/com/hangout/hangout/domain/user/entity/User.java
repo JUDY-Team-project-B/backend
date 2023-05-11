@@ -16,7 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,10 +25,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Getter
 @Table(name = "USER")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
 public class User extends BaseEntity {
 
     @Id
@@ -44,7 +42,6 @@ public class User extends BaseEntity {
     private String password; // 비밀번호
 
     @OneToMany(mappedBy = "user")
-    @Builder.Default
     private List<PostHits> hits = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -61,6 +58,22 @@ public class User extends BaseEntity {
     private Gender gender;
 
     private int age;
+
+    @Builder
+    public User(Long id, String email, String password, List<PostHits> hits, Role role,
+        String nickname,
+        String image, String description, Gender gender, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.hits = hits;
+        this.role = role;
+        this.nickname = nickname;
+        this.image = image;
+        this.description = description;
+        this.gender = gender;
+        this.age = age;
+    }
 
     public void updateNickname(String nickname) {
         validateNickname(nickname);

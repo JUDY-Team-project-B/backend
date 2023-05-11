@@ -38,6 +38,7 @@ public class SignUpRequest {
 
     private String image;
     private String description;
+    private Role role = Role.USER;
 
     public User toEntity(PasswordEncoder passwordEncoder) {
         return User.builder()

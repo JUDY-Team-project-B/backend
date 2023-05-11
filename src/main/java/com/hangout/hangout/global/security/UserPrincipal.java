@@ -2,7 +2,7 @@ package com.hangout.hangout.global.security;
 
 import com.hangout.hangout.domain.user.entity.User;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,9 +22,10 @@ public class UserPrincipal implements UserDetails {
         return user;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        return Collections.singletonList(new SimpleGrantedAuthority("USER"));
     }
 
     @Override
