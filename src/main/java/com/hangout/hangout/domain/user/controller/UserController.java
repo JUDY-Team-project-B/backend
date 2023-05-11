@@ -42,7 +42,8 @@ public class UserController {
         String name2 = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         System.out.println(name);
         System.out.println(name2);
-        return ResponseEntity.successResponse(UserResponse.of(user));
+        User test = userService.getUserByEmail(name).orElseThrow();
+        return ResponseEntity.successResponse(test.getNickname());
     }
 
     /*
@@ -74,7 +75,9 @@ public class UserController {
 
     @GetMapping("/test")
     public User test() {
-        return authenticationFacade.getCurrentUser();
+
+         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.getUserByEmail(email).orElseThrow();
     }
 
 }

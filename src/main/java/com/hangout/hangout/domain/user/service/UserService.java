@@ -30,7 +30,8 @@ public class UserService {
     @Transactional
     public void updateProfile(User user, UserProfileUpdateRequest request) {
 
-        User updatedUser = User.builder().id(user.getId()).email(user.getEmail())
+        User updatedUser = User.builder()
+            .id(user.getId()).email(user.getEmail())
             .nickname(request.getNickname() != null ? request.getNickname() : user.getNickname())
             .image(request.getImage() != null ? request.getImage() : user.getImage()).description(
                 request.getDescription() != null ? request.getDescription() : user.getDescription())

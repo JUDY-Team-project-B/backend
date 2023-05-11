@@ -10,19 +10,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("userDetailsService")
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    public CustomUserDetailsService(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
     @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email)
+    public UserDetails loadUserByUsername(String email)  {
+        User user = this.userRepository.findByEmail(email)
             .orElseThrow(() ->
                 new UsernameNotFoundException("유저를 찾을 수 없습니다. email: " + email)
             );
-
-        return UserPrincipal.create(user);
+        return new UserPrincipal(user);
     }
 }
