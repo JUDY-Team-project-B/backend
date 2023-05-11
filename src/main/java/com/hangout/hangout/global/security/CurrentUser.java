@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@AuthenticationPrincipal(expression = "user")
+@AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? new com.hangout.hangout.domain.user.entity.EmptyUser() : user")
 public @interface CurrentUser {
+
 }
