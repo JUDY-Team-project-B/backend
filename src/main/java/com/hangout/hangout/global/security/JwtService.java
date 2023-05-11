@@ -78,13 +78,6 @@ public class JwtService {
             .build()
             .parseClaimsJws(token)
             .getBody();
-
-		/*
-		Claims claims = Jwts.parserBuilder()
-			.setSigningKey(jwtSecret)
-			.parseClaimsJws(token)
-			.getBody();*/
-
         return claims.getSubject();
     }
 
