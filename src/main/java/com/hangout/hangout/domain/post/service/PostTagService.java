@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,5 +37,14 @@ public class PostTagService {
 
     public List<PostTagRel> findTagListByPost(Post post) {
         return postTagRepository.findAllByPost(post);
+    }
+
+    public List<String> getTagsByPost(Post post) {
+        List<PostTagRel> postTagRels = findTagListByPost(post);
+        List<String> tags = new ArrayList<>();
+        for (PostTagRel postTagRel : postTagRels) {
+            tags.add(postTagRel.getTag().getType());
+        }
+        return tags;
     }
 }
