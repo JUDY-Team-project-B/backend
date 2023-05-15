@@ -13,11 +13,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class PostMapper {
-    public Post toEntity(PostRequest postRequest, User user) {
+    public Post toEntity(PostRequest postRequest) {
         return Post.builder()
                 .title(postRequest.getTitle())
                 .context(postRequest.getContext())
-                .user(user)
                 .postInfo(PostInfo.builder()
                         .travelAt(postRequest.getTravelAt())
                         .travelAge(postRequest.getTravelAge())
@@ -34,7 +33,6 @@ public class PostMapper {
                 .id(post.getId())
                 .title(post.getTitle())
                 .context(post.getContext())
-                .nickname(post.getUser().getNickname())
                 .tags(post.getTags())
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
@@ -52,7 +50,6 @@ public class PostMapper {
         return PostListResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
-                .nickname(post.getUser().getNickname())
                 .tags(post.getTags())
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())

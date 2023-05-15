@@ -30,8 +30,8 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<HttpStatus> createNewPost(@RequestBody @Valid PostRequest
-                                                    postRequest, User user) {
-        postService.createNewPost(postRequest, user);
+                                                    postRequest) {
+        postService.createNewPost(postRequest);
 
         return successResponse();
     }
