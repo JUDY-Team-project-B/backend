@@ -37,9 +37,9 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public org.springframework.http.ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
         List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
-        return org.springframework.http.ResponseEntity.ok(mapper.of(postService.findPostById(postId),tagsByPost));
+        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost));
     }
 
     @GetMapping("/all/{page}")
