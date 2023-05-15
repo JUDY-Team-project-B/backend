@@ -6,6 +6,7 @@ import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
@@ -32,16 +33,19 @@ public class PostService {
     public void createNewPost(PostRequest postRequest, User user) {
         Post post = mapper.toEntity(postRequest, user);
         Long newStatus = 1L;
-        Status status = statusRepository.findStatusById(newStatus).orElseThrow(StatusNotFoundException::new);
+        Status status = statusRepository.findStatusById(newStatus).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
         post.getPostInfo().setStatus(status);
         postRepository.save(post);
     }
     public Post findPostById(Long postId) {
-        return postRepository.findPostById(postId).orElseThrow(PostNotFoundException::new);
+        return postRepository.findPostById(postId).orElseThrow(
+                () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
     }
 
     public Status findPostStatusById(Long statusId) {
-        return statusRepository.findStatusById(statusId).orElseThrow(StatusNotFoundException::new);
+        return statusRepository.findStatusById(statusId).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
     }
 
     public List<PostListResponse> getPosts(int page, int size, PostSearchRequest postSearchRequest) {
@@ -77,7 +81,8 @@ public class PostService {
     public void deletePost(Post post) {
         // 유저 기능 완료 후 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직 구현 예정
         Long deleteStatus = 2L;
-        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(StatusNotFoundException::new);
+        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
         post.getPostInfo().setStatus(status);
         postRepository.save(post);
     }
