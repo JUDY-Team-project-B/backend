@@ -6,7 +6,10 @@ import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseEntity;
+import com.hangout.hangout.global.security.CurrentUser;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -46,6 +49,14 @@ public class PostController {
         List<PostListResponse> posts = postService.getPosts(pageRequest);
 
         return successResponse("게시물 조회에 성공하셨습니다!", posts);
+    }
+
+
+    @GetMapping("/me")
+    @Operation(summary = "작성한 글 조회")
+    public ResponseEntity<List<PostListResponse>> getMyPosts(@CurrentUser User user) {
+        List<PostListResponse> posts = postService.getPostList(user);
+        return successResponse("작성한 글 조회에 성공하셨습니다!",posts);
     }
 
 
