@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Builder
@@ -26,7 +27,7 @@ public class PostRequest {
     @NotEmpty
     private final String context;
 
-    private final String[] tags; // 태그들
+    private final List<String> tags; // 태그들
 
     // -- postInfo 정보들
     @NotNull
