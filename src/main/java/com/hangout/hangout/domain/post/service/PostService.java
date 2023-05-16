@@ -4,6 +4,8 @@ import com.hangout.hangout.domain.post.PostMapper;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
+import com.hangout.hangout.domain.post.repository.PostSpecification;
+import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
@@ -12,6 +14,7 @@ import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +26,6 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
-
     private final PostMapper mapper;
 
     @Transactional
@@ -44,6 +46,12 @@ public class PostService {
 
     public List<PostListResponse> getPosts(PageRequest pageRequest) {
         List<Post> posts = postRepository.findAll(pageRequest).getContent();
+        return mapper.toDtoList(posts);
+    }
+
+    public List<PostListResponse> getPostList(User user) {
+        Specification<Post> specification = PostSpecification.hasUser(user);
+        List<Post> posts = postRepository.findAll(specification);
         return mapper.toDtoList(posts);
     }
 

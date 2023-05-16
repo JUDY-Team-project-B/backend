@@ -34,10 +34,6 @@ public class UserController {
         return ResponseEntity.successResponse(UserResponse.of(user));
     }
 
-    /*
-    todo - 유저의 히스토리 조회
-     */
-
     @PutMapping("/me")
     @Operation(summary = "프로필 수정", tags = {"User Controller"})
     public ResponseEntity<UserResponse> updateProfile(@CurrentUser User user,
