@@ -31,7 +31,8 @@ public enum ResponseType {
     AUTH_REQUIRE_LOGIN("AU08", "재로그인이 필요합니다."),
 
     // USER
-    USER_NOT_EXIST_EMAIL("US01", "유저 정보를 찾을 수 없습니다.");
+    USER_NOT_EXIST_EMAIL("US01", "유저 정보를 찾을 수 없습니다."),
+    USER_NOT_EXIST_ID("US02", "유저 정보를 찾을 수 없습니다.");
 
     private final String code;
     private final String message;
