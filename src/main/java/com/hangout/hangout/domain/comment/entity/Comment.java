@@ -7,6 +7,7 @@ import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import com.hangout.hangout.global.common.domain.entity.Status;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -59,4 +60,20 @@ public class Comment extends BaseEntity {
     @Column(name = "CONTENT", nullable = false)
     private String content;
 
+    public void setContent(String content){this.content = content;}
+
+    public void update(String content){
+        this.content = content;
+    }
+
+    public void delete(Status status){this.status=status;}
+
+    @Builder
+    public Comment(User user, Post post, Status status, Long parentId, String content) {
+        this.user = user;
+        this.post = post;
+        this.status = status;
+        this.parentId = parentId;
+        this.content = content;
+    }
 }
