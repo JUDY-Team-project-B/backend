@@ -10,10 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentDeleteDto {
     private Status status;
-
     @Builder
     public CommentDeleteDto(Status status){ this.status = status;}
-
     public Comment toDelete(Status status){
         return Comment.builder()
                 .status(status)
