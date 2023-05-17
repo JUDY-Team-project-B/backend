@@ -30,7 +30,7 @@ public class SecurityConfiguration {
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
     /**
-     *  spring security + jwt + OAuth2 사용을 위한 설정
+     * spring security + jwt + OAuth2 사용을 위한 설정
      * <p>1. httpBasic, csrf, formLogin, rememberMe, logout, session 사용 x
      * <p>2. 요청, swagger에 대한 권한 설정 및 jwt filter 설정
      * <p>3. OAuth2 login 설정
@@ -58,13 +58,12 @@ public class SecurityConfiguration {
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-
-        http
+        http.formLogin().disable()
             .oauth2Login()
             .authorizationEndpoint().baseUri(API_PREFIX + "/auth/oauth2/authorize")
             .authorizationRequestRepository(cookieAuthorizationRequestRepository)
             .and()
-            .redirectionEndpoint().baseUri(API_PREFIX+"/auth/oauth2/callback/*")
+            .redirectionEndpoint().baseUri(API_PREFIX + "/auth/oauth2/login/code/*")
             .and()
             .userInfoEndpoint().userService(customOAuth2UserService)
             .and()
@@ -75,7 +74,6 @@ public class SecurityConfiguration {
             .logout()
             .clearAuthentication(true)
             .deleteCookies("JSESSIONID");
-
 
         return http.build();
     }
