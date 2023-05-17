@@ -30,7 +30,9 @@ public enum ResponseType {
     AUTH_NOT_MATCH_PROVIDER("AU07", "가입된 OAuth 제공자와 일치하지 않습니다."),
     AUTH_REQUIRE_LOGIN("AU08", "재로그인이 필요합니다."),
     AUTH_INVALID_PROVIDER("AU09", "지원하지 않는 소셜 로그인입니다"),
-    AUTH_OAUTH2_USER_NOT_EXIST_EMAIL("AU10", "OAuth2 provider의 email이 존재하지 않습니다"),
+    OAUTH2_USER_NOT_EXIST_EMAIL("AU10", "OAuth2 provider의 email이 존재하지 않습니다"),
+    OAUTH2_INVALID_REDIRECT_URL("AU10", "redirect url이 유효하지 않습니다"),
+
 
     // USER
     USER_NOT_EXIST_EMAIL("US01", "유저 정보를 찾을 수 없습니다.");
