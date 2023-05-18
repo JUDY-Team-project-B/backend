@@ -4,25 +4,31 @@ import com.hangout.hangout.domain.post.entity.PostHits;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.InvalidFormatException;
-import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
-import java.util.Collection;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @Table(name = "USER")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
-@Builder
-public class User extends BaseEntity implements UserDetails {
+@NoArgsConstructor
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +42,6 @@ public class User extends BaseEntity implements UserDetails {
     private String password; // 비밀번호
 
     @OneToMany(mappedBy = "user")
-    @Builder.Default
     private List<PostHits> hits = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -47,55 +52,52 @@ public class User extends BaseEntity implements UserDetails {
 
     private String image;
 
-    private String information;
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private int age;
 
-    public void updateNickName(final String nickname) {
+    @Builder
+    public User(Long id, String email, String password, List<PostHits> hits, Role role,
+        String nickname,
+        String image, String description, Gender gender, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.hits = hits;
+        this.role = role;
+        this.nickname = nickname;
+        this.image = image;
+        this.description = description;
+        this.gender = gender;
+        this.age = age;
+    }
+
+    public void updateNickname(String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
     }
 
+    public void updateProfileImage(String image) {
+        this.image = image;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void updateAge(int age) {
+        this.age = age;
+    }
+
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     private void validateNickname(final String nickname) {
@@ -104,3 +106,4 @@ public class User extends BaseEntity implements UserDetails {
         }
     }
 }
+

@@ -32,10 +32,13 @@ public enum ResponseType {
 
     // USER
     USER_NOT_EXIST_EMAIL("US01", "유저 정보를 찾을 수 없습니다."),
+    USER_NOT_EXIST_ID("US02", "유저 정보를 찾을 수 없습니다."),
 
     // POST
     POST_NOT_FOUND("PO01", "해당 게시글을 찾을 수 없습니다."),
     STATUS_NOT_FOUND("PO02", "상태값을 찾을 수 없습니다.");
+
+
 
     private final String code;
     private final String message;

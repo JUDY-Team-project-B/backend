@@ -1,6 +1,8 @@
 package com.hangout.hangout.domain.auth.dto.request;
 
 import com.hangout.hangout.domain.user.entity.Gender;
+import com.hangout.hangout.domain.user.entity.Role;
+import com.hangout.hangout.domain.user.entity.User;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Data
@@ -34,6 +37,19 @@ public class SignUpRequest {
     private int age;
 
     private String image;
-    private String information;
+    private String description;
+    private Role role = Role.USER;
 
+    public User toEntity(PasswordEncoder passwordEncoder) {
+        return User.builder()
+            .email(email)
+            .nickname(nickname)
+            .password(passwordEncoder.encode(password))
+            .gender(gender)
+            .age(age)
+            .image(image)
+            .role(Role.USER)
+            .description(description)
+            .build();
+    }
 }

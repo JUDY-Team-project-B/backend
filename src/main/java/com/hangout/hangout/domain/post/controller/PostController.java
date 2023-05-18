@@ -8,6 +8,8 @@ import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.domain.post.service.PostTagService;
+
 import com.hangout.hangout.global.error.ResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,7 @@ import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 public class PostController {
     private final PostService postService;
 
+    private final PostTagService postTagService;
     private final PostMapper mapper;
 
     @PostMapping
@@ -37,8 +40,9 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public org.springframework.http.ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
-        return org.springframework.http.ResponseEntity.ok(mapper.of(postService.findPostById(postId)));
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
+        List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
+        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost));
     }
 
     @GetMapping("/all/{page}")

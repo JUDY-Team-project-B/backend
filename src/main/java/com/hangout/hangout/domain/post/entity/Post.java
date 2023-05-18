@@ -44,10 +44,9 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<PostReport> postReports = new ArrayList<>();
 
-
     // ManyToMany 관계를 위해서 일대다로 관계맺어준 컬럼
-    @OneToMany(mappedBy = "post")
-    private Set<PostTagRel> tags = new HashSet<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostTagRel> postTagRels;
 
     @OneToMany(mappedBy = "post")
     private List<PostHits> postHits = new ArrayList<>();
@@ -57,12 +56,13 @@ public class Post extends BaseEntity {
 
     @Builder
     public Post(String title, User user, PostInfo postInfo, List<PostLike> postLikes,
-                List<PostReport> postReports, String context) {
+                List<PostReport> postReports, List<PostTagRel> postTagRels , String context) {
         this.title = title;
         this.user = user;
         this.postInfo = postInfo;
         this.postLikes = postLikes;
         this.postReports = postReports;
+        this.postTagRels = postTagRels;
         this.context = context;
     }
 

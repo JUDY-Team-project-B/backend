@@ -5,14 +5,20 @@ import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
-import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.domain.post.service.PostTagService;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class PostMapper {
+
+    private final PostTagService postTagService;
+
     public Post toEntity(PostRequest postRequest) {
         return Post.builder()
                 .title(postRequest.getTitle())
@@ -28,12 +34,13 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostResponse of(Post post) { // 목록 상세 조회 시 사용
+
+    public static PostResponse of(Post post, List<String> tags) { // 유저 정보 추가 예정 // 목록 상세 조회 시 사용
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .context(post.getContext())
-                .tags(post.getTags())
+                .tags(tags)
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
                 .travelAge(post.getPostInfo().getTravelAge())
@@ -47,10 +54,13 @@ public class PostMapper {
     }
 
     public PostListResponse toDto(Post post){ // 목록 전체 조회 시 사용하는 DTO
+
+        List<String> tags = postTagService.getTagsByPost(post);
+
         return PostListResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
-                .tags(post.getTags())
+                .tags(tags)
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
                 .travelAge(post.getPostInfo().getTravelAge())

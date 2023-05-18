@@ -2,10 +2,7 @@ package com.hangout.hangout.domain.post.entity;
 
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import com.hangout.hangout.global.common.domain.entity.Tag;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -19,12 +16,14 @@ public class PostTagRel extends BaseEntity { // 게시물과 태그의 many to m
     @Column(name = "POST_TAG_REL_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "POST_ID")
+    @Setter
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAG_ID")
+    @Setter
     private Tag tag;
 
     @Builder
