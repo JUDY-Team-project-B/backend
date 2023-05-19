@@ -4,6 +4,7 @@ import com.hangout.hangout.domain.user.dto.UserProfileUpdateRequest;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
 import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.InvalidFormatException;
 import com.hangout.hangout.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,11 @@ public class UserService {
             .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_ID));
     }
 
-
     @Transactional
     public void updateProfile(User user, UserProfileUpdateRequest request) {
+        if (request.getNickname() != null || request.getDescription() != null) {
+            validateCheck(request.getNickname(), request.getDescription());
+        }
         User updatedUser = User.builder()
             .id(user.getId())
             .email(user.getEmail())
@@ -40,5 +43,13 @@ public class UserService {
             .gender(request.getGender() != null ? request.getGender() : user.getGender())
             .age(request.getAge() != null ? request.getAge() : user.getAge()).build();
         userRepository.save(updatedUser);
+    }
+    private void validateCheck(String nickname, String description) {
+        if (nickname.length() > 10) {
+            throw new InvalidFormatException(ResponseType.INVALID_FORMAT);
+        }
+        if (description.length() > 100) {
+            throw new InvalidFormatException(ResponseType.INVALID_FORMAT);
+        }
     }
 }
