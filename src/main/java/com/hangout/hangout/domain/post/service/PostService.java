@@ -1,10 +1,14 @@
 package com.hangout.hangout.domain.post.service;
 
 import com.hangout.hangout.domain.post.PostMapper;
+import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.entity.PostTagRel;
+
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
+import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
@@ -35,7 +39,8 @@ public class PostService {
         Post post = mapper.toEntity(postRequest);
 
         Long newStatus = 1L;
-        Status status = statusRepository.findStatusById(newStatus).orElseThrow(StatusNotFoundException::new);
+        Status status = statusRepository.findStatusById(newStatus).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
         post.getPostInfo().setStatus(status);
 
         postTagService.saveTag(post, postRequest.getTags());
@@ -43,15 +48,34 @@ public class PostService {
         postRepository.save(post);
     }
     public Post findPostById(Long postId) {
-        return postRepository.findPostById(postId).orElseThrow(PostNotFoundException::new);
+        return postRepository.findPostById(postId).orElseThrow(
+                () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
     }
 
     public Status findPostStatusById(Long statusId) {
-        return statusRepository.findStatusById(statusId).orElseThrow(StatusNotFoundException::new);
+        return statusRepository.findStatusById(statusId).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
     }
 
-    public List<PostListResponse> getPosts(PageRequest pageRequest) {
-        List<Post> posts = postRepository.findAll(pageRequest).getContent();
+    public List<PostListResponse> getPosts(int page, int size, PostSearchRequest postSearchRequest) {
+        List<Post> posts = null;
+        PageRequest pageRequest = PageRequest.of(page,size);
+
+        if(postSearchRequest.getSearchType() == null) {
+            posts = postRepository.findAllPostByCreatedAtDesc(pageRequest).getContent();
+        }
+        else if(postSearchRequest.getSearchType().toString().equals("title")) {
+            posts = postRepository.findAllContainTitleByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
+        }
+        else if(postSearchRequest.getSearchType().toString().equals("context")) {
+            posts = postRepository.findAllContainContextByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
+        }
+        else if(postSearchRequest.getSearchType().toString().equals("nickname")) {
+            posts = postRepository.findAllContainNicknameByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
+        }
+        else if(postSearchRequest.getSearchType().toString().equals("all")) {
+            posts = postRepository.findAllContainTitleAndContextByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
+        }
         return mapper.toDtoList(posts);
     }
 
@@ -78,7 +102,8 @@ public class PostService {
         }
 
         Long deleteStatus = 2L;
-        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(StatusNotFoundException::new);
+        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
         post.getPostInfo().setStatus(status);
         postRepository.save(post);
     }

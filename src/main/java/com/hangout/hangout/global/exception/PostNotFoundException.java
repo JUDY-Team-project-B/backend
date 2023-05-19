@@ -1,15 +1,11 @@
 package com.hangout.hangout.global.exception;
 
-public class PostNotFoundException extends RuntimeException {
+import com.hangout.hangout.global.error.ResponseType;
 
-    public PostNotFoundException() {
-        super();
+public class PostNotFoundException extends BaseException {
+
+    public PostNotFoundException(ResponseType responseType) {
+        super(responseType);
     }
 
-    public PostNotFoundException(String message) {
-        super(message);
-    }
-    public PostNotFoundException(String message, Throwable cause) {
-        super(message,cause);
-    }
 }

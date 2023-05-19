@@ -7,6 +7,7 @@ import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.post.service.PostTagService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class PostMapper {
                         .build())
                 .build();
     }
+
 
     public static PostResponse of(Post post, List<String> tags) { // 유저 정보 추가 예정 // 목록 상세 조회 시 사용
         return PostResponse.builder()

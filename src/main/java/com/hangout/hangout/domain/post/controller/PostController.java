@@ -1,12 +1,15 @@
 package com.hangout.hangout.domain.post.controller;
 
 import com.hangout.hangout.domain.post.PostMapper;
+import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.service.PostService;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.post.service.PostTagService;
+
 import com.hangout.hangout.global.error.ResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -43,10 +46,9 @@ public class PostController {
     }
 
     @GetMapping("/all/{page}")
-    public ResponseEntity<List<PostListResponse>> getPosts(@PathVariable Integer page,
-                                                     @RequestParam(defaultValue = "8") Integer size) {
-        PageRequest pageRequest = PageRequest.of(page,size);
-        List<PostListResponse> posts = postService.getPosts(pageRequest);
+    public ResponseEntity<List<PostListResponse>> getPosts(@PathVariable Integer page
+             , @RequestParam(defaultValue = "8") Integer size, @ModelAttribute PostSearchRequest postSearchRequest) {
+        List<PostListResponse> posts = postService.getPosts(page, size, postSearchRequest);
 
         return successResponse("게시물 조회에 성공하셨습니다!", posts);
     }
