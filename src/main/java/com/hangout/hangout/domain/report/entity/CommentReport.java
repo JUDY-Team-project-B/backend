@@ -30,6 +30,10 @@ public class CommentReport extends BaseEntity {
     private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REPORT_REASON_ID")
+    private ReportReason reportReason;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
 
@@ -38,11 +42,12 @@ public class CommentReport extends BaseEntity {
     private String content;
 
     @Builder
-    public CommentReport(Long id, User user, Comment comment, Status status
+    public CommentReport(Long id, User user, Comment comment, ReportReason reportReason, Status status
     , String title, String content) {
         this.id = id;
         this.user = user;
         this.comment = comment;
+        this.reportReason = reportReason;
         this.status = status;
         this.title = title;
         this.content = content;

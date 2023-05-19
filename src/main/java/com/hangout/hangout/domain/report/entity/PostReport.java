@@ -30,6 +30,10 @@ public class PostReport extends BaseEntity {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REPORT_REASON_ID")
+    private ReportReason reportReason;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
 
@@ -38,11 +42,12 @@ public class PostReport extends BaseEntity {
     private String content;
 
     @Builder
-    public PostReport(Long id, User user, Post post, Status status
+    public PostReport(Long id, User user, Post post, ReportReason reportReason, Status status
             , String title, String content) {
         this.id = id;
         this.user = user;
         this.post = post;
+        this.reportReason = reportReason;
         this.status = status;
         this.title = title;
         this.content = content;
