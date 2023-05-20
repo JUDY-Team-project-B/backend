@@ -15,6 +15,7 @@ import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
+import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -80,31 +81,42 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Post post, PostInfo postInfo, PostRequest postRequest) {
-        // 유저 기능 완료 후 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직 구현 예정
-        // 태그 업데이트
-        for (PostTagRel postTagRel : postTagService.findTagListByPost(post)) {
-            postTagRel.setPost(null);
-            postTagRel.setTag(null);
+    public void updatePost(Post post, PostInfo postInfo, PostRequest postRequest, User user) {
+        // 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직
+        if(isMatchedNickname(post, user)) {
+            // 태그 업데이트
+            for (PostTagRel postTagRel : postTagService.findTagListByPost(post)) {
+                postTagRel.setPost(null);
+                postTagRel.setTag(null);
+            }
+            postTagService.saveTag(post, postRequest.getTags());
+            post.updatePost(postRequest);
+            postInfo.updatePostInfo(postRequest);
         }
-        postTagService.saveTag(post, postRequest.getTags());
-        post.updatePost(postRequest);
-        postInfo.updatePostInfo(postRequest);
     }
     @Transactional
-    public void deletePost(Post post) {
-        // 유저 기능 완료 후 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직 구현 예정
+    public void deletePost(Post post, User user) {
+        // 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직
+        if(isMatchedNickname(post, user)) {
+            // postID에 해당하는 중간테이블의 값을 null로 설정
+            for (PostTagRel postTagRel : postTagService.findTagListByPost(post)) {
+                postTagRel.setPost(null);
+                postTagRel.setTag(null);
+            }
 
-        // postID에 해당하는 중간테이블의 값을 null로 설정
-        for (PostTagRel postTagRel : postTagService.findTagListByPost(post)) {
-            postTagRel.setPost(null);
-            postTagRel.setTag(null);
+            Long deleteStatus = 2L;
+            Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
+                    () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+            post.getPostInfo().setStatus(status);
+            postRepository.save(post);
         }
+    }
+    public boolean isMatchedNickname(Post post, User user) {
+        String userNickname = user.getNickname();
 
-        Long deleteStatus = 2L;
-        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
-                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
-        post.getPostInfo().setStatus(status);
-        postRepository.save(post);
+        if(!post.getUser().getNickname().equals(userNickname)) {
+            throw new UnAuthorizedAccessException(ResponseType.REQUEST_NOT_VALID);
+        }
+        return true;
     }
 }

@@ -56,19 +56,19 @@ public class PostController {
 
 
     @PutMapping("/{postId}")
-    public ResponseEntity<HttpStatus> updatePost(@PathVariable Long postId,
-                                                 @RequestBody @Valid PostRequest postRequest) {
+    public ResponseEntity<HttpStatus> updatePost(@PathVariable Long postId
+            , @RequestBody @Valid PostRequest postRequest, @CurrentUser User user) {
         Post post = postService.findPostById(postId);
 
-        postService.updatePost(post, post.getPostInfo(), postRequest);
+        postService.updatePost(post, post.getPostInfo(), postRequest, user);
 
         return successResponse();
     }
     @DeleteMapping("/{postId}")
-    public ResponseEntity<HttpStatus> deletePost(@PathVariable Long postId) {
+    public ResponseEntity<HttpStatus> deletePost(@PathVariable Long postId, @CurrentUser User user) {
         Post post = postService.findPostById(postId);
 
-        postService.deletePost(post);
+        postService.deletePost(post, user);
 
         return successResponse();
     }
