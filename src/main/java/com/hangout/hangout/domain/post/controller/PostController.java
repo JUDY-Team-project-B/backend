@@ -11,6 +11,7 @@ import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.post.service.PostTagService;
 
 import com.hangout.hangout.global.error.ResponseEntity;
+import com.hangout.hangout.global.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -33,8 +34,8 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<HttpStatus> createNewPost(@RequestBody @Valid PostRequest
-                                                    postRequest) {
-        postService.createNewPost(postRequest);
+                                                    postRequest, @CurrentUser User user) {
+        postService.createNewPost(postRequest, user);
 
         return successResponse();
     }

@@ -35,8 +35,8 @@ public class PostService {
     private final PostMapper mapper;
 
     @Transactional
-    public void createNewPost(PostRequest postRequest) {
-        Post post = mapper.toEntity(postRequest);
+    public void createNewPost(PostRequest postRequest, User user) {
+        Post post = mapper.toEntity(postRequest, user);
 
         Long newStatus = 1L;
         Status status = statusRepository.findStatusById(newStatus).orElseThrow(
