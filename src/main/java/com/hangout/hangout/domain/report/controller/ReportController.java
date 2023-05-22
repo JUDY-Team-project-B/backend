@@ -7,7 +7,9 @@ import com.hangout.hangout.domain.report.dto.PostReportResponse;
 import com.hangout.hangout.domain.report.entity.CommentReport;
 import com.hangout.hangout.domain.report.entity.PostReport;
 import com.hangout.hangout.domain.report.service.ReportService;
+import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseEntity;
+import com.hangout.hangout.global.security.CurrentUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,15 +32,17 @@ public class ReportController {
 
     @Operation(summary = "댓글 신고 생성")
     @PostMapping("/comment")
-    public ResponseEntity<String> createCommentReport(@RequestBody CommentReportRequest commentReportRequest) {
-        Long reportId = reportService.createCommentReport(commentReportRequest);
+    public ResponseEntity<String> createCommentReport(@CurrentUser User user,
+        @RequestBody CommentReportRequest commentReportRequest) {
+        Long reportId = reportService.createCommentReport(user, commentReportRequest);
         return ResponseEntity.successResponse("댓글 신고가 접수되었습니다. Report ID: " + reportId);
     }
 
     @Operation(summary = "게시글 신고 생성")
     @PostMapping("/post")
-    public ResponseEntity<String> createPostReport(@RequestBody PostReportRequest postReportRequest) {
-        Long reportId = reportService.createPostReport(postReportRequest);
+    public ResponseEntity<String> createPostReport(@CurrentUser User user,
+        @RequestBody PostReportRequest postReportRequest) {
+        Long reportId = reportService.createPostReport(postReportRequest, user);
         return ResponseEntity.successResponse("게시글 신고가 접수되었습니다. Report ID: " + reportId);
     }
 
@@ -59,7 +63,7 @@ public class ReportController {
     @GetMapping("/post/{id}")
     public ResponseEntity<PostReportResponse> getPostReport(@PathVariable("id") Long id) {
         PostReportResponse postReport = reportService.getPostReport(id);
-        return ResponseEntity.successResponse("게시글 신고 조회에 성공하셨습니다. Report ID: "+ id, postReport);
+        return ResponseEntity.successResponse("게시글 신고 조회에 성공하셨습니다. Report ID: " + id, postReport);
     }
 
     @Operation(summary = "댓글 신고 리스트 조회")

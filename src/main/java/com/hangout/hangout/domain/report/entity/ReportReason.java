@@ -11,13 +11,13 @@ import javax.persistence.*;
 @Getter
 @Table(name = "REPORT_REASON")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReportReason extends BaseEntity {
+public class ReportReason {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REPORT_REASON_ID")
     private Long id;
 
-    @Column(name = "REPORT_TYPE")
+    @Column(name = "REPORT_TYPE", nullable = false)
     private String type;
 }

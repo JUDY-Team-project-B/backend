@@ -8,6 +8,7 @@ import com.hangout.hangout.domain.report.entity.CommentReport;
 import com.hangout.hangout.domain.report.entity.PostReport;
 import com.hangout.hangout.domain.report.repository.CommentReportRepository;
 import com.hangout.hangout.domain.report.repository.PostReportRepository;
+import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.NotFoundException;
 import java.util.List;
@@ -22,13 +23,13 @@ public class ReportService {
     private final CommentReportRepository commentReportRepository;
     private final PostReportRepository postReportRepository;
 
-    public Long createCommentReport(CommentReportRequest commentReportRequest) {
-        CommentReport commentReport = commentReportRequest.toEntity();
+    public Long createCommentReport(User user, CommentReportRequest commentReportRequest) {
+        CommentReport commentReport = commentReportRequest.toEntity(user);
         return commentReportRepository.save(commentReport).getId();
     }
 
-    public Long createPostReport(PostReportRequest postReportRequest) {
-        PostReport postReport = postReportRequest.toEntity();
+    public Long createPostReport(PostReportRequest postReportRequest, User user) {
+        PostReport postReport = postReportRequest.toEntity(user);
         return postReportRepository.save(postReport).getId();
     }
 
