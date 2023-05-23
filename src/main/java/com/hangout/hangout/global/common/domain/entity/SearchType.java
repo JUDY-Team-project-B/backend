@@ -13,6 +13,13 @@ public enum SearchType {
             return "context";
         }
     },
+    tag {
+        @Override
+        public String toString() {
+            return "tag";
+        }
+    }
+    ,
     nickname {
         @Override
         public String toString() {

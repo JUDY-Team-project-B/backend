@@ -5,11 +5,13 @@ import com.hangout.hangout.domain.post.entity.PostTagRel;
 import com.hangout.hangout.domain.post.repository.PostTagRepository;
 import com.hangout.hangout.global.common.domain.entity.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,5 +48,13 @@ public class PostTagService {
             tags.add(postTagRel.getTag().getType());
         }
         return tags;
+    }
+
+    public List<Post> findAllPostByTag(Pageable pageable, String searchKeyword) {
+        List<Post> allPost = postTagRepository.findAllPostByTagName(pageable, searchKeyword)
+                .stream().map(PostTagRel::getPost).collect(Collectors.toList());
+        // 위에서 만든 리스트 중 중복된 값 제거
+        List<Post> postList = allPost.stream().distinct().collect(Collectors.toList());
+        return postList;
     }
 }

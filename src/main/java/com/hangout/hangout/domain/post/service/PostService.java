@@ -71,6 +71,9 @@ public class PostService {
         else if(postSearchRequest.getSearchType().toString().equals("context")) {
             posts = postRepository.findAllContainContextByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
         }
+        else if(postSearchRequest.getSearchType().toString().equals("tag")) {
+            posts = postTagService.findAllPostByTag(pageRequest, postSearchRequest.getSearchKeyword());
+        }
         else if(postSearchRequest.getSearchType().toString().equals("nickname")) {
             posts = postRepository.findAllContainNicknameByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
         }
