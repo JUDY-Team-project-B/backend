@@ -1,23 +1,12 @@
 package com.hangout.hangout.domain.report.entity;
 
-import com.hangout.hangout.global.common.domain.entity.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-
-@Entity
-@Getter
-@Table(name = "REPORT_REASON")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReportReason extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REPORT_REASON_ID")
-    private Long id;
-
-    @Column(name = "REPORT_TYPE")
-    private String type;
+public enum ReportReason {
+    ADVERTISEMENT, // 영리목적/홍보성
+    PERSONAL, // 개인정보 노출
+    ILLEGAL, // 불법정보
+    SENSUALITY, // 음란성/선정성
+    LANGUAGE, // 욕설/인신공격
+    TRADE, // 불공정거래
+    SPAM, // 같은 내용 반복
+    ETC, // 기타
 }

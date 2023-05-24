@@ -26,7 +26,6 @@ public class UserService {
             .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_ID));
     }
 
-
     @Transactional
     public void updateProfile(User user, UserProfileUpdateRequest request) {
         User updatedUser = User.builder()
