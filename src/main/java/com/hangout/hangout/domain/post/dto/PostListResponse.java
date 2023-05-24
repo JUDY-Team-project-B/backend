@@ -16,7 +16,7 @@ import java.util.List;
 public class PostListResponse {
     private final Long id;
     private final String title;
-    private final String user;
+    private final String nickname;
     private final List<String> tags;
     private final String statusType;
     private final Gender travelGender;

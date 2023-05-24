@@ -6,6 +6,7 @@ import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.post.service.PostTagService;
+import com.hangout.hangout.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -19,10 +20,11 @@ public class PostMapper {
 
     private final PostTagService postTagService;
 
-    public Post toEntity(PostRequest postRequest) {
+    public Post toEntity(PostRequest postRequest, User user) {
         return Post.builder()
                 .title(postRequest.getTitle())
                 .context(postRequest.getContext())
+                .user(user)
                 .postInfo(PostInfo.builder()
                         .travelAt(postRequest.getTravelAt())
                         .travelAge(postRequest.getTravelAge())
@@ -40,6 +42,7 @@ public class PostMapper {
                 .id(post.getId())
                 .title(post.getTitle())
                 .context(post.getContext())
+                .nickname(post.getUser().getNickname())
                 .tags(tags)
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
@@ -60,6 +63,7 @@ public class PostMapper {
         return PostListResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
+                .nickname(post.getUser().getNickname())
                 .tags(tags)
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
