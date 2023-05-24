@@ -3,12 +3,10 @@ package com.hangout.hangout.domain.report.entity;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
-import com.hangout.hangout.global.common.domain.entity.Status;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Entity
@@ -29,26 +27,26 @@ public class PostReport extends BaseEntity {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REPORT_REASON_ID")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "REPORT_REASON")
     private ReportReason reportReason;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "STATUS_ID")
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "REPORT_STATUS")
+    private ReportStatus reportStatus;
 
     private String title;
     @Lob
     private String content;
 
     @Builder
-    public PostReport(Long id, User user, Post post, ReportReason reportReason, Status status
+    public PostReport(Long id, User user, Post post, ReportReason reportReason, ReportStatus reportStatus
             , String title, String content) {
         this.id = id;
         this.user = user;
         this.post = post;
         this.reportReason = reportReason;
-        this.status = status;
+        this.reportStatus = reportStatus;
         this.title = title;
         this.content = content;
     }

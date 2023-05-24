@@ -3,8 +3,8 @@ package com.hangout.hangout.domain.report.dto;
 import com.hangout.hangout.domain.comment.entity.Comment;
 import com.hangout.hangout.domain.report.entity.CommentReport;
 import com.hangout.hangout.domain.report.entity.ReportReason;
+import com.hangout.hangout.domain.report.entity.ReportStatus;
 import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.global.common.domain.entity.Status;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class CommentReportRequest {
             .user(user)
             .comment(comment)
             .reportReason(reportReason)
-            .status(Status.builder().id(1L).build()) // Set default status with ID 1
+            .reportStatus(ReportStatus.PENDING)
             .title(title)
             .content(content)
             .build();
