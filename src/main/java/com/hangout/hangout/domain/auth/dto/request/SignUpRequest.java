@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -28,6 +29,7 @@ public class SignUpRequest {
     private String password;
 
     @NotBlank(message = "닉네임은 필수 항목입니다.")
+    @Length(max=10, message = "닉네임은 최대 10자를 넘을 수 없습니다.")
     private String nickname;
 
     @NotNull(message = "성별은 필수 항목입니다.")
@@ -37,6 +39,8 @@ public class SignUpRequest {
     private int age;
 
     private String image;
+
+    @Length(max=100, message = "소개글은 최대 10자를 넘을 수 없습니다.")
     private String description;
     private Role role = Role.USER;
 
