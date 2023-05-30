@@ -37,12 +37,13 @@ public class PostMapper {
     }
 
 
-    public static PostResponse of(Post post, List<String> tags) { // 유저 정보 추가 예정 // 목록 상세 조회 시 사용
+    public static PostResponse of(Post post, List<String> tags, int likeStatus) { // 유저 정보 추가 예정 // 목록 상세 조회 시 사용
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .context(post.getContext())
                 .nickname(post.getUser().getNickname())
+                .likeStatus(likeStatus)
                 .tags(tags)
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
@@ -53,6 +54,7 @@ public class PostMapper {
                 .travelDateEnd(post.getPostInfo().getTravelDateEnd())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
+                .likeCount(post.getLikeCount())
                 .build();
     }
 
