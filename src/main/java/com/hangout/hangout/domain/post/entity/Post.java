@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "POST")
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
     @Id
@@ -37,7 +41,7 @@ public class Post extends BaseEntity {
     private PostInfo postInfo;
 
     @ColumnDefault("0")
-    @Column(name = "view_count", nullable = false)
+    @Column(name = "like_count", nullable = false)
     private Integer likeCount;
 
     // 신고 기능 추가를 위해 PostReport 와 연결
