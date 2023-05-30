@@ -1,5 +1,8 @@
 package com.hangout.hangout.domain.post.service;
 
+import com.hangout.hangout.domain.like.entity.PostLike;
+import com.hangout.hangout.domain.like.repository.LikeRepository;
+import com.hangout.hangout.domain.like.service.LikeService;
 import com.hangout.hangout.domain.post.PostMapper;
 import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.entity.PostTagRel;
@@ -8,7 +11,9 @@ import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.domain.user.repository.UserRepository;
 import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.NotFoundException;
 import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -30,7 +36,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
-
+    private final LikeRepository likeRepository;
     private final PostTagService postTagService;
 
     private final PostMapper mapper;
@@ -51,6 +57,17 @@ public class PostService {
     public Post findPostById(Long postId) {
         return postRepository.findPostById(postId).orElseThrow(
                 () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
+    }
+
+    public int findLike(User user, Long postId) {
+        Post post = postRepository.findPostById(postId)
+                .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
+        // 좋아요 상태가 아니면 0, 맞다면 1
+        Optional<PostLike> findLike = likeRepository.findByUserAndPost(user, post);
+
+        if (findLike.isEmpty()) return 0;
+        else return 1;
+
     }
 
     public Status findPostStatusById(Long statusId) {
