@@ -1,5 +1,7 @@
 package com.hangout.hangout.domain.post.controller;
 
+import com.hangout.hangout.domain.like.dto.LikeRequest;
+import com.hangout.hangout.domain.like.service.LikeService;
 import com.hangout.hangout.domain.post.PostMapper;
 import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.service.PostService;
@@ -28,8 +30,8 @@ import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 @RequestMapping("/api/v1/post")
 public class PostController {
     private final PostService postService;
-
     private final PostTagService postTagService;
+    private final LikeService likeService;
     private final PostMapper mapper;
 
     @PostMapping
@@ -40,10 +42,17 @@ public class PostController {
         return successResponse();
     }
 
+    @PostMapping("/like")
+    public ResponseEntity<HttpStatus> postLike(@RequestBody LikeRequest request) {
+        likeService.insert(request);
+        return successResponse();
+    }
+
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
         List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
-        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost));
+        int likeStatus = postService.findLike(user, postId);
+        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost,likeStatus));
     }
 
     @GetMapping("/all/{page}")
