@@ -2,14 +2,9 @@ package com.hangout.hangout.domain.comment.controller;
 
 import com.hangout.hangout.domain.comment.dto.CommentReadDto;
 import com.hangout.hangout.domain.comment.dto.CommentCreateDto;
-import com.hangout.hangout.domain.comment.dto.CommentUpdateRequestDto;
+import com.hangout.hangout.domain.comment.dto.CommentUpdateDto;
 import com.hangout.hangout.domain.comment.service.CommentService;
-import com.hangout.hangout.domain.post.entity.Post;
-import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.domain.user.repository.UserRepository;
-import com.hangout.hangout.global.common.domain.entity.Status;
-import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-import static com.hangout.hangout.domain.user.entity.QUser.user;
 import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
 
@@ -37,7 +30,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> update(@RequestBody CommentUpdateRequestDto
+    public ResponseEntity<HttpStatus> update(@RequestBody CommentUpdateDto
                                                      commentUpdateRequestDto, @PathVariable Long id){
         commentService.updateComment(id,commentUpdateRequestDto);
 
