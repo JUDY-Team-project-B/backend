@@ -6,8 +6,10 @@ import com.hangout.hangout.domain.comment.dto.CommentCreateDto;
 import com.hangout.hangout.domain.comment.dto.CommentUpdateRequestDto;
 import com.hangout.hangout.domain.comment.entity.Comment;
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.Status;
+import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +21,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final StatusRepository statusRepository;
 
     @Transactional
-    public void saveComment(CommentCreateDto commentDto,User user, Post post, Status status){
-        Comment comment = commentDto.toEntity(commentDto,user,post, status);
+    public void saveComment(CommentCreateDto commentDto,User user){
+        Post post = postRepository.findPostById(commentDto.getPostId()).get();
+        Status status = statusRepository.findStatusById(1L).get();
+        Comment comment = commentDto.toEntity(commentDto,user,post,status);
         commentRepository.save(comment);
     }
 

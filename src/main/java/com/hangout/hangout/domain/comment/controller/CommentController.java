@@ -8,9 +8,9 @@ import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
-import com.hangout.hangout.global.annotation.LoginMember;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
+import com.hangout.hangout.global.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.hangout.hangout.domain.user.entity.QUser.user;
 import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
 
@@ -27,19 +28,11 @@ import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 @RequestMapping("/api/v1/comment")
 public class CommentController {
     private final CommentService commentService;
-    private final PostRepository postRepository;
-    private final StatusRepository statusRepository;
-    private final UserRepository userRepository;
+
     @PostMapping
     public ResponseEntity<HttpStatus> Create(@RequestBody CommentCreateDto
-                                                            commentCreateDto){
-
-        Post post = postRepository.findPostById(commentCreateDto.getPostId()).get();
-        Status status = statusRepository.findStatusById(commentCreateDto.getStatusId()).get();
-        User user =userRepository.findById(commentCreateDto.getUserId()).get();
-
-        commentService.saveComment(commentCreateDto,user, post, status);
-
+                                                            commentCreateDto, @CurrentUser User user){
+        commentService.saveComment(commentCreateDto,user);
         return ResponseEntity.ok().build();
     }
 
