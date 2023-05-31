@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CommentUpdateRequestDto {
+public class CommentUpdateDto {
     private String content;
 
     @Builder
-    public CommentUpdateRequestDto(String content){
+    public CommentUpdateDto(String content){
         this.content = content;
     }
 

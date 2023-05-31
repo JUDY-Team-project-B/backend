@@ -3,7 +3,7 @@ package com.hangout.hangout.domain.comment.service;
 import com.hangout.hangout.domain.comment.domain.repository.CommentRepository;
 import com.hangout.hangout.domain.comment.dto.CommentReadDto;
 import com.hangout.hangout.domain.comment.dto.CommentCreateDto;
-import com.hangout.hangout.domain.comment.dto.CommentUpdateRequestDto;
+import com.hangout.hangout.domain.comment.dto.CommentUpdateDto;
 import com.hangout.hangout.domain.comment.entity.Comment;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.repository.PostRepository;
@@ -33,7 +33,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Long id,CommentUpdateRequestDto comment){
+    public void updateComment(Long id, CommentUpdateDto comment){
         Comment comment2 = commentRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id ));
 
