@@ -12,12 +12,21 @@ import org.springframework.context.annotation.PropertySource;
 @Setter
 @Getter
 public class AppProperties {
+
     private GoogleRegistration google;
 
-    @Setter
     @Getter
-    public static class GoogleRegistration {
-        private String client_id;
+    @Setter
+    public static class Registration {
+
         private String redirect_uri;
+        private String redirect_client;
+    }
+
+    @Getter
+    @Setter
+    public static class GoogleRegistration extends Registration {
+
+        private String scope;
     }
 }
