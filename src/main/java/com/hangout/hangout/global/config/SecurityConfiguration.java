@@ -1,6 +1,6 @@
 package com.hangout.hangout.global.config;
 
-import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTHORIZATION_ENDPOINT;
 import static com.hangout.hangout.global.common.domain.entity.Constants.SWAGGER_URI_LIST;
 
 import com.hangout.hangout.domain.user.service.CustomOAuth2UserService;
@@ -38,6 +38,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .formLogin().disable()
             .cors()
             .and()
             .httpBasic().disable()
@@ -58,14 +59,13 @@ public class SecurityConfiguration {
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.formLogin().disable()
+        http
+            .formLogin().disable()
             .oauth2Login()
-            .authorizationEndpoint().baseUri(API_PREFIX + "/auth/oauth2/authorize")
-            .authorizationRequestRepository(cookieAuthorizationRequestRepository)
-            .and()
-            .redirectionEndpoint().baseUri(API_PREFIX + "/auth/oauth2/login/code/*")
-            .and()
             .userInfoEndpoint().userService(customOAuth2UserService)
+            .and()
+            .authorizationEndpoint().baseUri(AUTHORIZATION_ENDPOINT)
+            .authorizationRequestRepository(cookieAuthorizationRequestRepository)
             .and()
             .successHandler(oAuth2AuthenticationSuccessHandler)
             .failureHandler(oAuth2AuthenticationFailureHandler);
