@@ -1,23 +1,21 @@
 package com.hangout.hangout.domain.post.dto;
 
 
-import com.hangout.hangout.domain.post.entity.Post;
-import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.user.entity.Gender;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.constraints.Length;
-
+import java.util.Date;
+import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Builder
 @RequiredArgsConstructor
 public class PostRequest {
+
     // 클라이언트로부터 포스트 등록을 위해 값을 전달받을 객체 생성
     // 프론트엔드 퍼블리싱이 완전히 끝난 후 다른 점이 있으면 추가 작업할 예정입니다.
     @NotEmpty
@@ -26,7 +24,7 @@ public class PostRequest {
     @NotEmpty
     private final String context;
 
-    private final String[] tags; // 태그들
+    private final List<String> tags; // 태그들
 
     // -- postInfo 정보들
     @NotNull
@@ -43,7 +41,10 @@ public class PostRequest {
     private final int travelMember; // 여행 모집 인원
 
     public Gender trueGender(String string) {
-        if(string.equals(Gender.MAN.getGender())) return Gender.MAN;
-        else return Gender.WOMAN;
+        if (string.equals(Gender.MAN.getGender())) {
+            return Gender.MAN;
+        } else {
+            return Gender.WOMAN;
+        }
     }
 }

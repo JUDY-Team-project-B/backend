@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.10'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.hangout'
@@ -24,16 +25,21 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
 
+    // QueryDsl
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0"
+
+    // lombok
     compileOnly 'org.projectlombok:lombok'
-//	DB 설정 후 build
     annotationProcessor 'org.projectlombok:lombok'
+
+    // DB 설정 후 build
     runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     // swagger
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -51,6 +57,21 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+// script for querydsl
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }
 
 tasks.named('test') {

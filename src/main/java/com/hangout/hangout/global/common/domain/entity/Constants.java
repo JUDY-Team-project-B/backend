@@ -8,8 +8,7 @@ public class Constants {
     public final static String FAILURE_REDIRECT = "http://localhost:8080" + API_PREFIX + "/auth" + FAILURE_ENDPOINT;
 
     public final static String[] SWAGGER_URI_LIST = {
-        "/api/v1/auth/**","/",
-        "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html","/webjars/**", "/swagger/**",
+        "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
         "/h2-console/**",
         "/favicon.ico"
     };

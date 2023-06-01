@@ -9,8 +9,10 @@ import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.service.AuthService;
 import com.hangout.hangout.global.error.ResponseEntity;
 import com.hangout.hangout.global.error.ResponseType;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,38 +29,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(API_PREFIX + "/auth")
-@Api(value = "/", tags = "AUTH API")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
 
     private final AuthService authService;
 
-    @ApiOperation(value = "회원 가입")
+    @Operation(summary = "회원가입", tags = {"Auth Controller"})
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not Found")
+    @ApiResponse(responseCode = "500", description = "Internal Server Error")
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@Valid @RequestBody SignUpRequest request) {
         return ResponseEntity.successResponse("회원가입 성공", authService.signup(request));
     }
 
-    @ApiOperation(value = "로그인")
+    @Operation(summary = "로그인", tags = {"Auth Controller"})
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = AuthResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not Found")
+    @ApiResponse(responseCode = "500", description = "Internal Server Error")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginReqeust request) {
         return ResponseEntity.successResponse("로그인 성공", authService.login(request));
     }
 
-    @ApiOperation(value = "token 재발급")
+    @Operation(summary = "token 재발급", tags = {"Auth Controller"})
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not Found")
+    @ApiResponse(responseCode = "500", description = "Internal Server Error")
     @PostMapping("/refresh-token")
-    public ResponseEntity<Void> refreshToken(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws IOException {
+    public ResponseEntity<Void> refreshToken(HttpServletRequest request,
+        HttpServletResponse response) throws IOException {
         authService.refreshToken(request, response);
         return ResponseEntity.successResponse("access token 갱신");
     }
 
     @GetMapping("/oauth2/callback/{registration}")
-    @ApiOperation(value = "구글 로그인 후 전달받는 client-redirect api",
-        notes = "구글 로그인 검증이 모두 끝난 후, jwt를 AuthResponse로 만들어 반환하는 api")
+    @Operation(summary = "소셜 로그인 성공 redirect",
+        description = "소셜 로그인 검증이 모두 끝난 후, jwt를 AuthResponse로 만들어 반환하는 api")
     public ResponseEntity<AuthResponse> redirectLogin(
         @PathVariable String registration,
         HttpServletRequest request
@@ -68,7 +79,7 @@ public class AuthController {
     }
 
     @GetMapping(FAILURE_ENDPOINT)
-    @ApiOperation(value = "구글 로그인 실패 시 redirect되는 api")
+    @Operation(summary = "소셜 로그인 실패 redirect")
     public ResponseEntity<String> redirectLoginFail(
         @RequestParam String error
     ) {

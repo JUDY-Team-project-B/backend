@@ -1,14 +1,12 @@
 package com.hangout.hangout.global.exception;
 
-public class StatusNotFoundException extends RuntimeException {
-    public StatusNotFoundException() {
-        super();
+import com.hangout.hangout.global.error.ResponseType;
+
+public class StatusNotFoundException extends BaseException {
+
+    public StatusNotFoundException(ResponseType responseType) {
+        super(responseType);
     }
 
-    public StatusNotFoundException(String message) {
-        super(message);
-    }
-    public StatusNotFoundException(String message, Throwable cause) {
-        super(message,cause);
-    }
+
 }

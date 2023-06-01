@@ -7,20 +7,22 @@ import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.entity.Token;
 import com.hangout.hangout.domain.auth.entity.TokenType;
 import com.hangout.hangout.domain.auth.repository.TokenRepository;
-import com.hangout.hangout.domain.user.entity.Role;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
-import com.hangout.hangout.global.config.JwtService;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.AuthException;
 import com.hangout.hangout.global.exception.NotFoundException;
+import com.hangout.hangout.global.security.JwtService;
+import com.hangout.hangout.global.security.UserPrincipal;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,24 +34,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     public Long signup(SignUpRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (Boolean.TRUE.equals(userRepository.existsByEmail(request.getEmail()))) {
             throw new AuthException(ResponseType.USER_NOT_EXIST_EMAIL);
         }
-        User user = User.builder()
-            .email(request.getEmail())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .nickname(request.getNickname())
-            .gender(request.getGender())
-            .image(request.getImage())
-            .information(request.getInformation())
-            .role(Role.USER)
-            .age(request.getAge())
-            .build();
+        User user = request.toEntity(passwordEncoder);
         User savedUser = userRepository.save(user);
         return savedUser.getId();
     }
@@ -61,20 +54,23 @@ public class AuthService {
                 request.getPassword()
             )
         );
+
         User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
-
-        String jwtToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        String jwtToken = jwtService.generateToken(UserPrincipal.create(user));
+        String refreshToken = jwtService.generateRefreshToken(UserPrincipal.create(user));
         revokeAllUserTokens(user);
         saveUserToken(user, refreshToken);
+        return createAuthResponse(jwtToken, refreshToken);
+    }
+
+    private AuthResponse createAuthResponse(String accessToken, String refreshToken) {
         return AuthResponse.builder()
-            .accessToken(jwtToken)
+            .accessToken(accessToken)
             .refreshToken(refreshToken)
             .build();
     }
 
-    // refresh token 저장
     private void saveUserToken(User user, String jwtToken) {
         Token token = Token.builder()
             .user(user)
@@ -98,6 +94,12 @@ public class AuthService {
         tokenRepository.saveAll(validUserTokens);
     }
 
+    @Scheduled(fixedRate = 604800000) // 1 week
+    @Transactional
+    public void deleteExpiredAndRevokedTokens() {
+        tokenRepository.deleteExpiredAndRevokedTokens();
+    }
+
     public void refreshToken(
         HttpServletRequest request,
         HttpServletResponse response
@@ -105,16 +107,18 @@ public class AuthService {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
+
         refreshToken = authHeader.substring(7);
-        userEmail = jwtService.extractUserName(refreshToken);
+        userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
             User user = this.userRepository.findByEmail(userEmail)
                 .orElseThrow();
-            if (jwtService.isTokenValid(refreshToken, user)) {
-                String accessToken = jwtService.generateToken(user);
+            if (jwtService.isTokenValid(refreshToken, UserPrincipal.create(user))) {
+                String accessToken = jwtService.generateToken(UserPrincipal.create(user));
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
                 var authResponse = AuthResponse.builder()
