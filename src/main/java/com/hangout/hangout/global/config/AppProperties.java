@@ -6,6 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * application-oauth2의 소셜 로그인 정보를 parsing하는 class
+ */
 @Configuration
 @ConfigurationProperties(prefix = "spring.security.oauth2.client.registration")
 @PropertySource(value = {"classpath:/application-oauth.yml"})
