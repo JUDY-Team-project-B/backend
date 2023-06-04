@@ -21,7 +21,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     public GroupedOpenApi api() {
         return GroupedOpenApi.builder()
             .group("여행 동행 서비스 API v1")
-            .packagesToScan("com.hangout.hangout.controller")
+            .packagesToScan("com.hangout.hangout.domain")
             .build();
     }
 
