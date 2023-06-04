@@ -20,6 +20,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,6 +32,14 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
+    /**
+     * OAuth2 인증 실패 시, failure-redirect-url 로 error 정보 전달 처리
+     *
+     * @param request   the request during which the authentication attempt occurred.
+     * @param response  the response.
+     * @param exception the exception which was thrown to reject the authentication request.
+     * @throws IOException
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException exception) throws IOException {
@@ -53,21 +62,29 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
+    /**
+     * error message 분석 및 반환
+     *
+     * @param exception 인증 에러 정보
+     * @return String (인증 에러 해석 메시지)
+     */
     private String getExceptionMessage(AuthenticationException exception) {
         if (exception instanceof BadCredentialsException) {
-            return "Password is incorrect";
+            return "패스워드가 일치하지 않습니다.";
         } else if (exception instanceof UsernameNotFoundException) {
-            return "No account";
+            return "유저 계정이 존재하지 않습니다";
         } else if (exception instanceof AccountExpiredException) {
-            return "Account expiration";
+            return "계정이 만료되었습니다.";
         } else if (exception instanceof CredentialsExpiredException) {
-            return "Password expiration";
+            return "패스워드가 만료되었습니다.";
         } else if (exception instanceof DisabledException) {
-            return "Account Deactivation";
+            return "계정이 비활성화되어있습니다";
         } else if (exception instanceof LockedException) {
-            return "Account locked";
+            return "계정이 잠겨있습니다";
+        } else if (exception instanceof OAuth2AuthenticationException) {
+            return "인가되지 않은 경로의 요청입니다. 로그인 요청을 다시 진행해주세요";
         } else {
-            return "no confirmed errors";
+            return exception.getMessage();
         }
     }
 }
