@@ -2,10 +2,7 @@ package com.hangout.hangout.global.handler;
 
 import static com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
-import com.hangout.hangout.domain.auth.entity.Token;
-import com.hangout.hangout.domain.auth.entity.TokenType;
 import com.hangout.hangout.domain.auth.entity.oauth2.UserPrincipal;
-import com.hangout.hangout.domain.auth.repository.TokenRepository;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
 import com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository;
@@ -18,7 +15,6 @@ import com.hangout.hangout.global.util.CookieUtil;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +38,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final AppProperties appProperties;
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
 
     /**
      * OAuth2 인증 성공 시, customOAuth2UserService logic 처리 후 redirect-url로 반환되는 코드
@@ -119,8 +114,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private void writeTokenResponse(HttpServletResponse response, User user) {
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(user, refreshToken);
-        revokeAllUserTokens(user);
+        jwtService.saveUserToken(user, refreshToken); // jwtService를 통해 토큰 저장
+        jwtService.revokeAllUserTokens(user); // jwtService를 통해 토큰 폐기
 
         CookieUtil.addCookie(response, "accessToken", jwtToken, 1);
         CookieUtil.addCookie(response, "refreshToken", refreshToken, 1);
@@ -166,32 +161,5 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         super.clearAuthenticationAttributes(request);
         cookieAuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
-
-    /* 하단의 두 method는 Authservice의 method와 겹치며,
-        이를 jwtService로 빼는 방안으로 리펙토링하는 것이 어떤지 토의
-        (authservice를 사용할 경우, bean recursion 발생 */
-    public void saveUserToken(User user, String jwtToken) {
-        Token token = Token.builder()
-            .user(user)
-            .token(jwtToken)
-            .tokenType(TokenType.BEARER)
-            .expired(false)
-            .revoked(false)
-            .build();
-        tokenRepository.save(token);
-    }
-
-    private void revokeAllUserTokens(User user) {
-        List<Token> validUserTokens = tokenRepository.findAllValidTokensByUserId(user.getId());
-        if (validUserTokens.isEmpty()) {
-            return;
-        }
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
-    }
-
 }
 
