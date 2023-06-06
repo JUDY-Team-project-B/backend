@@ -57,7 +57,7 @@ public class User extends BaseEntity implements UserDetails {
 
     private int age;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String oAuth2Id;    // Resource Server에서 넘겨주는 소셜 로그인 플랫폼 식별
 
     public User update(OAuth2UserInfo oAuth2UserInfo) {
@@ -100,5 +100,3 @@ public class User extends BaseEntity implements UserDetails {
         return true;
     }
 }
-
-
