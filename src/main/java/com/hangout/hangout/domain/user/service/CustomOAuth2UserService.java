@@ -1,6 +1,5 @@
 package com.hangout.hangout.domain.user.service;
 
-import com.hangout.hangout.domain.auth.entity.oauth2.UserPrincipal;
 import com.hangout.hangout.domain.user.entity.Role;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseType;
@@ -8,6 +7,7 @@ import com.hangout.hangout.domain.auth.entity.oauth2.GoogleOAuth2User;
 import com.hangout.hangout.domain.auth.entity.oauth2.OAuth2UserInfo;
 import com.hangout.hangout.domain.user.repository.UserRepository;
 import com.hangout.hangout.global.exception.AuthException;
+import com.hangout.hangout.global.security.UserPrincipal;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
