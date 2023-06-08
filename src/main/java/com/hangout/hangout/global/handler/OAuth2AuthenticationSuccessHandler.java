@@ -2,7 +2,6 @@ package com.hangout.hangout.global.handler;
 
 import static com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
-import com.hangout.hangout.domain.auth.entity.oauth2.UserPrincipal;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
 import com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository;
@@ -11,6 +10,7 @@ import com.hangout.hangout.global.config.AppProperties.Registration;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.AuthException;
 import com.hangout.hangout.global.security.JwtService;
+import com.hangout.hangout.global.security.UserPrincipal;
 import com.hangout.hangout.global.util.CookieUtil;
 import java.io.IOException;
 import java.net.URI;
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -112,8 +113,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * @param user     인증된 user 정보
      */
     private void writeTokenResponse(HttpServletResponse response, User user) {
-        String jwtToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        UserDetails userDetails = UserPrincipal.create(user);
+        String jwtToken = jwtService.generateToken(userDetails);
+        String refreshToken = jwtService.generateRefreshToken(userDetails);
         jwtService.saveUserToken(user, refreshToken); // jwtService를 통해 토큰 저장
         jwtService.revokeAllUserTokens(user); // jwtService를 통해 토큰 폐기
 
