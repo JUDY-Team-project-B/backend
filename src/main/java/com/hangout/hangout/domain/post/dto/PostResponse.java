@@ -20,6 +20,7 @@ public class PostResponse {
     private final String nickname;
     private final String context;
     private final List<String> tags;
+    private final int likeStatus; // 좋아요가 되어있는 지 확인 // 좋아요 = 1 , 아님 = 0
     private final String statusType;
     private final Gender travelGender;
     private final String travelAge;
@@ -29,5 +30,6 @@ public class PostResponse {
     private final Date travelDateEnd;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final int likeCount;
 
 }

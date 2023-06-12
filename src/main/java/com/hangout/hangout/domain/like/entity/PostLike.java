@@ -1,5 +1,6 @@
-package com.hangout.hangout.domain.post.entity;
+package com.hangout.hangout.domain.like.entity;
 
+import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import lombok.AccessLevel;
@@ -27,9 +28,6 @@ public class PostLike extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
-
-    @ColumnDefault("0")
-    private int likeCnt; // 게시글 좋아요 개수 default 0
 
     @Builder
     public PostLike(Long id, Post post, User user) {

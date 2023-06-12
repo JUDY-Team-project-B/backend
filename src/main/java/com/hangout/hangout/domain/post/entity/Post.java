@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.post.entity;
 
+import com.hangout.hangout.domain.like.entity.PostLike;
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.report.entity.PostReport;
 import com.hangout.hangout.domain.user.entity.User;
@@ -23,10 +24,20 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
 @Table(name = "POST")
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
@@ -46,9 +57,9 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "POST_INFO_ID", nullable = false, referencedColumnName = "POST_INFO_ID")
     private PostInfo postInfo;
 
-    // 좋아요 기능 추가를 위해 PostLike 와 연결
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<PostLike> postLikes = new ArrayList<>();
+    @ColumnDefault("0")
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount;
 
     // 신고 기능 추가를 위해 PostReport 와 연결
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
@@ -65,12 +76,13 @@ public class Post extends BaseEntity {
     private String context;
 
     @Builder
-    public Post(String title, User user, PostInfo postInfo, List<PostLike> postLikes,
-        List<PostReport> postReports, List<PostTagRel> postTagRels, String context) {
+
+    public Post(String title, User user, PostInfo postInfo, List<PostReport> postReports,
+                Integer likeCount ,List<PostTagRel> postTagRels , String context) {
         this.title = title;
         this.user = user;
         this.postInfo = postInfo;
-        this.postLikes = postLikes;
+        this.likeCount = likeCount;
         this.postReports = postReports;
         this.postTagRels = postTagRels;
         this.context = context;
