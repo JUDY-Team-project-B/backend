@@ -25,23 +25,38 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
 
-// QueryDsl
+    // QueryDsl
     implementation "com.querydsl:querydsl-jpa:5.0.0"
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0"
 
+    // lombok
     compileOnly 'org.projectlombok:lombok'
-//	DB 설정 후 build
-    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // DB 설정 후 build
+    runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
+    // security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'javax.validation:validation-api:2.0.1.Final'
+
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // config processor
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 // script for querydsl
 def querydslDir = "$buildDir/generated/querydsl"
@@ -62,4 +77,3 @@ compileQuerydsl {
 tasks.named('test') {
     useJUnitPlatform()
 }
-

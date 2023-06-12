@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "COMMENT_REPORT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentReport extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_REPORT_ID")
@@ -51,8 +52,9 @@ public class CommentReport extends BaseEntity {
     private String content;
 
     @Builder
-    public CommentReport(Long id, User user, Comment comment, ReportReason reportReason, ReportStatus reportStatus
-    , String title, String content) {
+    public CommentReport(Long id, User user, Comment comment, ReportReason reportReason,
+        ReportStatus reportStatus
+        , String title, String content) {
         this.id = id;
         this.user = user;
         this.comment = comment;

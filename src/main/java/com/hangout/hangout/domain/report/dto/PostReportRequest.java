@@ -10,6 +10,7 @@ import lombok.Getter;
 
 @Getter
 public class PostReportRequest {
+
     @NotNull
     private Post post;
     @NotNull

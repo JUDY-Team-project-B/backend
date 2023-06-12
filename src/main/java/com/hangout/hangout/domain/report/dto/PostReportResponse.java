@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class PostReportResponse {
+
     private Long id;
     private User user;
     private Post post;

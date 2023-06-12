@@ -18,8 +18,7 @@ public enum SearchType {
         public String toString() {
             return "tag";
         }
-    }
-    ,
+    },
     nickname {
         @Override
         public String toString() {

@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.user.entity;
 
+import com.hangout.hangout.domain.auth.entity.oauth2.OAuth2UserInfo;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User extends BaseEntity {
 
     @Id
@@ -50,19 +52,12 @@ public class User extends BaseEntity {
 
     private int age;
 
-    @Builder
-    public User(Long id, String email, String password, Role role,
-        String nickname,
-        String image, String description, Gender gender, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.nickname = nickname;
-        this.image = image;
-        this.description = description;
-        this.gender = gender;
-        this.age = age;
-    }
-}
+    @Column(unique = true)
+    private String oAuth2Id;    // Resource Server에서 넘겨주는 소셜 로그인 플랫폼 식별
 
+    public User update(OAuth2UserInfo oAuth2UserInfo) {
+        this.oAuth2Id = oAuth2UserInfo.getOAuth2Id();
+        return this;
+    }
+
+}

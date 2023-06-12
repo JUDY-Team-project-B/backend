@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CommentReportRequest {
+
     @NotNull
     private Comment comment;
     @NotNull
