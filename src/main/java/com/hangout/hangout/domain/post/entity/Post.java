@@ -2,24 +2,34 @@ package com.hangout.hangout.domain.post.entity;
 
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.report.entity.PostReport;
-import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.common.domain.entity.BaseEntity;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
 @Table(name = "POST")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_ID")
@@ -56,7 +66,7 @@ public class Post extends BaseEntity {
 
     @Builder
     public Post(String title, User user, PostInfo postInfo, List<PostLike> postLikes,
-                List<PostReport> postReports, List<PostTagRel> postTagRels , String context) {
+        List<PostReport> postReports, List<PostTagRel> postTagRels, String context) {
         this.title = title;
         this.user = user;
         this.postInfo = postInfo;

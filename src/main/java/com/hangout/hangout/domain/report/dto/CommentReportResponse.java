@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CommentReportResponse {
+
     private Long id;
     private User user;
     private Comment comment;

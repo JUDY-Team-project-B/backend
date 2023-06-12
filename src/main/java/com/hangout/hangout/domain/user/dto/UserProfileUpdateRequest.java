@@ -14,9 +14,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class UserProfileUpdateRequest {
-  private String nickname;
-  private String image;
-  private String description;
-  private Gender gender;
-  private Integer age;
+
+    private String nickname;
+    private String image;
+    private String description;
+    private Gender gender;
+    private Integer age;
 }

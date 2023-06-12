@@ -1,33 +1,32 @@
 package com.hangout.hangout.domain.post.service;
 
 import com.hangout.hangout.domain.post.PostMapper;
-import com.hangout.hangout.domain.post.dto.PostSearchRequest;
-import com.hangout.hangout.domain.post.entity.PostTagRel;
-
-import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
-import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.global.error.ResponseType;
-import com.hangout.hangout.global.exception.PostNotFoundException;
+import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
+import com.hangout.hangout.domain.post.entity.PostTagRel;
+import com.hangout.hangout.domain.post.repository.PostRepository;
+import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
+import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostService {
+
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
 
@@ -41,44 +40,46 @@ public class PostService {
 
         Long newStatus = 1L;
         Status status = statusRepository.findStatusById(newStatus).orElseThrow(
-                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+            () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
         post.getPostInfo().setStatus(status);
 
         postTagService.saveTag(post, postRequest.getTags());
 
         postRepository.save(post);
     }
+
     public Post findPostById(Long postId) {
         return postRepository.findPostById(postId).orElseThrow(
-                () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
+            () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
     }
 
     public Status findPostStatusById(Long statusId) {
         return statusRepository.findStatusById(statusId).orElseThrow(
-                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+            () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
     }
 
-    public List<PostListResponse> getPosts(int page, int size, PostSearchRequest postSearchRequest) {
+    public List<PostListResponse> getPosts(int page, int size,
+        PostSearchRequest postSearchRequest) {
         List<Post> posts = null;
-        PageRequest pageRequest = PageRequest.of(page,size);
+        PageRequest pageRequest = PageRequest.of(page, size);
 
-        if(postSearchRequest.getSearchType() == null) {
+        if (postSearchRequest.getSearchType() == null) {
             posts = postRepository.findAllPostByCreatedAtDesc(pageRequest).getContent();
-        }
-        else if(postSearchRequest.getSearchType().toString().equals("title")) {
-            posts = postRepository.findAllContainTitleByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
-        }
-        else if(postSearchRequest.getSearchType().toString().equals("context")) {
-            posts = postRepository.findAllContainContextByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
-        }
-        else if(postSearchRequest.getSearchType().toString().equals("tag")) {
-            posts = postTagService.findAllPostByTag(pageRequest, postSearchRequest.getSearchKeyword());
-        }
-        else if(postSearchRequest.getSearchType().toString().equals("nickname")) {
-            posts = postRepository.findAllContainNicknameByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
-        }
-        else if(postSearchRequest.getSearchType().toString().equals("all")) {
-            posts = postRepository.findAllContainTitleAndContextByCreatedAtDesc(pageRequest, postSearchRequest.getSearchKeyword()).getContent();
+        } else if (postSearchRequest.getSearchType().toString().equals("title")) {
+            posts = postRepository.findAllContainTitleByCreatedAtDesc(pageRequest,
+                postSearchRequest.getSearchKeyword()).getContent();
+        } else if (postSearchRequest.getSearchType().toString().equals("context")) {
+            posts = postRepository.findAllContainContextByCreatedAtDesc(pageRequest,
+                postSearchRequest.getSearchKeyword()).getContent();
+        } else if (postSearchRequest.getSearchType().toString().equals("tag")) {
+            posts = postTagService.findAllPostByTag(pageRequest,
+                postSearchRequest.getSearchKeyword());
+        } else if (postSearchRequest.getSearchType().toString().equals("nickname")) {
+            posts = postRepository.findAllContainNicknameByCreatedAtDesc(pageRequest,
+                postSearchRequest.getSearchKeyword()).getContent();
+        } else if (postSearchRequest.getSearchType().toString().equals("all")) {
+            posts = postRepository.findAllContainTitleAndContextByCreatedAtDesc(pageRequest,
+                postSearchRequest.getSearchKeyword()).getContent();
         }
         return mapper.toDtoList(posts);
     }
@@ -86,7 +87,7 @@ public class PostService {
     @Transactional
     public void updatePost(Post post, PostInfo postInfo, PostRequest postRequest, User user) {
         // 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직
-        if(isMatchedNickname(post, user)) {
+        if (isMatchedNickname(post, user)) {
             // 태그 업데이트
             for (PostTagRel postTagRel : postTagService.findTagListByPost(post)) {
                 postTagRel.setPost(null);
@@ -97,10 +98,11 @@ public class PostService {
             postInfo.updatePostInfo(postRequest);
         }
     }
+
     @Transactional
     public void deletePost(Post post, User user) {
         // 로그인한 유저와 수정을 한 유저가 같은지 검증하는 로직
-        if(isMatchedNickname(post, user)) {
+        if (isMatchedNickname(post, user)) {
             // postID에 해당하는 중간테이블의 값을 null로 설정
             for (PostTagRel postTagRel : postTagService.findTagListByPost(post)) {
                 postTagRel.setPost(null);
@@ -109,15 +111,16 @@ public class PostService {
 
             Long deleteStatus = 2L;
             Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
-                    () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
             post.getPostInfo().setStatus(status);
             postRepository.save(post);
         }
     }
+
     public boolean isMatchedNickname(Post post, User user) {
         String userNickname = user.getNickname();
 
-        if(!post.getUser().getNickname().equals(userNickname)) {
+        if (!post.getUser().getNickname().equals(userNickname)) {
             throw new UnAuthorizedAccessException(ResponseType.REQUEST_NOT_VALID);
         }
         return true;

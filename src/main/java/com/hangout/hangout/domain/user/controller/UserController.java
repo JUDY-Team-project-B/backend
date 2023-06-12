@@ -47,7 +47,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "유저 정보 조회", description = "유저 id에 따른 유저 정보 조회(상대방 프로필 조회 시)",tags = {"User Controller"})
+    @Operation(summary = "유저 정보 조회", description = "유저 id에 따른 유저 정보 조회(상대방 프로필 조회 시)", tags = {
+        "User Controller"})
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         User userById = userService.getUserById(id);
         return ResponseEntity.successResponse(UserResponse.of(userById));

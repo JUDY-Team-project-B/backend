@@ -1,10 +1,14 @@
 package com.hangout.hangout.domain.auth.controller;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
+import static com.hangout.hangout.global.common.domain.entity.Constants.FAILURE_ENDPOINT;
+
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
 import com.hangout.hangout.domain.auth.dto.request.SignUpRequest;
 import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.service.AuthService;
 import com.hangout.hangout.global.error.ResponseEntity;
+import com.hangout.hangout.global.error.ResponseType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,14 +18,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(API_PREFIX + "/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -57,4 +66,24 @@ public class AuthController {
         authService.refreshToken(request, response);
         return ResponseEntity.successResponse("access token 갱신");
     }
+
+    @GetMapping("/oauth2/callback/{registration}")
+    @Operation(summary = "소셜 로그인 성공 redirect",
+        description = "소셜 로그인 검증이 모두 끝난 후, jwt를 AuthResponse로 만들어 반환하는 api")
+    public ResponseEntity<AuthResponse> redirectLogin(
+        @PathVariable String registration,
+        HttpServletRequest request
+    ) {
+        return ResponseEntity.successResponse("google login 완료",
+            authService.redirectLogin(request, registration));
+    }
+
+    @GetMapping(FAILURE_ENDPOINT)
+    @Operation(summary = "소셜 로그인 실패 redirect")
+    public ResponseEntity<String> redirectLoginFail(
+        @RequestParam String error
+    ) {
+        return ResponseEntity.failureResponse(ResponseType.FAILURE, error);
+    }
+
 }

@@ -11,6 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class PostSearchRequest {
+
     private SearchType searchType;
     private String searchKeyword;
 }

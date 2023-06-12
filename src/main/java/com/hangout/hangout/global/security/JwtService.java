@@ -1,5 +1,9 @@
 package com.hangout.hangout.global.security;
 
+import com.hangout.hangout.domain.auth.entity.Token;
+import com.hangout.hangout.domain.auth.entity.TokenType;
+import com.hangout.hangout.domain.auth.repository.TokenRepository;
+import com.hangout.hangout.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -11,9 +15,10 @@ import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +26,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+
+    private final TokenRepository tokenRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     @Value("${application.security.jwt.secret-key}")
@@ -71,6 +80,7 @@ public class JwtService {
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
     }
+
     public String getUserEmailFromJWT(String token) {
 
         Claims claims = Jwts.parserBuilder()
@@ -93,6 +103,7 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
     public boolean validateToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(authToken);
@@ -108,6 +119,7 @@ public class JwtService {
         }
         return false;
     }
+
     public Claims extractAllClaims(String token) {
         return Jwts
             .parserBuilder()
@@ -120,5 +132,28 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public void saveUserToken(User user, String jwtToken) {
+        Token token = Token.builder()
+            .user(user)
+            .token(jwtToken)
+            .tokenType(TokenType.BEARER)
+            .expired(false)
+            .revoked(false)
+            .build();
+        tokenRepository.save(token);
+    }
+
+    public void revokeAllUserTokens(User user) {
+        List<Token> validUserTokens = tokenRepository.findAllValidTokensByUserId(user.getId());
+        if (validUserTokens.isEmpty()) {
+            return;
+        }
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
     }
 }
