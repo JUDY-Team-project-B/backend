@@ -15,4 +15,9 @@ public class FileExceptionHandler {
     public ResponseEntity<HttpStatus> fileSizeLimitExceededException() {
         return failureResponse(ResponseType.MAX_UPLOAD_SIZE_EXCEEDED);
     }
+
+    @ExceptionHandler(UnSupportedFileTypeException.class)
+    public ResponseEntity<HttpStatus> UnSupportedFileTypeException() {
+        return failureResponse(ResponseType.INVALID_FILE_TYPE);
+    }
 }
