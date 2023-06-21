@@ -6,9 +6,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
-import com.hangout.hangout.domain.image.exception.EmptyFileException;
 import com.hangout.hangout.domain.image.util.FileUtils;
-import com.hangout.hangout.global.error.ResponseType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,6 @@ public class AwsS3Service {
     }
 
     private String putObjectToS3Storage(AmazonS3 client, String filepath, MultipartFile file) throws IOException {
-        validateFileExists(file);
 
         ObjectMetadata metadata = new ObjectMetadata();
         ByteArrayInputStream stream = getByteArrayInputStream(file, metadata);
@@ -45,11 +42,5 @@ public class AwsS3Service {
         byte[] bytes = IOUtils.toByteArray(file.getInputStream());
         metadata.setContentLength(bytes.length);
         return new ByteArrayInputStream(bytes);
-    }
-
-    private void validateFileExists(MultipartFile file) {
-        if(file.isEmpty()) {
-            throw new EmptyFileException(ResponseType.FILE_NOT_UPLOAD);
-        }
     }
 }
