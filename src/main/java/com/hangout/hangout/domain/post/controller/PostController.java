@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.post.controller;
 
 
+import com.hangout.hangout.domain.image.service.ImageFileUploadService;
 import com.hangout.hangout.domain.like.dto.LikeRequest;
 import com.hangout.hangout.domain.like.service.LikeService;
 
@@ -39,6 +40,7 @@ public class PostController {
 
     private final PostService postService;
     private final PostTagService postTagService;
+    private final ImageFileUploadService imageFileUploadService;
     private final LikeService likeService;
     private final PostMapper mapper;
 
@@ -59,9 +61,10 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
         List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
+        List<String> imagesByPost = imageFileUploadService.getImagesByPost(postService.findPostById(postId));
 
         int likeStatus = postService.findLike(user, postId);
-        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost,likeStatus));
+        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost,imagesByPost,likeStatus));
 
     }
 
