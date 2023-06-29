@@ -31,7 +31,7 @@ public class ImageFileUploadService {
 
     private void upload(List<MultipartFile> files, Post post) throws IOException {
         List<PostImage> postImages = uploadImageToStorageServer(files, post);
-        imageJdbcRepository.saveAll(postImages);
+        imageJdbcRepository.saveAllPostImage(postImages);
     }
 
     private List<PostImage> uploadImageToStorageServer(List<MultipartFile> files, Post post) throws IOException {
