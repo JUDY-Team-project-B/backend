@@ -1,11 +1,10 @@
 package com.hangout.hangout.domain.post.controller;
 
 
-import com.hangout.hangout.domain.like.dto.LikeRequest;
-import com.hangout.hangout.domain.like.service.LikeService;
-
 import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
+import com.hangout.hangout.domain.like.dto.LikeRequest;
+import com.hangout.hangout.domain.like.service.LikeService;
 import com.hangout.hangout.domain.post.PostMapper;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
@@ -61,7 +60,7 @@ public class PostController {
         List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
 
         int likeStatus = postService.findLike(user, postId);
-        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost,likeStatus));
+        return successResponse(mapper.of(postService.findPostById(postId), tagsByPost, likeStatus));
 
     }
 
@@ -94,4 +93,10 @@ public class PostController {
 
         return successResponse();
     }
+
+    @GetMapping("/hits/{postId}")
+    public ResponseEntity<Long> getPostHits(@PathVariable Long postId) {
+        return successResponse(postService.getPostHits(postId));
+    }
+
 }
