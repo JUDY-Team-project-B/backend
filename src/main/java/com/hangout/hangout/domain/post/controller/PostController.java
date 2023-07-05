@@ -59,6 +59,7 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
         List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
 
+        postService.updatePostHits(postId, user);
         int likeStatus = postService.findLike(user, postId);
         return successResponse(mapper.of(postService.findPostById(postId), tagsByPost, likeStatus));
 
