@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.comment.service;
 
 import com.hangout.hangout.domain.comment.domain.repository.CommentRepository;
+import com.hangout.hangout.domain.comment.dto.CommentDeleteDto;
 import com.hangout.hangout.domain.comment.dto.CommentReadDto;
 import com.hangout.hangout.domain.comment.dto.CommentCreateDto;
 import com.hangout.hangout.domain.comment.dto.CommentUpdateDto;
@@ -14,8 +15,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.hangout.hangout.domain.comment.entity.QComment.comment;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +47,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long id){
-        commentRepository.deleteById(id);
+    public void deleteComment(Long id, CommentDeleteDto comment){
+        Comment comment2 = commentRepository.findById(id).orElseThrow(()->
+                new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id ));
+        comment2.delete(comment.getStatus());
     }
 
 
@@ -54,6 +62,8 @@ public class CommentService {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
+
+
 
     private CommentReadDto mapToDTO(Comment comment){
         return CommentReadDto.builder()
@@ -69,4 +79,31 @@ public class CommentService {
         return commentRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id));
     }
+
+    @Transactional
+    public List<CommentReadDto> getAllCommentsByPost(Long postId) {
+
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        List<CommentReadDto> commentReadDtoList = new ArrayList<>();
+        Map<Long, CommentReadDto> commentDTOHashMap = new HashMap<>();
+
+        for (Comment comment : comments) {
+            CommentReadDto commentReadDto = convertCommentTODto(comment);
+            commentDTOHashMap.put(commentReadDto.getId(),commentReadDto);
+            if(comment.getParent() !=null){
+                commentDTOHashMap.get(comment.getParent().getId());
+            }else{
+                commentReadDtoList.add(commentReadDto);
+            }
+        }
+        return commentReadDtoList;
+
+    }
+
+    private CommentReadDto convertCommentTODto(Comment comment){
+        CommentReadDto dto = new CommentReadDto(comment.getId(),comment.getPost(),comment.getStatus(),comment.getContent());
+        return dto;
+    }
+
+
 }

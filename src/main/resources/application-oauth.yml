@@ -4,8 +4,11 @@ spring:
       client:
         registration:
           google:
-            client-id: ${google-client-id}
-            client-secret: ${google-client-secret}
-            redirect-uri: ${google-redirect-uri}
-            redirect-client: ${client-redirect-uri}
-            scope: ${google-scope}
+            client-id: 1047692766031-okr35cpqmcc88fugd08lo6f0mn3hlqtb.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            #            redirect-client: http://localhost:3000/login/oauth2/google
+            redirect-client: http://localhost:8080/api/v1/auth/oauth2/callback/google
+            scope:
+              - profile
+              - email

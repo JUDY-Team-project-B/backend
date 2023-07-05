@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @NoArgsConstructor
 public class CommentCreateDto {
     private Long userId;
@@ -30,7 +29,6 @@ public class CommentCreateDto {
         this.parentId = parentId;
         this.content = content;
     }
-
 
     public Comment toEntity(CommentCreateDto dto, User user, Post post, Status status){
         return Comment.builder()

@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.comment.controller;
 
+import com.hangout.hangout.domain.comment.dto.CommentDeleteDto;
 import com.hangout.hangout.domain.comment.dto.CommentReadDto;
 import com.hangout.hangout.domain.comment.dto.CommentCreateDto;
 import com.hangout.hangout.domain.comment.dto.CommentUpdateDto;
@@ -38,14 +39,14 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id){
-        commentService.deleteComment(id);
+    public ResponseEntity<HttpStatus> deleteComment(@RequestBody CommentDeleteDto commentDeleteDto,@PathVariable Long id){
+        commentService.deleteComment(id, commentDeleteDto);
         return ResponseEntity.ok().build();
 
     }
     @GetMapping("/{post_id}")
     public ResponseEntity<List<CommentReadDto>> readComment(@PathVariable Long post_id){
-        List<CommentReadDto> comments= commentService.findCommentByPostId(post_id);
+        List<CommentReadDto> comments= commentService.getAllCommentsByPost(post_id);
         return ResponseEntity.ok(comments);
     }
 }

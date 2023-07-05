@@ -31,6 +31,14 @@ public class CommentReadDto {
         this.content = content;
     }
 
+    public CommentReadDto(Long id, Post post, Status status, String content) {
+        this.Id = Id;
+        this.postId = 1L;
+        this.statusId = 1L;
+        this.parentId = parentId;
+        this.content = content;
+    }
+
 
     public CommentReadDto toRead(){
         return CommentReadDto.builder()

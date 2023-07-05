@@ -9,15 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentUpdateDto {
     private String content;
-
     @Builder
     public CommentUpdateDto(String content){
         this.content = content;
     }
 
-    public Comment toUpdate(){
-        return Comment.builder()
-                .content(content)
-                .build();
-    }
 }

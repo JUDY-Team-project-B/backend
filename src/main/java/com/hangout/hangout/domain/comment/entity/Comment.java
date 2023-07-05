@@ -45,7 +45,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "PARENT_ID", referencedColumnName = "COMMENT_ID", insertable = false, updatable = false)
     private Comment parent;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY ,  orphanRemoval = true)
     private List<Comment> children = new ArrayList<>();
 
     // 좋아요 기능 추가를 위해 commentLikes 와 연결
@@ -60,7 +60,10 @@ public class Comment extends BaseEntity {
     @Column(name = "CONTENT", nullable = false)
     private String content;
 
+
     public void setContent(String content){this.content = content;}
+
+    public void setParent(Comment comment){this.parent = comment;}
 
     public void update(String content){
         this.content = content;
