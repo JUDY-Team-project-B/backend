@@ -7,8 +7,10 @@ import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.post.entity.PostHits;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.post.entity.PostTagRel;
+import com.hangout.hangout.domain.post.repository.PostHitsRepository;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.Status;
@@ -32,6 +34,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
+    private final PostHitsRepository postHitsRepository;
     private final LikeRepository likeRepository;
     private final PostTagService postTagService;
     private final PostMapper mapper;
@@ -154,7 +157,22 @@ public class PostService {
             () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND)
         );
 
-        return postRepository.findAllPostHits(post);
+        return postHitsRepository.findAllPostHits(post);
+    }
+
+    @Transactional
+    public void updatePostHitsViewCount(Post post, User user) {
+        Optional<PostHits> byPostAndUser = postHitsRepository.findByPostAndUser(post, user);
+        if (byPostAndUser.isEmpty()) {
+            postHitsRepository.save(PostHits.builder()
+                .post(post)
+                .user(user)
+                .viewCnt(1)
+                .build());
+        } else {
+            PostHits postHits = byPostAndUser.get();
+            postHits.updateViewCount(postHits.getViewCnt() + 1);
+        }
     }
 
 }
