@@ -8,8 +8,10 @@ import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostHits;
+import com.hangout.hangout.domain.post.entity.PostHitsRedis;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.post.entity.PostTagRel;
+import com.hangout.hangout.domain.post.repository.PostHitsRedisRepository;
 import com.hangout.hangout.domain.post.repository.PostHitsRepository;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
@@ -34,6 +36,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
+    private final PostHitsRedisRepository postHitsRedisRepository;
     private final PostHitsRepository postHitsRepository;
     private final LikeRepository likeRepository;
     private final PostTagService postTagService;
@@ -158,6 +161,21 @@ public class PostService {
         );
 
         return postHitsRepository.findAllPostHits(post);
+    }
+
+    @Transactional
+    public void updatePostHits(Long postId, User user) {
+        Post post = postRepository.findPostById(postId)
+            .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
+        Optional<PostHitsRedis> byId = postHitsRedisRepository.findById(
+            post.getId() + "-" + user.getId());
+
+        if (byId.isEmpty()) {
+            postHitsRedisRepository.save(PostHitsRedis.builder()
+                .id(postId + "-" + user.getId())
+                .build());
+            updatePostHitsViewCount(post, user);
+        }
     }
 
     @Transactional
