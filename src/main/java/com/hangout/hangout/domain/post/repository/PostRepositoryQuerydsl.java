@@ -24,6 +24,4 @@ public interface PostRepositoryQuerydsl {
 
     void subLikeCount(Post selectpost);
 
-    Long findAllPostHits(Post post);
-
 }

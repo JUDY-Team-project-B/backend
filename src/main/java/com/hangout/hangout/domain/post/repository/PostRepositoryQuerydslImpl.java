@@ -1,7 +1,6 @@
 package com.hangout.hangout.domain.post.repository;
 
 import static com.hangout.hangout.domain.post.entity.QPost.post;
-import static com.hangout.hangout.domain.post.entity.QPostHits.postHits;
 import static com.hangout.hangout.domain.post.entity.QPostInfo.postInfo;
 import static com.hangout.hangout.domain.user.entity.QUser.user;
 
@@ -172,13 +171,6 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .set(post.likeCount, post.likeCount.subtract(1))
             .where(post.eq(selectpost))
             .execute();
-    }
-
-    @Override
-    public Long findAllPostHits(Post selectPost) {
-        return queryFactory.select(postHits.viewCnt.count())
-            .from(postHits)
-            .where(postHits.post.eq(selectPost)).fetchOne();
     }
 
 }
