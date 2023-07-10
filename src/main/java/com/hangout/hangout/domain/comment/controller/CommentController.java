@@ -1,9 +1,6 @@
 package com.hangout.hangout.domain.comment.controller;
 
-import com.hangout.hangout.domain.comment.dto.CommentDeleteDto;
-import com.hangout.hangout.domain.comment.dto.CommentReadDto;
-import com.hangout.hangout.domain.comment.dto.CommentCreateDto;
-import com.hangout.hangout.domain.comment.dto.CommentUpdateDto;
+import com.hangout.hangout.domain.comment.dto.*;
 import com.hangout.hangout.domain.comment.service.CommentService;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.security.CurrentUser;
@@ -45,8 +42,8 @@ public class CommentController {
 
     }
     @GetMapping("/{post_id}")
-    public ResponseEntity<List<CommentReadDto>> readComment(@PathVariable Long post_id){
-        List<CommentReadDto> comments= commentService.getAllCommentsByPost(post_id);
+    public ResponseEntity<List<CommentRequestDTO>> readComment(@PathVariable Long post_id){
+        List<CommentRequestDTO> comments= commentService.getAllCommentsByPost(post_id);
         return ResponseEntity.ok(comments);
     }
 }

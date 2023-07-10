@@ -1,10 +1,7 @@
 package com.hangout.hangout.domain.comment.service;
 
 import com.hangout.hangout.domain.comment.domain.repository.CommentRepository;
-import com.hangout.hangout.domain.comment.dto.CommentDeleteDto;
-import com.hangout.hangout.domain.comment.dto.CommentReadDto;
-import com.hangout.hangout.domain.comment.dto.CommentCreateDto;
-import com.hangout.hangout.domain.comment.dto.CommentUpdateDto;
+import com.hangout.hangout.domain.comment.dto.*;
 import com.hangout.hangout.domain.comment.entity.Comment;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.repository.PostRepository;
@@ -21,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.hangout.hangout.domain.comment.entity.QComment.comment;
+//import static com.hangout.hangout.domain.comment.entity.Comment.comment;
 
 @Service
 @RequiredArgsConstructor
@@ -69,9 +66,8 @@ public class CommentService {
         return CommentReadDto.builder()
                 .Id(comment.getId())
                 .parentId(comment.getParentId())
-                .post(comment.getPost().getId())
+                //.post(comment.getPost().getId())
                 .content(comment.getContent())
-                .status(comment.getStatus().getId())
                 .build();
     }
 
@@ -81,29 +77,29 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentReadDto> getAllCommentsByPost(Long postId) {
+    public List<CommentRequestDTO> getAllCommentsByPost(Long postId) {
 
         List<Comment> comments = commentRepository.findByPostId(postId);
-        List<CommentReadDto> commentReadDtoList = new ArrayList<>();
-        Map<Long, CommentReadDto> commentDTOHashMap = new HashMap<>();
+        List<CommentRequestDTO> commentRequestDTOList = new ArrayList<>();
+        Map<Long, CommentRequestDTO> commentDTOHashMap = new HashMap<>();
 
         for (Comment comment : comments) {
-            CommentReadDto commentReadDto = convertCommentTODto(comment);
-            commentDTOHashMap.put(commentReadDto.getId(),commentReadDto);
+            CommentRequestDTO commentRequestDTO = convertCommentTODto(comment);
+            commentDTOHashMap.put(commentRequestDTO.getId(),commentRequestDTO);
             if(comment.getParent() !=null){
-                commentDTOHashMap.get(comment.getParent().getId());
+                commentDTOHashMap.get(comment.getParent().getId()).getChildren2().add(commentRequestDTO);
             }else{
-                commentReadDtoList.add(commentReadDto);
+                commentRequestDTOList.add(commentRequestDTO);
             }
         }
-        return commentReadDtoList;
-
+        return commentRequestDTOList;
     }
 
-    private CommentReadDto convertCommentTODto(Comment comment){
-        CommentReadDto dto = new CommentReadDto(comment.getId(),comment.getPost(),comment.getStatus(),comment.getContent());
-        return dto;
+    private CommentRequestDTO convertCommentTODto(Comment comment){
+        return
+                new CommentRequestDTO(comment.getId(),comment.getUser(), comment.getContent());
     }
+
 
 
 }
