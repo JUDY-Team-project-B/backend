@@ -20,6 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -47,8 +50,7 @@ public class SecurityConfig {
 
         http
             .formLogin().disable()
-            .cors()
-            .and()
+            .cors().configurationSource(corsConfigurationSource()).and()
             .httpBasic().disable()
             .csrf().disable()
             .rememberMe().disable()
@@ -90,5 +92,28 @@ public class SecurityConfig {
             .failureHandler(oAuth2AuthenticationFailureHandler);
 
         return http.build();
+    }
+
+    /**
+     * cors error를 방지하기 위한 설정으로, spring security의 cors configuration 적용
+     *
+     * <p>{@code AllowedOriginPattern} : 자원 공유를 허락할 Origin 지정으로, 외부에서 들어오는 허용 url 설정
+     * <p>{@code allowedMethod} : 허용 HTTP method
+     * <p>{@code allowCredentials} : 자격증명 허용
+     * <p>{@code allowedHeader} : 허용 HTTP header
+     */
+
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedHeader("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
