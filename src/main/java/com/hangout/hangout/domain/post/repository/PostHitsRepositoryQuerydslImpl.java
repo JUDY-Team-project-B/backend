@@ -18,14 +18,14 @@ public class PostHitsRepositoryQuerydslImpl implements PostHitsRepositoryQueryds
     public Long findAllPostHits(Post selectPost) {
         return queryFactory.select(postHits.viewCnt.count())
             .from(postHits)
-            .where(postHits.post.eq(selectPost)).fetchOne();
+            .where(postHits.post.eq(selectPost)).fetchFirst();
     }
 
     @Override
     public Optional<PostHits> findByPostAndUser(Post post, User user) {
         return Optional.ofNullable(queryFactory.select(postHits)
             .from(postHits)
-            .where(postHits.post.eq(post), postHits.user.eq(user)).fetchOne());
+            .where(postHits.post.eq(post), postHits.user.eq(user)).fetchFirst());
     }
 
 }
