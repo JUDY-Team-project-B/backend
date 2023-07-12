@@ -2,21 +2,17 @@ package com.hangout.hangout.domain.post.service;
 
 import com.hangout.hangout.domain.like.entity.PostLike;
 import com.hangout.hangout.domain.like.repository.LikeRepository;
-import com.hangout.hangout.domain.like.service.LikeService;
 import com.hangout.hangout.domain.post.PostMapper;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
-
-import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.domain.user.repository.UserRepository;
-import com.hangout.hangout.global.error.ResponseType;
-import com.hangout.hangout.global.exception.NotFoundException;
-import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.domain.post.dto.PostSearchRequest;
-
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.post.entity.PostHits;
+import com.hangout.hangout.domain.post.entity.PostHitsRedis;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.post.entity.PostTagRel;
+import com.hangout.hangout.domain.post.repository.PostHitsRedisRepository;
+import com.hangout.hangout.domain.post.repository.PostHitsRepository;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.Status;
@@ -26,14 +22,11 @@ import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
 
 
 @Service
@@ -43,10 +36,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
+    private final PostHitsRedisRepository postHitsRedisRepository;
+    private final PostHitsRepository postHitsRepository;
     private final LikeRepository likeRepository;
     private final PostTagService postTagService;
-
     private final PostMapper mapper;
+
 
     @Transactional
     public void createNewPost(PostRequest postRequest, User user) {
@@ -69,12 +64,15 @@ public class PostService {
 
     public int findLike(User user, Long postId) {
         Post post = postRepository.findPostById(postId)
-                .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
+            .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
         // 좋아요 상태가 아니면 0, 맞다면 1
         Optional<PostLike> findLike = likeRepository.findByUserAndPost(user, post);
 
-        if (findLike.isEmpty()) return 0;
-        else return 1;
+        if (findLike.isEmpty()) {
+            return 0;
+        } else {
+            return 1;
+        }
 
     }
 
@@ -150,4 +148,49 @@ public class PostService {
         }
         return true;
     }
+
+    /**
+     * 특정 post의 조회수를 가져옴
+     *
+     * @param postId post id
+     * @return int
+     */
+    public Long getPostHits(Long postId) {
+        Post post = postRepository.findPostById(postId).orElseThrow(
+            () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND)
+        );
+
+        return postHitsRepository.findAllPostHits(post);
+    }
+
+    @Transactional
+    public void updatePostHits(Long postId, User user) {
+        Post post = postRepository.findPostById(postId)
+            .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
+        Optional<PostHitsRedis> byId = postHitsRedisRepository.findById(
+            post.getId() + "-" + user.getId());
+
+        if (byId.isEmpty()) {
+            postHitsRedisRepository.save(PostHitsRedis.builder()
+                .id(postId + "-" + user.getId())
+                .build());
+            updatePostHitsViewCount(post, user);
+        }
+    }
+
+    @Transactional
+    public void updatePostHitsViewCount(Post post, User user) {
+        Optional<PostHits> byPostAndUser = postHitsRepository.findByPostAndUser(post, user);
+        if (byPostAndUser.isEmpty()) {
+            postHitsRepository.save(PostHits.builder()
+                .post(post)
+                .user(user)
+                .viewCnt(1)
+                .build());
+        } else {
+            PostHits postHits = byPostAndUser.get();
+            postHits.updateViewCount(postHits.getViewCnt() + 1);
+        }
+    }
+
 }

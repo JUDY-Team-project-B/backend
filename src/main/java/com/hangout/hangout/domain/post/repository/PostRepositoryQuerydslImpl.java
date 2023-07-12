@@ -5,7 +5,6 @@ import static com.hangout.hangout.domain.post.entity.QPostInfo.postInfo;
 import static com.hangout.hangout.domain.user.entity.QUser.user;
 
 import com.hangout.hangout.domain.post.entity.Post;
-import com.hangout.hangout.domain.user.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -161,16 +160,17 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     @Override
     public void addLikeCount(Post selectpost) {
         queryFactory.update(post)
-                .set(post.likeCount, post.likeCount.add(1))
-                .where(post.eq(selectpost))
-                .execute();
+            .set(post.likeCount, post.likeCount.add(1))
+            .where(post.eq(selectpost))
+            .execute();
     }
 
     @Override
     public void subLikeCount(Post selectpost) {
         queryFactory.update(post)
-                .set(post.likeCount, post.likeCount.subtract(1))
-                .where(post.eq(selectpost))
-                .execute();
+            .set(post.likeCount, post.likeCount.subtract(1))
+            .where(post.eq(selectpost))
+            .execute();
     }
+
 }

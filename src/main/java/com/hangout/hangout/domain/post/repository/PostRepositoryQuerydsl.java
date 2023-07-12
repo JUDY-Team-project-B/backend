@@ -18,7 +18,7 @@ public interface PostRepositoryQuerydsl {
 
     Page<Post> findAllContainContextByCreatedAtDesc(Pageable pageable, String searchKeyword);
 
-    Page<Post> findAllContainNicknameByCreatedAtDesc(Pageable pageable,  String searchKeyword);
+    Page<Post> findAllContainNicknameByCreatedAtDesc(Pageable pageable, String searchKeyword);
 
     void addLikeCount(Post selectpost);
 
