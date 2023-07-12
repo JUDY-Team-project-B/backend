@@ -1,13 +1,11 @@
 package com.hangout.hangout.domain.post.controller;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
+import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
 import com.hangout.hangout.domain.image.service.ImageFileUploadService;
 import com.hangout.hangout.domain.like.dto.LikeRequest;
 import com.hangout.hangout.domain.like.service.LikeService;
-
-import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
-import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
-
 import com.hangout.hangout.domain.post.PostMapper;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
@@ -19,6 +17,8 @@ import com.hangout.hangout.domain.post.service.PostTagService;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseEntity;
 import com.hangout.hangout.global.security.CurrentUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,12 +60,17 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
+    @Operation(summary = "유저의 게시물 조회", tags = {"post Controller"}, description = "Redis를 사용하여 게시물 조회 수 없데이트")
+    @ApiResponse(responseCode = "201", description = "OK")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
         List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
         List<String> imagesByPost = imageFileUploadService.getImagesByPost(postService.findPostById(postId));
 
+        postService.updatePostHits(postId, user);
         int likeStatus = postService.findLike(user, postId);
+
         return successResponse(mapper.of(postService.findPostById(postId),tagsByPost,imagesByPost,likeStatus));
+
 
     }
 
@@ -98,4 +103,12 @@ public class PostController {
 
         return successResponse();
     }
+
+    @GetMapping("/hits/{postId}")
+    @Operation(summary = "게시물 조회 수 조회", tags = {"Post Controller"})
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<Long> getPostHits(@PathVariable Long postId) {
+        return successResponse(postService.getPostHits(postId));
+    }
+
 }
