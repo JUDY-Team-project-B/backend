@@ -1,5 +1,7 @@
 package com.hangout.hangout.domain.user.controller;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
+
 import com.hangout.hangout.domain.image.service.UserImageFileUploadService;
 import com.hangout.hangout.domain.user.dto.UserProfileUpdateRequest;
 import com.hangout.hangout.domain.user.dto.UserResponse;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping(API_PREFIX + "/user")
 @RequiredArgsConstructor
 public class UserController {
 

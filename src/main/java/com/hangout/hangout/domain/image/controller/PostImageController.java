@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.image.controller;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
 import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
 import com.hangout.hangout.domain.image.service.ImageFileUploadService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/post")
+@RequestMapping(API_PREFIX + "/post")
 public class PostImageController {
     private final ImageFileUploadService imageFileUploadService;
 
