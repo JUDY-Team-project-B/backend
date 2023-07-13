@@ -63,8 +63,11 @@ public class PostController {
     @Operation(summary = "유저의 게시물 조회", tags = {"post Controller"}, description = "Redis를 사용하여 게시물 조회 수 없데이트")
     @ApiResponse(responseCode = "201", description = "OK")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
-        List<String> tagsByPost = postTagService.getTagsByPost(postService.findPostById(postId));
-        List<String> imagesByPost = imageFileUploadService.getImagesByPost(postService.findPostById(postId));
+
+        Post newPost = postService.findPostById(postId);
+
+        List<String> tagsByPost = postTagService.getTagsByPost(newPost);
+        List<String> imagesByPost = imageFileUploadService.getImagesByPost(newPost);
 
         postService.updatePostHits(postId, user);
         int likeStatus = postService.findLike(user, postId);

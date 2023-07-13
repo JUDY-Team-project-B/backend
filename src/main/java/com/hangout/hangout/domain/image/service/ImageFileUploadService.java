@@ -5,7 +5,6 @@ import com.hangout.hangout.domain.image.repository.ImageJdbcRepository;
 import com.hangout.hangout.domain.image.repository.PostImageRepository;
 import com.hangout.hangout.domain.image.util.FileUtils;
 import com.hangout.hangout.domain.post.entity.Post;
-import com.hangout.hangout.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageFileUploadService {
     private final AwsS3Service awsS3Service;
-    private final PostService postService;
     private final ImageJdbcRepository imageJdbcRepository;
     private final PostImageRepository postImageRepository;
 
     @Transactional
-    public void upload(Long postId, List<MultipartFile> files) throws IOException {
-        Post post = postService.findPostById(postId);
-        upload(files, post);
-    }
-
-    private void upload(List<MultipartFile> files, Post post) throws IOException {
+    public void upload(List<MultipartFile> files, Post post) throws IOException {
         List<PostImage> postImages = uploadImageToStorageServer(files, post);
         imageJdbcRepository.saveAllPostImage(postImages);
     }

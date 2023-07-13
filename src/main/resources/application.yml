@@ -50,8 +50,8 @@ application:
 cloud:
   aws:
     credentials:
-      access-key: ## accessKey
-      secret-key: ## secretKey
+      access-key: # accessKey
+      secret-key: # secretKey
     region:
       static: ap-northeast-2
     s3:
