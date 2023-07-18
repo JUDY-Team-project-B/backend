@@ -8,6 +8,8 @@ import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
+import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.StatusNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +32,14 @@ public class CommentService {
     @Transactional
     public void saveComment(CommentCreateDto commentDto,User user){
         Post post = postRepository.findPostById(commentDto.getPostId()).get();
-        Status status = statusRepository.findStatusById(1L).get();
-        Comment comment = commentDto.toEntity(commentDto,user,post,status);
+        Comment comment = commentDto.toEntity(commentDto,user,post);
+
+        Long newStatus = 1L;
+        Status status = statusRepository.findStatusById(newStatus).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+
+        comment.setStatus(status);
+
         commentRepository.save(comment);
     }
 
@@ -44,10 +52,15 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long id, CommentDeleteDto comment){
+    public void deleteComment(Long id){
         Comment comment2 = commentRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id ));
-        comment2.delete(comment.getStatus());
+        Long deleteStatus = 2L;
+        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
+                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+
+        comment2.setStatus(status);
+        commentRepository.save(comment2);
     }
 
 

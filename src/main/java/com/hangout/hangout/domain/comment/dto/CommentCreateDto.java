@@ -16,25 +16,21 @@ public class CommentCreateDto {
 
     private Long postId;
 
-    private Long statusId;
-
     private Long parentId;
 
     private String content;
     @Builder
-    public CommentCreateDto(Long user, Long post,Long status,Long parentId, String content){
+    public CommentCreateDto(Long user, Long post,Long parentId, String content){
         this.userId = user;
         this.postId = post;
-        this.statusId = status;
         this.parentId = parentId;
         this.content = content;
     }
 
-    public Comment toEntity(CommentCreateDto dto, User user, Post post, Status status){
+    public Comment toEntity(CommentCreateDto dto, User user, Post post){
         return Comment.builder()
                 .user(user)
                 .post(post)
-                .status(status)
                 .parentId(dto.getParentId())
                 .content(dto.getContent())
                 .build();
