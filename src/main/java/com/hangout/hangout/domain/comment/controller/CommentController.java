@@ -3,10 +3,10 @@ package com.hangout.hangout.domain.comment.controller;
 import com.hangout.hangout.domain.comment.dto.*;
 import com.hangout.hangout.domain.comment.service.CommentService;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.error.ResponseEntity;
 import com.hangout.hangout.global.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class CommentController {
     public ResponseEntity<HttpStatus> Create(@RequestBody CommentCreateDto
                                                             commentCreateDto, @CurrentUser User user){
         commentService.saveComment(commentCreateDto,user);
-        return ResponseEntity.ok().build();
+        return successResponse();
     }
 
     @PutMapping("/{id}")
@@ -32,18 +32,18 @@ public class CommentController {
                                                      commentUpdateRequestDto, @PathVariable Long id){
         commentService.updateComment(id,commentUpdateRequestDto);
 
-        return ResponseEntity.ok().build();
+        return successResponse();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteComment(@RequestBody CommentDeleteDto commentDeleteDto,@PathVariable Long id){
-        commentService.deleteComment(id, commentDeleteDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id){
+        commentService.deleteComment(id);
+        return successResponse();
 
     }
     @GetMapping("/{post_id}")
     public ResponseEntity<List<CommentRequestDTO>> readComment(@PathVariable Long post_id){
         List<CommentRequestDTO> comments= commentService.getAllCommentsByPost(post_id);
-        return ResponseEntity.ok(comments);
+        return successResponse("답글 조회에 성공하셨습니다!", comments);
     }
 }
