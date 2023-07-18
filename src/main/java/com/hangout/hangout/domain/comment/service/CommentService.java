@@ -100,7 +100,7 @@ public class CommentService {
             CommentRequestDTO commentRequestDTO = convertCommentTODto(comment);
             commentDTOHashMap.put(commentRequestDTO.getId(),commentRequestDTO);
             if(comment.getParent() !=null){
-                commentDTOHashMap.get(comment.getParent().getId()).getChildren2().add(commentRequestDTO);
+                commentDTOHashMap.get(comment.getParent().getId()).getChildren().add(commentRequestDTO);
             }else{
                 commentRequestDTOList.add(commentRequestDTO);
             }

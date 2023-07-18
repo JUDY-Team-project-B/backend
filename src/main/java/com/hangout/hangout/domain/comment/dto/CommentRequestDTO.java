@@ -23,7 +23,7 @@ public class CommentRequestDTO {
         this.user = user;
         this.content = content;
     }
-    public List<CommentRequestDTO> getChildren2() {
+    public List<CommentRequestDTO> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
         }
