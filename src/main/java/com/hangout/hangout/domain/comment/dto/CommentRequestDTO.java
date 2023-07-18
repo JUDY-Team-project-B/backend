@@ -11,13 +11,12 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class CommentRequestDTO extends Comment {
+public class CommentRequestDTO {
     private Long Id;
     @JsonIgnore
     private User user;
     private String content;
-    private List<Comment> children;
-    private List<CommentRequestDTO> children2;
+    private List<CommentRequestDTO> children;
 
     public CommentRequestDTO(Long Id,User user,String content) {
         this.Id = Id;
@@ -25,10 +24,10 @@ public class CommentRequestDTO extends Comment {
         this.content = content;
     }
     public List<CommentRequestDTO> getChildren2() {
-        if (children2 == null) {
-            children2 = new ArrayList<>();
+        if (children == null) {
+            children = new ArrayList<>();
         }
-        return children2;
+        return children;
     }
 
 
