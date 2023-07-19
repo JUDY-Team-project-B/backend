@@ -45,11 +45,9 @@ public class LikeService {
                     .build();
             likeRepository.save(like);
             postRepository.addLikeCount(post);
-            postRepository.save(post);
         } else {
             likeRepository.deleteByUserAndPost(user, post);
             postRepository.subLikeCount(post);
-            postRepository.save(post);
         }
     }
 

@@ -36,4 +36,8 @@ public class PostHits extends BaseEntity {
         this.user = user;
         this.viewCnt = viewCnt;
     }
+
+    public void updateViewCount(int viewCnt){
+        this.viewCnt = viewCnt;
+    }
 }
