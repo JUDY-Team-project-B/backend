@@ -125,5 +125,13 @@ public class PostController {
         return successResponse(postService.getPostHitsFiltering(page, size, isDescending));
     }
 
+    @GetMapping("/like/filter/{page}")
+    @Operation(summary = "게시물 좋아요 수 필터링", tags = {"Post Controller"})
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<List<PostListResponse>> getPostLikesFiltering(@PathVariable Integer page
+        , @RequestParam(defaultValue = "8") Integer size,
+        @RequestParam(defaultValue = "false") boolean isDescending) {
+        return successResponse(postService.getPostLikesFiltering(page, size, isDescending));
+    }
 
 }
