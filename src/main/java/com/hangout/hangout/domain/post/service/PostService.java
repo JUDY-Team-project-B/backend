@@ -193,4 +193,19 @@ public class PostService {
         }
     }
 
+    public List<PostListResponse> getPostHitsFiltering(Integer page, Integer size,
+        boolean isDescending) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<Post> posts = postRepository.findAllByOrderByPostHits(pageRequest,
+            isDescending).getContent();
+        return mapper.toDtoList(posts);
+    }
+
+    public List<PostListResponse> getPostLikesFiltering(Integer page, Integer size,
+        boolean isDescending) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<Post> posts = postRepository.findAllByOrderByPostLikes(pageRequest,
+            isDescending).getContent();
+        return mapper.toDtoList(posts);
+    }
 }
