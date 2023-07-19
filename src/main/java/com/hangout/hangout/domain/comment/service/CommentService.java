@@ -3,22 +3,24 @@ package com.hangout.hangout.domain.comment.service;
 import com.hangout.hangout.domain.comment.domain.repository.CommentRepository;
 import com.hangout.hangout.domain.comment.dto.*;
 import com.hangout.hangout.domain.comment.entity.Comment;
+import com.hangout.hangout.domain.like.dto.LikeCommentRequest;
+import com.hangout.hangout.domain.like.entity.CommentLike;
+import com.hangout.hangout.domain.like.repository.LikeCommentRepository;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.domain.user.service.UserService;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.NotFoundException;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //import static com.hangout.hangout.domain.comment.entity.Comment.comment;
@@ -26,9 +28,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+
+    private final UserService userService;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final StatusRepository statusRepository;
+    private final LikeCommentRepository likeCommentRepository;
 
     @Transactional
     public void saveComment(CommentCreateDto commentDto,User user){
@@ -46,8 +51,9 @@ public class CommentService {
 
     @Transactional
     public void updateComment(Long id, CommentUpdateDto comment, User user){
-        Comment comment2 = commentRepository.findById(id).orElseThrow(()->
-                new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id ));
+        Comment comment2 = commentRepository.findCommentById(id).orElseThrow(() ->
+                new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
+
         if(isMatchedNickname(comment2, user)) {
             comment2.update(comment.getContent());
         }
@@ -55,8 +61,8 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long id, User user){
-        Comment comment2 = commentRepository.findById(id).orElseThrow(()->
-                new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id ));
+        Comment comment2 = commentRepository.findCommentById(id).orElseThrow(() ->
+                new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
 
         if(isMatchedNickname(comment2, user)) {
             Long deleteStatus = 2L;
@@ -75,6 +81,20 @@ public class CommentService {
             throw new UnAuthorizedAccessException(ResponseType.REQUEST_NOT_VALID);
         }
         return true;
+    }
+
+    public int findLike(LikeCommentRequest request) {
+        Long userId = request.getUserId();
+        Long commentId = request.getCommentId();
+
+        User user = userService.getUserById(userId);
+        Comment comment2 = commentRepository.findCommentById(commentId).orElseThrow(() ->
+                new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
+        // 좋아요 상태가 아니면 0, 맞다면 1
+        Optional<CommentLike> findLike = likeCommentRepository.findByUserAndComment(user, comment2);
+
+        if (findLike.isEmpty()) return 0;
+        else return 1;
     }
 
     @Transactional
@@ -97,8 +117,8 @@ public class CommentService {
     }
 
     public Comment findCommentById(Long id) {
-        return commentRepository.findById(id).orElseThrow(()->
-                new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id));
+        return commentRepository.findById(id).orElseThrow(() ->
+                new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
     }
 
     @Transactional
@@ -121,10 +141,7 @@ public class CommentService {
     }
 
     private CommentRequestDTO convertCommentTODto(Comment comment){
-        return
-                new CommentRequestDTO(comment.getId(),comment.getUser(), comment.getContent());
+        return new CommentRequestDTO(comment.getId(),comment.getUser(), comment.getContent(), comment.getLikeCount());
     }
-
-
 
 }

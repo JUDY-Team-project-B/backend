@@ -16,12 +16,14 @@ public class CommentRequestDTO {
     @JsonIgnore
     private User user;
     private String content;
+    private Integer likeCount;
     private List<CommentRequestDTO> children;
 
-    public CommentRequestDTO(Long Id,User user,String content) {
+    public CommentRequestDTO(Long Id,User user,String content,Integer likeCount) {
         this.Id = Id;
         this.user = user;
         this.content = content;
+        this.likeCount = likeCount;
     }
     public List<CommentRequestDTO> getChildren() {
         if (children == null) {
@@ -33,7 +35,6 @@ public class CommentRequestDTO {
 
 
     public CommentRequestDTO convertCommentTODto(Comment comment){
-        return
-                new CommentRequestDTO(comment.getId(),comment.getUser(), comment.getContent());
+        return new CommentRequestDTO(comment.getId(),comment.getUser(), comment.getContent(), comment.getLikeCount());
     }
 }
