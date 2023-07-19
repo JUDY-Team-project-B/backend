@@ -205,7 +205,12 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         return PageableExecutionUtils.getPage(posts, page, count::fetchOne);
     }
 
-    @Override
+    /**
+     * 좋아요 수에 따라 정렬된 게시물 조회
+     * @param page pagination의 offset과 limit정보 전달을 위한 Pageable 객체
+     * @param isDescending false인 경우 오름차순, true인 경우 내림차순 조회
+     * @return Page<Post>
+     */    @Override
     public Page<Post> findAllByOrderByPostLikes(Pageable page, boolean isDescending) {
         JPAQuery<Post> postJPAQuery = queryFactory.selectFrom(post)
             .groupBy(post)
