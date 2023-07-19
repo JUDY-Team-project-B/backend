@@ -24,4 +24,6 @@ public interface PostRepositoryQuerydsl {
 
     void subLikeCount(Post selectpost);
 
+    Page<Post> findAllByOrderByPostHits(Pageable page, boolean isDescending);
+
 }

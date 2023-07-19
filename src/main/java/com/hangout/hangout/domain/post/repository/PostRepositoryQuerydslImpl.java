@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.post.repository;
 
 import static com.hangout.hangout.domain.post.entity.QPost.post;
+import static com.hangout.hangout.domain.post.entity.QPostHits.postHits;
 import static com.hangout.hangout.domain.post.entity.QPostInfo.postInfo;
 import static com.hangout.hangout.domain.user.entity.QUser.user;
 
@@ -172,5 +173,37 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .where(post.eq(selectpost))
             .execute();
     }
+
+    /**
+     * 조회수에 따라 정렬된 게시물 조회
+     * @param page pagination의 offset과 limit정보 전달을 위한 Pageable 객체
+     * @param isDescending false인 경우 오름차순, true인 경우 내림차순 조회
+     * @return Page<Post>
+     */
+    @Override
+    public Page<Post> findAllByOrderByPostHits(Pageable page, boolean isDescending) {
+
+        JPAQuery<Post> postJPAQuery = queryFactory.selectFrom(post)
+            .innerJoin(postHits)
+            .on(post.eq(postHits.post))
+            .groupBy(postHits.post)
+            .offset(page.getOffset())
+            .limit(page.getPageSize());
+
+        if (isDescending) {
+            postJPAQuery.orderBy(postHits.viewCnt.sum().desc());
+        } else {
+            postJPAQuery.orderBy(postHits.viewCnt.sum().asc());
+        }
+
+        JPAQuery<Long> count = queryFactory.select(post.countDistinct())
+            .from(post)
+            .innerJoin(postHits)
+            .on(post.eq(postHits.post));
+
+        List<Post> posts = postJPAQuery.fetch();
+        return PageableExecutionUtils.getPage(posts, page, count::fetchOne);
+    }
+
 
 }
