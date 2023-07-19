@@ -1,11 +1,12 @@
-package com.hangout.hangout.domain.comment.entity;
+package com.hangout.hangout.domain.like.entity;
 
+import com.hangout.hangout.domain.comment.entity.Comment;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -27,6 +28,10 @@ public class CommentLike extends BaseEntity {
     @JoinColumn(name = "COMMENT_ID")
     private Comment comment;
 
-    @ColumnDefault("0")
-    private int likeCnt; // 추천 수
+    @Builder
+    public CommentLike(Long id, Comment comment, User user) {
+        this.id = id;
+        this.comment = comment;
+        this.user = user;
+    }
 }
