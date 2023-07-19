@@ -60,7 +60,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    @Operation(summary = "유저의 게시물 조회", tags = {"post Controller"}, description = "Redis를 사용하여 게시물 조회 수 없데이트")
+    @Operation(summary = "유저의 게시물 조회", tags = {
+        "post Controller"}, description = "Redis를 사용하여 게시물 조회 수 없데이트")
     @ApiResponse(responseCode = "201", description = "OK")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
 
@@ -72,7 +73,8 @@ public class PostController {
         postService.updatePostHits(postId, user);
         int likeStatus = postService.findLike(user, postId);
 
-        return successResponse(mapper.of(postService.findPostById(postId),tagsByPost,imagesByPost,likeStatus));
+        return successResponse(
+            mapper.of(postService.findPostById(postId), tagsByPost, imagesByPost, likeStatus));
 
 
     }
@@ -113,5 +115,15 @@ public class PostController {
     public ResponseEntity<Long> getPostHits(@PathVariable Long postId) {
         return successResponse(postService.getPostHits(postId));
     }
+
+    @GetMapping("/hits/filter/{page}")
+    @Operation(summary = "게시물 조회 수 필터링", tags = {"Post Controller"})
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<List<PostListResponse>> getPostHitsFiltering(@PathVariable Integer page
+        , @RequestParam(defaultValue = "8") Integer size,
+        @RequestParam(defaultValue = "false") boolean isDescending) {
+        return successResponse(postService.getPostHitsFiltering(page, size, isDescending));
+    }
+
 
 }
