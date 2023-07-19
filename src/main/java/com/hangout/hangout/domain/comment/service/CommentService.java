@@ -10,6 +10,7 @@ import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
+import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,26 +45,37 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Long id, CommentUpdateDto comment){
+    public void updateComment(Long id, CommentUpdateDto comment, User user){
         Comment comment2 = commentRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id ));
-
-        comment2.update(comment.getContent());
+        if(isMatchedNickname(comment2, user)) {
+            comment2.update(comment.getContent());
+        }
     }
 
     @Transactional
-    public void deleteComment(Long id){
+    public void deleteComment(Long id, User user){
         Comment comment2 = commentRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("해당댓글이 존재하지 않습니다."+id ));
-        Long deleteStatus = 2L;
-        Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
-                () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
 
-        comment2.setStatus(status);
-        commentRepository.save(comment2);
+        if(isMatchedNickname(comment2, user)) {
+            Long deleteStatus = 2L;
+            Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
+                    () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+
+            comment2.setStatus(status);
+            commentRepository.save(comment2);
+        }
     }
 
+    public boolean isMatchedNickname(Comment comment, User user) {
+        String userNickname = user.getNickname();
 
+        if (!comment.getUser().getNickname().equals(userNickname)) {
+            throw new UnAuthorizedAccessException(ResponseType.REQUEST_NOT_VALID);
+        }
+        return true;
+    }
 
     @Transactional
     public List<CommentReadDto> findCommentByPostId(Long postid){

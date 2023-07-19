@@ -28,16 +28,17 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> update(@RequestBody CommentUpdateDto
-                                                     commentUpdateRequestDto, @PathVariable Long id){
-        commentService.updateComment(id,commentUpdateRequestDto);
+    public ResponseEntity<HttpStatus> update(@PathVariable Long id, @CurrentUser User user,
+                                             @RequestBody CommentUpdateDto commentUpdateRequestDto){
+        commentService.updateComment(id,commentUpdateRequestDto, user);
 
         return successResponse();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id){
-        commentService.deleteComment(id);
+    public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long id,
+                                                    @CurrentUser User user){
+        commentService.deleteComment(id, user);
         return successResponse();
 
     }
