@@ -26,5 +26,14 @@ class PostRepositoryQuerydslImplTest {
         postRepository.findAllByOrderByPostHits(page,
             isDescending).getContent();
     }
+
+    // 게시물을 좋아요 수가 많은 순으로 조회
+    @Test
+    void findAllByOrderByPostLikes() {
+        PageRequest page = PageRequest.of(0, 8);
+        boolean isDescending = true;
+
+        postRepository.findAllByOrderByPostLikes(page, isDescending);
+    }
 }
 
