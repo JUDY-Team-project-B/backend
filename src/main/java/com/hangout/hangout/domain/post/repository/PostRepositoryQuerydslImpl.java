@@ -205,5 +205,25 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         return PageableExecutionUtils.getPage(posts, page, count::fetchOne);
     }
 
+    @Override
+    public Page<Post> findAllByOrderByPostLikes(Pageable page, boolean isDescending) {
+        JPAQuery<Post> postJPAQuery = queryFactory.selectFrom(post)
+            .groupBy(post)
+            .offset(page.getOffset())
+            .limit(page.getPageSize());
+
+        if (isDescending) {
+            postJPAQuery.orderBy(post.likeCount.sum().desc(), post.id.asc());
+        } else {
+            postJPAQuery.orderBy(post.likeCount.sum().asc(), post.id.asc());
+        }
+
+        JPAQuery<Long> count = queryFactory.select(post.count())
+            .from(post);
+
+        List<Post> posts = postJPAQuery.fetch();
+        return PageableExecutionUtils.getPage(posts, page, count::fetchOne);
+    }
+
 
 }

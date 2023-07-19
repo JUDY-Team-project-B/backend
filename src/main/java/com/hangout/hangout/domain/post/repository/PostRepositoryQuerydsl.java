@@ -26,4 +26,6 @@ public interface PostRepositoryQuerydsl {
 
     Page<Post> findAllByOrderByPostHits(Pageable page, boolean isDescending);
 
+    Page<Post> findAllByOrderByPostLikes(Pageable page, boolean isDescending);
+
 }
