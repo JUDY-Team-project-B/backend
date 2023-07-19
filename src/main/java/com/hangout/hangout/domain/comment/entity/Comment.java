@@ -10,6 +10,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +21,8 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "COMMENT")
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
@@ -48,9 +53,9 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY ,  orphanRemoval = true)
     private List<Comment> children = new ArrayList<>();
 
-    // 좋아요 기능 추가를 위해 commentLikes 와 연결
-    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
-    private List<CommentLike> commentLikes = new ArrayList<>();
+    @ColumnDefault("0")
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount;
 
     // 신고 기능 추가를 위해 commentReport 와 연결
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
@@ -73,14 +78,13 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void delete(Status status){this.status=status;}
-
     @Builder
-    public Comment(User user, Post post, Status status, Long parentId, String content) {
+    public Comment(User user, Post post, Status status, Long parentId, Integer likeCount ,String content) {
         this.user = user;
         this.post = post;
         this.status = status;
         this.parentId = parentId;
+        this.likeCount = likeCount;
         this.content = content;
     }
 
