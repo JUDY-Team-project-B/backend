@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
 import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/comment")
+@RequestMapping(API_PREFIX + "/comment")
 public class CommentController {
     private final CommentService commentService;
     private final LikeService likeService;
