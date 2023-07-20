@@ -36,9 +36,10 @@ public class CommentService {
     private final LikeCommentRepository likeCommentRepository;
 
     @Transactional
-    public void saveComment(CommentCreateDto commentDto,User user){
-        Post post = postRepository.findPostById(commentDto.getPostId()).get();
-        Comment comment = commentDto.toEntity(commentDto,user,post);
+    public void saveComment(CommentCreateDto commentCreateDto,User user){
+        Post post = postRepository.findPostById(commentCreateDto.getPostId()).orElseThrow(() ->
+                new NotFoundException(ResponseType.POST_NOT_FOUND));
+        Comment comment = commentCreateDto.toEntity(commentCreateDto,user,post);
 
         Long newStatus = 1L;
         Status status = statusRepository.findStatusById(newStatus).orElseThrow(
@@ -50,27 +51,27 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Long id, CommentUpdateDto comment, User user){
-        Comment comment2 = commentRepository.findCommentById(id).orElseThrow(() ->
+    public void updateComment(Long id, CommentUpdateDto commentUpdateDto, User user){
+        Comment comment = commentRepository.findCommentById(id).orElseThrow(() ->
                 new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
 
-        if(isMatchedNickname(comment2, user)) {
-            comment2.update(comment.getContent());
+        if(isMatchedNickname(comment, user)) {
+            comment.update(commentUpdateDto.getContent());
         }
     }
 
     @Transactional
     public void deleteComment(Long id, User user){
-        Comment comment2 = commentRepository.findCommentById(id).orElseThrow(() ->
+        Comment comment = commentRepository.findCommentById(id).orElseThrow(() ->
                 new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
 
-        if(isMatchedNickname(comment2, user)) {
+        if(isMatchedNickname(comment, user)) {
             Long deleteStatus = 2L;
             Status status = statusRepository.findStatusById(deleteStatus).orElseThrow(
                     () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
 
-            comment2.setStatus(status);
-            commentRepository.save(comment2);
+            comment.setStatus(status);
+            commentRepository.save(comment);
         }
     }
 
