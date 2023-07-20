@@ -66,8 +66,6 @@ public class Comment extends BaseEntity {
     private String content;
 
 
-    public void setContent(String content){this.content = content;}
-
     public void setParent(Comment comment){this.parent = comment;}
 
     public void setStatus(Status status) {
