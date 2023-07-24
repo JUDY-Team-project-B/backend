@@ -15,6 +15,7 @@ public class Constants {
     public final static String[] PERMIT_ALL_URI_LIST = {
         API_PREFIX+"/auth/**",
         API_PREFIX+"/post/**",
-        API_PREFIX+"/comment/**"
+        API_PREFIX+"/comment/**",
+        API_PREFIX+"/report/**"
     };
 }
