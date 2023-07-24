@@ -43,6 +43,9 @@ public enum ResponseType {
     POST_NOT_FOUND("PO01", "해당 게시글을 찾을 수 없습니다."),
     STATUS_NOT_FOUND("PO02", "상태값을 찾을 수 없습니다."),
 
+    // COMMENT
+    COMMENT_NOT_FOUND("C001", "해당 댓글을 찾을 수 없습니다."),
+
     // ABUSE REPORT
     COMMENT_ABUSE_REPORT_NOT_FOUND("R001", "해당 댓글 신고건을 찾을 수 없습니다."),
     POST_ABUSE_REPORT_NOT_FOUND("R002", "해당 게시글 신고건을 찾을 수 없습니다."),
