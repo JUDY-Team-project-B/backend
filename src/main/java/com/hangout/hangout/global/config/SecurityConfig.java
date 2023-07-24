@@ -1,8 +1,8 @@
 package com.hangout.hangout.global.config;
 
 import static com.hangout.hangout.global.common.domain.entity.Constants.AUTHORIZATION_ENDPOINT;
+import static com.hangout.hangout.global.common.domain.entity.Constants.PERMIT_GET_URI_LIST;
 import static com.hangout.hangout.global.common.domain.entity.Constants.PERMIT_ALL_URI_LIST;
-import static com.hangout.hangout.global.common.domain.entity.Constants.SWAGGER_URI_LIST;
 
 import com.hangout.hangout.domain.user.service.CustomOAuth2UserService;
 import com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository;
@@ -61,9 +61,9 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests()
-            .antMatchers(SWAGGER_URI_LIST)
+            .antMatchers(PERMIT_ALL_URI_LIST)
             .permitAll()
-            .antMatchers(HttpMethod.GET, PERMIT_ALL_URI_LIST)
+            .antMatchers(HttpMethod.GET, PERMIT_GET_URI_LIST)
             .permitAll()
             .anyRequest()
             .authenticated()
