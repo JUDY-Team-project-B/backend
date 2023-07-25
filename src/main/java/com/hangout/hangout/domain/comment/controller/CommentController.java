@@ -58,9 +58,9 @@ public class CommentController {
         return successResponse();
 
     }
-    @GetMapping("/{post_id}")
-    public ResponseEntity<List<CommentRequestDTO>> readComment(@PathVariable Long post_id){
-        List<CommentRequestDTO> comments= commentService.getAllCommentsByPost(post_id);
+    @GetMapping("/{postId}")
+    public ResponseEntity<List<CommentRequestDTO>> readComment(@PathVariable Long postId){
+        List<CommentRequestDTO> comments= commentService.getAllCommentsByPost(postId);
         return successResponse("답글 조회에 성공하셨습니다!", comments);
     }
 }

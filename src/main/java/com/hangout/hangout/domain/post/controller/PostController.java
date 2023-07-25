@@ -60,23 +60,23 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    @Operation(summary = "유저의 게시물 조회", tags = {
-        "post Controller"}, description = "Redis를 사용하여 게시물 조회 수 없데이트")
+    @Operation(summary = "유저의 게시물 조회", description = "Redis를 사용하여 게시물 조회 수 없데이트")
     @ApiResponse(responseCode = "201", description = "OK")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
 
         Post newPost = postService.findPostById(postId);
-
         List<String> tagsByPost = postTagService.getTagsByPost(newPost);
         List<String> imagesByPost = imageFileUploadService.getImagesByPost(newPost);
+        if (user.getId() != null) {
+            postService.updatePostHits(postId, user);
+            int likeStatus = postService.findLike(user, postId);
 
-        postService.updatePostHits(postId, user);
-        int likeStatus = postService.findLike(user, postId);
-
-        return successResponse(
-            mapper.of(postService.findPostById(postId), tagsByPost, imagesByPost, likeStatus));
-
-
+            return successResponse(
+                mapper.of(newPost, tagsByPost, imagesByPost, likeStatus));
+        } else {
+            return successResponse(
+                mapper.of(newPost, tagsByPost, imagesByPost, 0));
+        }
     }
 
     @GetMapping("/all/{page}")
@@ -110,14 +110,14 @@ public class PostController {
     }
 
     @GetMapping("/hits/{postId}")
-    @Operation(summary = "게시물 조회 수 조회", tags = {"Post Controller"})
+    @Operation(summary = "게시물 조회 수 조회")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Long> getPostHits(@PathVariable Long postId) {
         return successResponse(postService.getPostHits(postId));
     }
 
     @GetMapping("/hits/filter/{page}")
-    @Operation(summary = "게시물 조회 수 필터링", tags = {"Post Controller"})
+    @Operation(summary = "게시물 조회 수 필터링")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<List<PostListResponse>> getPostHitsFiltering(@PathVariable Integer page
         , @RequestParam(defaultValue = "8") Integer size,
@@ -126,7 +126,7 @@ public class PostController {
     }
 
     @GetMapping("/like/filter/{page}")
-    @Operation(summary = "게시물 좋아요 수 필터링", tags = {"Post Controller"})
+    @Operation(summary = "게시물 좋아요 수 필터링")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<List<PostListResponse>> getPostLikesFiltering(@PathVariable Integer page
         , @RequestParam(defaultValue = "8") Integer size,
