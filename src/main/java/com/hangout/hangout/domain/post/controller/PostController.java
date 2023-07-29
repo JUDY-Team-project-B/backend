@@ -59,6 +59,16 @@ public class PostController {
         return successResponse();
     }
 
+    @GetMapping("/me/{page}")
+    @Operation(summary = "작성한 글 조회")
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<List<PostListResponse>> getMyPosts(@PathVariable Integer page
+        ,@RequestParam(defaultValue = "16") Integer size, @CurrentUser User user) {
+        List<PostListResponse> posts = postService.getPostsByUser(page, size, user);
+
+        return successResponse("작성한 글 조회에 성공하셨습니다!", posts);
+    }
+
     @GetMapping("/{postId}")
     @Operation(summary = "유저의 게시물 조회", description = "Redis를 사용하여 게시물 조회 수 없데이트")
     @ApiResponse(responseCode = "201", description = "OK")

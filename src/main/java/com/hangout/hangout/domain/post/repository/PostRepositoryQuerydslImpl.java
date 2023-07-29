@@ -6,6 +6,7 @@ import static com.hangout.hangout.domain.post.entity.QPostInfo.postInfo;
 import static com.hangout.hangout.domain.user.entity.QUser.user;
 
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.user.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -32,6 +33,39 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 postInfo.status.id.eq(1L)
             ).fetchOne();
         return Optional.ofNullable(post1);
+    }
+
+    /**
+     * 현재 로그인 중인 유저가 작성한 게시물 조회
+     * @param pageable pagination의 offset과 limit정보 전달을 위한 Pageable 객체
+     * @param currentUser 현재 로그인 중인 유저
+     * @return Page<Post>
+     */
+    @Override
+    public Page<Post> findAllPostByUser(Pageable pageable, User currentUser) {
+
+        List<Post> postList = queryFactory
+                .selectFrom(post)
+                .join(post.postInfo, postInfo)
+                .where(
+                    postInfo.status.id.eq(1L),
+                    post.user.eq(currentUser)
+                )
+                .orderBy(post.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(post.count())
+                .from(post)
+                .join(post.postInfo, postInfo)
+                .where(
+                        postInfo.status.id.eq(1L),
+                        post.user.eq(currentUser)
+                );
+
+        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
     }
 
     // 검색 조건 없는 모든 게시글 조회
