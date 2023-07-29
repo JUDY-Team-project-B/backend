@@ -122,6 +122,23 @@ public class CommentService {
                 new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
     }
 
+    public List<CommentRequestDTO> getCommentsByUser(User user) {
+        List<Comment> comments = commentRepository.findCommentByUser(user);
+        List<CommentRequestDTO> commentRequestDTOList = new ArrayList<>();
+        Map<Long, CommentRequestDTO> commentDTOHashMap = new HashMap<>();
+
+        for (Comment comment : comments) {
+            CommentRequestDTO commentRequestDTO = convertCommentTODto(comment);
+            commentDTOHashMap.put(commentRequestDTO.getId(),commentRequestDTO);
+            if(comment.getParent() !=null){
+                commentDTOHashMap.get(comment.getParent().getId()).getChildren().add(commentRequestDTO);
+            }else{
+                commentRequestDTOList.add(commentRequestDTO);
+            }
+        }
+        return commentRequestDTOList;
+    }
+
     @Transactional
     public List<CommentRequestDTO> getAllCommentsByPost(Long postId) {
 

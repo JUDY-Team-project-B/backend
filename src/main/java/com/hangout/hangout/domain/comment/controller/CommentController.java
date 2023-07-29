@@ -7,6 +7,8 @@ import com.hangout.hangout.domain.like.service.LikeService;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.error.ResponseEntity;
 import com.hangout.hangout.global.security.CurrentUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +64,13 @@ public class CommentController {
     public ResponseEntity<List<CommentRequestDTO>> readComment(@PathVariable Long postId){
         List<CommentRequestDTO> comments= commentService.getAllCommentsByPost(postId);
         return successResponse("답글 조회에 성공하셨습니다!", comments);
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "작성한 댓글 조회")
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<List<CommentRequestDTO>> getMyComments(@CurrentUser User user) {
+        List<CommentRequestDTO> comments= commentService.getCommentsByUser(user);
+        return successResponse("작성한 댓글 조회에 성공하셨습니다!", comments);
     }
 }
