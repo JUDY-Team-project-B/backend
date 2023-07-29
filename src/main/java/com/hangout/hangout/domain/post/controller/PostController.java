@@ -91,7 +91,7 @@ public class PostController {
 
     @GetMapping("/all/{page}")
     public ResponseEntity<List<PostListResponse>> getPosts(@PathVariable Integer page
-        , @RequestParam(defaultValue = "8") Integer size,
+        , @RequestParam(defaultValue = "16") Integer size,
         @ModelAttribute PostSearchRequest postSearchRequest) {
         List<PostListResponse> posts = postService.getPosts(page, size, postSearchRequest);
 
@@ -130,7 +130,7 @@ public class PostController {
     @Operation(summary = "게시물 조회 수 필터링")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<List<PostListResponse>> getPostHitsFiltering(@PathVariable Integer page
-        , @RequestParam(defaultValue = "8") Integer size,
+        , @RequestParam(defaultValue = "16") Integer size,
         @RequestParam(defaultValue = "false") boolean isDescending) {
         return successResponse(postService.getPostHitsFiltering(page, size, isDescending));
     }
@@ -139,7 +139,7 @@ public class PostController {
     @Operation(summary = "게시물 좋아요 수 필터링")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<List<PostListResponse>> getPostLikesFiltering(@PathVariable Integer page
-        , @RequestParam(defaultValue = "8") Integer size,
+        , @RequestParam(defaultValue = "16") Integer size,
         @RequestParam(defaultValue = "false") boolean isDescending) {
         return successResponse(postService.getPostLikesFiltering(page, size, isDescending));
     }
