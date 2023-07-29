@@ -25,6 +25,7 @@ public class PostListResponse {
     private final int travelMember;
     private final Date travelDateStart;
     private final Date travelDateEnd;
-
+    private final int likeCount;
+    private final Long viewCount;
 
 }

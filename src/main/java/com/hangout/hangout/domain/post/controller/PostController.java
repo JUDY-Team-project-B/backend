@@ -75,6 +75,7 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
 
         Post newPost = postService.findPostById(postId);
+        Long viewCount = postService.getPostHits(postId);
         List<String> tagsByPost = postTagService.getTagsByPost(newPost);
         List<String> imagesByPost = imageFileUploadService.getImagesByPost(newPost);
         if (user.getId() != null) {
@@ -82,10 +83,10 @@ public class PostController {
             int likeStatus = postService.findLike(user, postId);
 
             return successResponse(
-                mapper.of(newPost, tagsByPost, imagesByPost, likeStatus));
+                mapper.of(newPost, tagsByPost, imagesByPost, likeStatus, viewCount));
         } else {
             return successResponse(
-                mapper.of(newPost, tagsByPost, imagesByPost, 0));
+                mapper.of(newPost, tagsByPost, imagesByPost, 0, viewCount));
         }
     }
 

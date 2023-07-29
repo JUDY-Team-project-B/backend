@@ -6,6 +6,7 @@ import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostResponse;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
+import com.hangout.hangout.domain.post.repository.PostHitsRepository;
 import com.hangout.hangout.domain.post.service.PostTagService;
 import com.hangout.hangout.domain.user.entity.User;
 import java.util.List;
@@ -19,6 +20,7 @@ public class PostMapper {
 
     private final PostTagService postTagService;
     private final ImageFileUploadService imageFileUploadService;
+    private final PostHitsRepository postHitsRepository;
 
     public Post toEntity(PostRequest postRequest, User user) {
         return Post.builder()
@@ -37,9 +39,8 @@ public class PostMapper {
     }
 
 
-    public static PostResponse of(Post post, List<String> tags, List<String> imageUrls, int likeStatus) { // 유저 정보 추가 예정 // 목록 상세 조회 시 사용
+    public static PostResponse of(Post post, List<String> tags, List<String> imageUrls, int likeStatus, Long viewCount) { // 유저 정보 추가 예정 // 목록 상세 조회 시 사용
         return PostResponse.builder()
-
                 .id(post.getId())
                 .title(post.getTitle())
                 .context(post.getContext())
@@ -57,6 +58,7 @@ public class PostMapper {
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .likeCount(post.getLikeCount())
+                .viewCount(viewCount)
                 .build();
     }
 
@@ -64,6 +66,7 @@ public class PostMapper {
 
         List<String> tags = postTagService.getTagsByPost(post);
         List<String> imageUrls = imageFileUploadService.getImagesByPost(post);
+        Long viewCount = postHitsRepository.findAllPostHits(post);
 
         return PostListResponse.builder()
                 .id(post.getId())
@@ -78,6 +81,8 @@ public class PostMapper {
                 .travelMember(post.getPostInfo().getTravelMember())
                 .travelDateStart(post.getPostInfo().getTravelDateStart())
                 .travelDateEnd(post.getPostInfo().getTravelDateEnd())
+                .likeCount(post.getLikeCount())
+                .viewCount(viewCount)
                 .build();
     }
 

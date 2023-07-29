@@ -32,5 +32,6 @@ public class PostResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     private final int likeCount;
+    private final Long viewCount;
 
 }
