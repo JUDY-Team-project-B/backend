@@ -86,7 +86,7 @@ public class PostService {
 
     public List<PostListResponse> getPostsByUserLike(User user) {
         List<Post> posts = new ArrayList<>();
-        List<PostLike> postLikes = likeRepository.findAllByUser(user);
+        List<PostLike> postLikes = likeRepository.findAllByUserId(user.getId());
 
         postLikes.forEach(like -> {
             posts.add(postRepository.findPostById(like.getId()).orElseThrow(
