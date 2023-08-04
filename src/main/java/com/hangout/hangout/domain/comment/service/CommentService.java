@@ -84,11 +84,9 @@ public class CommentService {
         return true;
     }
 
-    public int findLike(LikeCommentRequest request) {
-        Long userId = request.getUserId();
+    public int findLike(User user, LikeCommentRequest request) {
         Long commentId = request.getCommentId();
 
-        User user = userService.getUserById(userId);
         Comment comment2 = commentRepository.findCommentById(commentId).orElseThrow(() ->
                 new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
         // 좋아요 상태가 아니면 0, 맞다면 1

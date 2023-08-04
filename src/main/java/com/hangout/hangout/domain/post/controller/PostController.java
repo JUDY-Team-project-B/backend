@@ -70,6 +70,14 @@ public class PostController {
         return successResponse("작성한 글 조회에 성공하셨습니다!", posts);
     }
 
+    @GetMapping("/me/like")
+    @Operation(summary = "좋아요를 누른 글 조회")
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<List<PostListResponse>> getMyLikePosts (@CurrentUser User user) {
+        List<PostListResponse> posts = postService.getPostsByUserLike(user);
+        return successResponse("좋아요를 누른 글 조회에 성공하셨습니다!", posts);
+    }
+
     @GetMapping("/{postId}")
     @Operation(summary = "유저의 게시물 조회", description = "Redis를 사용하여 게시물 조회 수 없데이트")
     @ApiResponse(responseCode = "201", description = "OK")

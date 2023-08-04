@@ -41,8 +41,9 @@ public class CommentController {
     }
 
     @GetMapping("/like")
-    public ResponseEntity<Integer> FindLike(@RequestBody LikeCommentRequest request){
-        int like = commentService.findLike(request);
+    public ResponseEntity<Integer> FindLike(@RequestBody LikeCommentRequest request,
+                                            @CurrentUser User user){
+        int like = commentService.findLike(user, request);
         return successResponse("작성자가 좋아요를 누른 상태 여부 조사 결과 ( 좋아요 상태가 아니면 0, 맞다면 1 )", like);
     }
 
