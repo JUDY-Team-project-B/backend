@@ -54,8 +54,9 @@ public class PostController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<HttpStatus> postLike(@RequestBody LikeRequest request) {
-        likeService.insert(request);
+    public ResponseEntity<HttpStatus> postLike(@RequestBody LikeRequest request,
+                                               @CurrentUser User user) {
+        likeService.insert(user, request);
         return successResponse();
     }
 

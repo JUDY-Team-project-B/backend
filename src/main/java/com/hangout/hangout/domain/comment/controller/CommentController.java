@@ -34,8 +34,9 @@ public class CommentController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<HttpStatus> CommentLike(@RequestBody LikeCommentRequest request){
-        likeService.insert(request);
+    public ResponseEntity<HttpStatus> CommentLike(@RequestBody LikeCommentRequest request,
+                                                  @CurrentUser User user){
+        likeService.insert(user, request);
         return successResponse();
     }
 

@@ -26,14 +26,11 @@ import java.util.Optional;
 public class LikeService {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
 
     @Transactional
-    public void insert(LikeRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_ID));
+    public void insert(User user, LikeRequest request) {
         Post post = postRepository.findPostById(request.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
         Optional<PostLike> postLike = likeRepository.findByUserAndPost(user, post);
@@ -52,9 +49,7 @@ public class LikeService {
     }
 
     @Transactional
-    public void insert(LikeCommentRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_ID));
+    public void insert(User user, LikeCommentRequest request) {
         Comment comment = commentRepository.findCommentById(request.getCommentId())
                 .orElseThrow(() -> new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
         Optional<CommentLike> commentLike = likeCommentRepository.findByUserAndComment(user, comment);

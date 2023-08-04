@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LikeCommentRequest {
-    private Long userId;
     private Long commentId;
 
-    public LikeCommentRequest(Long userId, Long commentId) {
-        this.userId = userId;
+    public LikeCommentRequest(Long commentId) {
         this.commentId = commentId;
     }
 }
