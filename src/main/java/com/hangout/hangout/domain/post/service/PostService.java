@@ -89,7 +89,7 @@ public class PostService {
         List<PostLike> postLikes = likeRepository.findAllByUserId(user.getId());
 
         postLikes.forEach(like -> {
-            posts.add(postRepository.findPostById(like.getId()).orElseThrow(
+            posts.add(postRepository.findPostById(like.getPost().getId()).orElseThrow(
                     () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND)
             ));
         });
