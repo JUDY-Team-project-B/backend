@@ -128,11 +128,7 @@ public class CommentService {
         for (Comment comment : comments) {
             CommentRequestDTO commentRequestDTO = convertCommentTODto(comment);
             commentDTOHashMap.put(commentRequestDTO.getId(),commentRequestDTO);
-            if(comment.getParent() !=null){
-                commentDTOHashMap.get(comment.getParent().getId()).getChildren().add(commentRequestDTO);
-            }else{
-                commentRequestDTOList.add(commentRequestDTO);
-            }
+            commentRequestDTOList.add(commentRequestDTO);
         }
         return commentRequestDTOList;
     }
@@ -157,7 +153,7 @@ public class CommentService {
     }
 
     private CommentRequestDTO convertCommentTODto(Comment comment){
-        return new CommentRequestDTO(comment.getId(),comment.getUser(), comment.getUser().getNickname()
+        return new CommentRequestDTO(comment.getId(), comment.getUser().getNickname()
                 ,comment.getContent(), comment.getLikeCount(), comment.getCreatedAt());
     }
 
