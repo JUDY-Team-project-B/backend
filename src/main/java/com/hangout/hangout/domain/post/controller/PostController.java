@@ -70,11 +70,12 @@ public class PostController {
         return successResponse("작성한 글 조회에 성공하셨습니다!", posts);
     }
 
-    @GetMapping("/me/like")
+    @GetMapping("/me/like/{page}")
     @Operation(summary = "좋아요를 누른 글 조회")
     @ApiResponse(responseCode = "200", description = "OK")
-    public ResponseEntity<List<PostListResponse>> getMyLikePosts (@CurrentUser User user) {
-        List<PostListResponse> posts = postService.getPostsByUserLike(user);
+    public ResponseEntity<List<PostListResponse>> getMyLikePosts (@PathVariable Integer page
+            ,@RequestParam(defaultValue = "16") Integer size ,@CurrentUser User user) {
+        List<PostListResponse> posts = postService.getPostsByUserLike(page, size, user);
         return successResponse("좋아요를 누른 글 조회에 성공하셨습니다!", posts);
     }
 

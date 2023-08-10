@@ -5,8 +5,8 @@ import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.report.entity.PostReport;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -68,6 +68,9 @@ public class Post extends BaseEntity {
     // ManyToMany 관계를 위해서 일대다로 관계맺어준 컬럼
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTagRel> postTagRels;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PostLike> postLikes = new HashSet<>();
 
     @OneToMany(mappedBy = "post")
     private List<PostHits> postHits = new ArrayList<>();

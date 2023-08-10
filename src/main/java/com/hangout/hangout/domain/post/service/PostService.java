@@ -84,15 +84,10 @@ public class PostService {
             () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
     }
 
-    public List<PostListResponse> getPostsByUserLike(User user) {
-        List<Post> posts = new ArrayList<>();
-        List<PostLike> postLikes = likeRepository.findAllByUserId(user.getId());
-
-        postLikes.forEach(like -> {
-            posts.add(postRepository.findPostById(like.getPost().getId()).orElseThrow(
-                    () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND)
-            ));
-        });
+    public List<PostListResponse> getPostsByUserLike(int page, int size, User user) {
+        List<Post> posts = null;
+        PageRequest pageRequest = PageRequest.of(page, size);
+        posts = postRepository.findAllPostByUserLike(pageRequest, user).getContent();
 
         return mapper.toDtoList(posts);
     }

@@ -12,6 +12,7 @@ public interface PostRepositoryQuerydsl {
     Optional<Post> findPostById(Long postId);
 
     Page<Post> findAllPostByUser(Pageable pageable, User user);
+    Page<Post> findAllPostByUserLike(Pageable pageable, User user);
 
     Page<Post> findAllPostByCreatedAtDesc(Pageable pageable);
 
