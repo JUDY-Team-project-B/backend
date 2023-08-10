@@ -21,9 +21,12 @@ import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +82,22 @@ public class PostService {
     public Status findPostStatusById(Long statusId) {
         return statusRepository.findStatusById(statusId).orElseThrow(
             () -> new StatusNotFoundException(ResponseType.STATUS_NOT_FOUND));
+    }
+
+    public List<PostListResponse> getPostsByUserLike(int page, int size, User user) {
+        List<Post> posts = null;
+        PageRequest pageRequest = PageRequest.of(page, size);
+        posts = postRepository.findAllPostByUserLike(pageRequest, user).getContent();
+
+        return mapper.toDtoList(posts);
+    }
+
+    public List<PostListResponse> getPostsByUser(int page, int size, User user) {
+        List<Post> posts = null;
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        posts = postRepository.findAllPostByUser(pageRequest, user).getContent();
+        return mapper.toDtoList(posts);
     }
 
     public List<PostListResponse> getPosts(int page, int size,

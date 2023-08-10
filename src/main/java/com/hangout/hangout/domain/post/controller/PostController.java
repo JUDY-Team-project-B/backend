@@ -54,9 +54,29 @@ public class PostController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<HttpStatus> postLike(@RequestBody LikeRequest request) {
-        likeService.insert(request);
+    public ResponseEntity<HttpStatus> postLike(@RequestBody LikeRequest request,
+                                               @CurrentUser User user) {
+        likeService.insert(user, request);
         return successResponse();
+    }
+
+    @GetMapping("/me/{page}")
+    @Operation(summary = "작성한 글 조회")
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<List<PostListResponse>> getMyPosts(@PathVariable Integer page
+        ,@RequestParam(defaultValue = "16") Integer size, @CurrentUser User user) {
+        List<PostListResponse> posts = postService.getPostsByUser(page, size, user);
+
+        return successResponse("작성한 글 조회에 성공하셨습니다!", posts);
+    }
+
+    @GetMapping("/me/like/{page}")
+    @Operation(summary = "좋아요를 누른 글 조회")
+    @ApiResponse(responseCode = "200", description = "OK")
+    public ResponseEntity<List<PostListResponse>> getMyLikePosts (@PathVariable Integer page
+            ,@RequestParam(defaultValue = "16") Integer size ,@CurrentUser User user) {
+        List<PostListResponse> posts = postService.getPostsByUserLike(page, size, user);
+        return successResponse("좋아요를 누른 글 조회에 성공하셨습니다!", posts);
     }
 
     @GetMapping("/{postId}")
@@ -65,6 +85,7 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
 
         Post newPost = postService.findPostById(postId);
+        Long viewCount = postService.getPostHits(postId);
         List<String> tagsByPost = postTagService.getTagsByPost(newPost);
         List<String> imagesByPost = imageFileUploadService.getImagesByPost(newPost);
         if (user.getId() != null) {
@@ -72,16 +93,16 @@ public class PostController {
             int likeStatus = postService.findLike(user, postId);
 
             return successResponse(
-                mapper.of(newPost, tagsByPost, imagesByPost, likeStatus));
+                mapper.of(newPost, tagsByPost, imagesByPost, likeStatus, viewCount));
         } else {
             return successResponse(
-                mapper.of(newPost, tagsByPost, imagesByPost, 0));
+                mapper.of(newPost, tagsByPost, imagesByPost, 0, viewCount));
         }
     }
 
     @GetMapping("/all/{page}")
     public ResponseEntity<List<PostListResponse>> getPosts(@PathVariable Integer page
-        , @RequestParam(defaultValue = "8") Integer size,
+        , @RequestParam(defaultValue = "16") Integer size,
         @ModelAttribute PostSearchRequest postSearchRequest) {
         List<PostListResponse> posts = postService.getPosts(page, size, postSearchRequest);
 
@@ -120,7 +141,7 @@ public class PostController {
     @Operation(summary = "게시물 조회 수 필터링")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<List<PostListResponse>> getPostHitsFiltering(@PathVariable Integer page
-        , @RequestParam(defaultValue = "8") Integer size,
+        , @RequestParam(defaultValue = "16") Integer size,
         @RequestParam(defaultValue = "false") boolean isDescending) {
         return successResponse(postService.getPostHitsFiltering(page, size, isDescending));
     }
@@ -129,7 +150,7 @@ public class PostController {
     @Operation(summary = "게시물 좋아요 수 필터링")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<List<PostListResponse>> getPostLikesFiltering(@PathVariable Integer page
-        , @RequestParam(defaultValue = "8") Integer size,
+        , @RequestParam(defaultValue = "16") Integer size,
         @RequestParam(defaultValue = "false") boolean isDescending) {
         return successResponse(postService.getPostLikesFiltering(page, size, isDescending));
     }

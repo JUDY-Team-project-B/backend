@@ -84,11 +84,9 @@ public class CommentService {
         return true;
     }
 
-    public int findLike(LikeCommentRequest request) {
-        Long userId = request.getUserId();
+    public int findLike(User user, LikeCommentRequest request) {
         Long commentId = request.getCommentId();
 
-        User user = userService.getUserById(userId);
         Comment comment2 = commentRepository.findCommentById(commentId).orElseThrow(() ->
                 new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
         // 좋아요 상태가 아니면 0, 맞다면 1
@@ -122,6 +120,19 @@ public class CommentService {
                 new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
     }
 
+    public List<CommentRequestDTO> getCommentsByUser(User user) {
+        List<Comment> comments = commentRepository.findCommentByUser(user);
+        List<CommentRequestDTO> commentRequestDTOList = new ArrayList<>();
+        Map<Long, CommentRequestDTO> commentDTOHashMap = new HashMap<>();
+
+        for (Comment comment : comments) {
+            CommentRequestDTO commentRequestDTO = convertCommentTODto(comment);
+            commentDTOHashMap.put(commentRequestDTO.getId(),commentRequestDTO);
+            commentRequestDTOList.add(commentRequestDTO);
+        }
+        return commentRequestDTOList;
+    }
+
     @Transactional
     public List<CommentRequestDTO> getAllCommentsByPost(Long postId) {
 
@@ -142,7 +153,8 @@ public class CommentService {
     }
 
     private CommentRequestDTO convertCommentTODto(Comment comment){
-        return new CommentRequestDTO(comment.getId(),comment.getUser(), comment.getContent(), comment.getLikeCount());
+        return new CommentRequestDTO(comment.getId(), comment.getUser().getNickname()
+                ,comment.getContent(), comment.getLikeCount(), comment.getCreatedAt());
     }
 
 }

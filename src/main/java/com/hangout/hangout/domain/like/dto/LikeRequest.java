@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LikeRequest {
-    private Long userId;
     private Long postId;
 
-    public LikeRequest(Long userId, Long postId) {
-        this.userId = userId;
+    public LikeRequest(Long postId) {
         this.postId = postId;
     }
 }
