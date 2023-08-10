@@ -17,7 +17,7 @@ public class PostResponse {
     // 추후 기능 만들고 추가해야 할 것 : Map, 좋아요, 신고, 조회수, 이미지
     private final Long id;
     private final String title;
-    private final String nickname;
+    private final Long userId;
     private final String context;
     private final List<String> tags;
     private final List<String> imageUrls;

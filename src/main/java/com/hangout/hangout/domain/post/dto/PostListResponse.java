@@ -15,7 +15,7 @@ public class PostListResponse {
 
     private final Long id;
     private final String title;
-    private final String nickname;
+    private final Long userId;
     private final List<String> tags;
     private final List<String> imageUrls;
     private final String statusType;
