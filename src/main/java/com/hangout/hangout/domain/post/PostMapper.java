@@ -4,6 +4,7 @@ import com.hangout.hangout.domain.image.service.ImageFileUploadService;
 import com.hangout.hangout.domain.post.dto.PostListResponse;
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.domain.post.dto.PostResponse;
+import com.hangout.hangout.domain.post.entity.Map;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.entity.PostInfo;
 import com.hangout.hangout.domain.post.repository.PostHitsRepository;
@@ -28,7 +29,10 @@ public class PostMapper {
             .context(postRequest.getContext())
             .user(user)
             .postInfo(PostInfo.builder()
-                .travelAt(postRequest.getTravelAt())
+                .map(Map.builder()
+                        .state(postRequest.getTravelState())
+                        .city(postRequest.getTravelCity())
+                        .build())
                 .travelAge(postRequest.getTravelAge())
                 .travelGender(postRequest.trueGender(postRequest.getTravelGender()))
                 .travelDateStart(postRequest.getTravelDateStart())
@@ -51,7 +55,8 @@ public class PostMapper {
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
                 .travelAge(post.getPostInfo().getTravelAge())
-                .travelAt(post.getPostInfo().getTravelAt())
+                .travelState(post.getPostInfo().getMap().getState())
+                .travelCity(post.getPostInfo().getMap().getCity())
                 .travelMember(post.getPostInfo().getTravelMember())
                 .travelDateStart(post.getPostInfo().getTravelDateStart())
                 .travelDateEnd(post.getPostInfo().getTravelDateEnd())
@@ -77,7 +82,8 @@ public class PostMapper {
                 .statusType(post.getPostInfo().getStatus().getType())
                 .travelGender(post.getPostInfo().getTravelGender())
                 .travelAge(post.getPostInfo().getTravelAge())
-                .travelAt(post.getPostInfo().getTravelAt())
+                .travelState(post.getPostInfo().getMap().getState())
+                .travelCity(post.getPostInfo().getMap().getCity())
                 .travelMember(post.getPostInfo().getTravelMember())
                 .travelDateStart(post.getPostInfo().getTravelDateStart())
                 .travelDateEnd(post.getPostInfo().getTravelDateEnd())

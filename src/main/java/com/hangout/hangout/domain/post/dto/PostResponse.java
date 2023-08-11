@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+
 @Getter
 @Builder
 @RequiredArgsConstructor
@@ -25,7 +26,8 @@ public class PostResponse {
     private final String statusType;
     private final Gender travelGender;
     private final String travelAge;
-    private final String travelAt;
+    private final String travelState; // 여행 지역(도)
+    private final String travelCity; // 여행 지역(시)
     private final int travelMember;
     private final Date travelDateStart;
     private final Date travelDateEnd;
