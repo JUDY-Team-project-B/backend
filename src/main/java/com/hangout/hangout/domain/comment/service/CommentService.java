@@ -153,7 +153,7 @@ public class CommentService {
     }
 
     private CommentRequestDTO convertCommentTODto(Comment comment){
-        return new CommentRequestDTO(comment.getId(), comment.getUser().getNickname()
+        return new CommentRequestDTO(comment.getId(),comment.getPost().getId(),comment.getUser().getNickname()
                 ,comment.getContent(), comment.getLikeCount(), comment.getCreatedAt());
     }
 
