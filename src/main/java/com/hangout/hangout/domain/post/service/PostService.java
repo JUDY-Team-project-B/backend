@@ -100,28 +100,52 @@ public class PostService {
         return mapper.toDtoList(posts);
     }
 
-    public List<PostListResponse> getPosts(int page, int size,
-        PostSearchRequest postSearchRequest) {
+    public List<PostListResponse> getPosts(int page, int size, PostSearchRequest postSearchRequest) {
         List<Post> posts = null;
         PageRequest pageRequest = PageRequest.of(page, size);
 
         if (postSearchRequest.getSearchType() == null) {
             posts = postRepository.findAllPostByCreatedAtDesc(pageRequest).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("title")) {
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("title")
+                && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainTitleByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("context")) {
+                postSearchRequest.getSearchKeyword1()).getContent();
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("context")
+                && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainContextByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("tag")) {
+                postSearchRequest.getSearchKeyword1()).getContent();
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("tag")
+                && postSearchRequest.getSearchKeyword2() == null) {
             posts = postTagService.findAllPostByTag(pageRequest,
-                postSearchRequest.getSearchKeyword());
-        } else if (postSearchRequest.getSearchType().toString().equals("nickname")) {
+                postSearchRequest.getSearchKeyword1());
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("nickname")
+                && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainNicknameByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("all")) {
+                postSearchRequest.getSearchKeyword1()).getContent();
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("all")
+                && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainTitleAndContextByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword()).getContent();
+                postSearchRequest.getSearchKeyword1()).getContent();
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("state")
+                && postSearchRequest.getSearchKeyword2() == null) {
+            posts = postRepository.findAllContainStateByCreatedAtDesc(pageRequest,
+                    postSearchRequest.getSearchKeyword1()).getContent();
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("city")
+                && postSearchRequest.getSearchKeyword2() == null) {
+            posts = postRepository.findAllContainCityByCreatedAtDesc(pageRequest,
+                    postSearchRequest.getSearchKeyword1()).getContent();
+        }
+        else if (postSearchRequest.getSearchType().toString().equals("stateAndCity")
+                && postSearchRequest.getSearchKeyword2() != null) {
+            posts = postRepository.findAllContainStateAndCityByCreatedAtDesc(pageRequest,
+                    postSearchRequest.getSearchKeyword1(), postSearchRequest.getSearchKeyword2()).getContent();
         }
         return mapper.toDtoList(posts);
     }
