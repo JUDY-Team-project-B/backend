@@ -27,6 +27,8 @@ public enum ResponseType {
     AUTH_NULL_TOKEN("AU01", "토큰을 찾을 수 없습니다."),
     AUTH_NOT_SAME_TOKEN("AU02", "저장된 토큰과 일치하지 않습니다."),
     AUTH_NOT_SAME_USER("AU03", "Access와 Refresh 토큰의 사용자가 일치하지 않습니다."),
+    AUTH_INVALID_EMAIL("AU04", "이미 사용 중인 이메일입니다."),
+    AUTH_INVALID_NICKNAME("AU05", "이미 사용 중인 닉네임입니다."),
     AUTH_NOT_SUPPORT_PROVIDER("AU06", "지원하지 않는 Provider입니다."),
     AUTH_NOT_MATCH_PROVIDER("AU07", "가입된 OAuth 제공자와 일치하지 않습니다."),
     AUTH_REQUIRE_LOGIN("AU08", "재로그인이 필요합니다."),

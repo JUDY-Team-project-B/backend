@@ -37,7 +37,10 @@ public class AuthService {
 
     public Long signup(SignUpRequest request) {
         if (Boolean.TRUE.equals(userRepository.existsByEmail(request.getEmail()))) {
-            throw new AuthException(ResponseType.USER_NOT_EXIST_EMAIL);
+            throw new AuthException(ResponseType.AUTH_INVALID_EMAIL);
+        }
+        if (Boolean.TRUE.equals(userRepository.existsByNickname(request.getNickname()))){
+            throw new AuthException(ResponseType.AUTH_INVALID_NICKNAME);
         }
         User user = request.toEntity(passwordEncoder);
         User savedUser = userRepository.save(user);
