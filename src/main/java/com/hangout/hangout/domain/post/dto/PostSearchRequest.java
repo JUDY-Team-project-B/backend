@@ -13,5 +13,6 @@ import lombok.ToString;
 public class PostSearchRequest {
 
     private SearchType searchType;
-    private String searchKeyword;
+    private String searchKeyword1;
+    private String searchKeyword2; // stateAndCity 타입일 경우만 사용
 }
