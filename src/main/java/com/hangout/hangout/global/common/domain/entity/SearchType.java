@@ -25,6 +25,24 @@ public enum SearchType {
             return "nickname";
         }
     },
+    state {
+        @Override
+        public String toString() {
+            return "state";
+        }
+    },
+    city {
+        @Override
+        public String toString() {
+            return "city";
+        }
+    },
+    stateAndCity {
+        @Override
+        public String toString() {
+            return "stateAndCity";
+        }
+    },
     all {
         @Override
         public String toString() {
