@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.auth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
 import com.hangout.hangout.domain.auth.dto.request.SignUpRequest;
 import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
@@ -45,6 +46,10 @@ public class AuthService {
         User user = request.toEntity(passwordEncoder);
         User savedUser = userRepository.save(user);
         return savedUser.getId();
+    }
+
+    public Boolean checkEmail(EmailCheckRequest request) {
+        return userRepository.existsByEmail(request.getEmail());
     }
 
     public AuthResponse login(LoginReqeust request) {

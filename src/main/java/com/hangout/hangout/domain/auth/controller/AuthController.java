@@ -3,12 +3,14 @@ package com.hangout.hangout.domain.auth.controller;
 import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
 import static com.hangout.hangout.global.common.domain.entity.Constants.FAILURE_ENDPOINT;
 
+import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
 import com.hangout.hangout.domain.auth.dto.request.SignUpRequest;
 import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.service.AuthService;
 import com.hangout.hangout.global.error.ResponseEntity;
 import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.AuthException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +46,21 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@Valid @RequestBody SignUpRequest request) {
         return ResponseEntity.successResponse("회원가입 성공", authService.signup(request));
+    }
+
+    @Operation(summary = "이메일 중복확인", tags = {"Auth Controller"})
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not Found")
+    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    @GetMapping("/check/email")
+    public ResponseEntity<HttpStatus> checkEmail(@Valid @RequestBody EmailCheckRequest request) {
+        if(authService.checkEmail(request)) {
+            throw new AuthException(ResponseType.AUTH_INVALID_EMAIL);
+        }
+        else {
+            return ResponseEntity.successResponse(request.getEmail() + "은 중복되지 않은 이메일입니다!");
+        }
     }
 
     @Operation(summary = "로그인", tags = {"Auth Controller"})
