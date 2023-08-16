@@ -80,10 +80,12 @@ public class AuthController {
 
     @GetMapping(FAILURE_ENDPOINT)
     @Operation(summary = "소셜 로그인 실패 redirect")
-    public ResponseEntity<String> redirectLoginFail(
+    public org.springframework.http.ResponseEntity<String> redirectLoginFail(
         @RequestParam String error
     ) {
-        return ResponseEntity.failureResponse(ResponseType.FAILURE, error);
+        ResponseType responseType = ResponseType.FAILURE;
+        return org.springframework.http.ResponseEntity.status(responseType.getStatus()).body(error);
+        //return ResponseEntity.failureResponse(ResponseType.FAILURE, error);
     }
 
 }

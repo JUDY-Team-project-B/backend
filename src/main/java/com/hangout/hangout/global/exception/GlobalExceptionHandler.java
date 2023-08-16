@@ -1,19 +1,25 @@
 package com.hangout.hangout.global.exception;
 
-import static com.hangout.hangout.global.error.ResponseEntity.failureResponse;
 
-import com.hangout.hangout.global.error.ResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BaseException.class)
-    protected ResponseEntity<HttpStatus> handleException(BaseException e) {
+    protected org.springframework.http.ResponseEntity<String> handleException(BaseException e) {
         log.error(e.getMessage(), e);
-        return failureResponse(e.getResponseType());
+        return ResponseEntity.status(e.getResponseType().getStatus()).body(e.getResponseType().getMessage());
     }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public org.springframework.http.ResponseEntity<String> fileSizeLimitExceededException(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(400).body(e.getMessage());
+    }
+
 }
