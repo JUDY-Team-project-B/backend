@@ -3,6 +3,7 @@ package com.hangout.hangout.domain.auth.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
+import com.hangout.hangout.domain.auth.dto.request.NicknameCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.SignUpRequest;
 import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.repository.TokenRepository;
@@ -50,6 +51,10 @@ public class AuthService {
 
     public Boolean checkEmail(EmailCheckRequest request) {
         return userRepository.existsByEmail(request.getEmail());
+    }
+
+    public Boolean checkNickname(NicknameCheckRequest request) {
+        return userRepository.existsByNickname(request.getNickname());
     }
 
     public AuthResponse login(LoginReqeust request) {

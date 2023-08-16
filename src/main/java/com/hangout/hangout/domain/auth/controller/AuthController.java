@@ -5,6 +5,7 @@ import static com.hangout.hangout.global.common.domain.entity.Constants.FAILURE_
 
 import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
+import com.hangout.hangout.domain.auth.dto.request.NicknameCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.SignUpRequest;
 import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.service.AuthService;
@@ -60,6 +61,21 @@ public class AuthController {
         }
         else {
             return ResponseEntity.successResponse(request.getEmail() + "은 중복되지 않은 이메일입니다!");
+        }
+    }
+
+    @Operation(summary = "닉네임 중복확인", tags = {"Auth Controller"})
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not Found")
+    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    @GetMapping("/check/nickname")
+    public ResponseEntity<HttpStatus> checkNickname(@Valid @RequestBody NicknameCheckRequest request) {
+        if(authService.checkNickname(request)) {
+            throw new AuthException(ResponseType.AUTH_INVALID_NICKNAME);
+        }
+        else {
+            return ResponseEntity.successResponse(request.getNickname() + "은 중복되지 않은 닉네임입니다!");
         }
     }
 
