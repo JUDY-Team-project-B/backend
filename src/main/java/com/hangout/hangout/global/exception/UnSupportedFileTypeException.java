@@ -1,4 +1,4 @@
-package com.hangout.hangout.domain.image.exception;
+package com.hangout.hangout.global.exception;
 
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.BaseException;
