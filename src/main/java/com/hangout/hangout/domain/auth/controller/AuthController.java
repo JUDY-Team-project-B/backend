@@ -54,7 +54,7 @@ public class AuthController {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "404", description = "Not Found")
     @ApiResponse(responseCode = "500", description = "Internal Server Error")
-    @GetMapping("/check/email")
+    @PostMapping("/check/email")
     public ResponseEntity<HttpStatus> checkEmail(@Valid @RequestBody EmailCheckRequest request) {
         if(authService.checkEmail(request)) {
             throw new AuthException(ResponseType.AUTH_INVALID_EMAIL);
@@ -69,7 +69,7 @@ public class AuthController {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "404", description = "Not Found")
     @ApiResponse(responseCode = "500", description = "Internal Server Error")
-    @GetMapping("/check/nickname")
+    @PostMapping("/check/nickname")
     public ResponseEntity<HttpStatus> checkNickname(@Valid @RequestBody NicknameCheckRequest request) {
         if(authService.checkNickname(request)) {
             throw new AuthException(ResponseType.AUTH_INVALID_NICKNAME);
