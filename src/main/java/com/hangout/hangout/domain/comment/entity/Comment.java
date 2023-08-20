@@ -31,7 +31,7 @@ public class Comment extends BaseEntity {
     @Column(name = "COMMENT_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

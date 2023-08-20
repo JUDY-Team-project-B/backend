@@ -25,7 +25,7 @@ public class PostLike extends BaseEntity {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 

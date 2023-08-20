@@ -49,7 +49,7 @@ public class Post extends BaseEntity {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 

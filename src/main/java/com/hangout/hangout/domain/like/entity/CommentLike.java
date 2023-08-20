@@ -20,7 +20,7 @@ public class CommentLike extends BaseEntity {
     @Column(name = "COMMENT_LIKE_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
