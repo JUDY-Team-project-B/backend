@@ -19,6 +19,7 @@ public class PostResponse {
     private final Long id;
     private final String title;
     private final Long userId;
+    private final String nickname;
     private final String context;
     private final List<String> tags;
     private final List<String> imageUrls;
