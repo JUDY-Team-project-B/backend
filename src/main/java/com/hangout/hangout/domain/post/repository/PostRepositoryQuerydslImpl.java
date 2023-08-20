@@ -132,8 +132,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         String searchKeyword) {
 
         BooleanExpression titleOrContextContainsKeyword = post.title.containsIgnoreCase(
-                searchKeyword)
-            .or(post.context.containsIgnoreCase(searchKeyword));
+                searchKeyword).or(post.context.containsIgnoreCase(searchKeyword));
 
         List<Post> postList = postListKeyword(pageable, titleOrContextContainsKeyword);
 
@@ -163,6 +162,40 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         List<Post> postList = postListKeyword(pageable, ContextContainsKeyword);
 
         JPAQuery<Long> countQuery = countQueryMethod(ContextContainsKeyword);
+
+        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<Post> findAllContainStateByCreatedAtDesc(Pageable pageable, String searchKeyword) {
+        BooleanExpression ContextStatesKeyword = post.postInfo.map.state.containsIgnoreCase(searchKeyword);
+
+        List<Post> postList = postListKeyword(pageable, ContextStatesKeyword);
+
+        JPAQuery<Long> countQuery = countQueryMethod(ContextStatesKeyword);
+
+        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<Post> findAllContainCityByCreatedAtDesc(Pageable pageable, String searchKeyword) {
+        BooleanExpression ContextCityKeyword = post.postInfo.map.city.containsIgnoreCase(searchKeyword);
+
+        List<Post> postList = postListKeyword(pageable, ContextCityKeyword);
+
+        JPAQuery<Long> countQuery = countQueryMethod(ContextCityKeyword);
+
+        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<Post> findAllContainStateAndCityByCreatedAtDesc(Pageable pageable, String searchKeyword1, String searchKeyword2) {
+        BooleanExpression ContextStateAndCityKeyword = post.postInfo.map.state.containsIgnoreCase(searchKeyword1)
+                .and(post.postInfo.map.city.containsIgnoreCase(searchKeyword2));
+
+        List<Post> postList = postListKeyword(pageable, ContextStateAndCityKeyword);
+
+        JPAQuery<Long> countQuery = countQueryMethod(ContextStateAndCityKeyword);
 
         return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
     }

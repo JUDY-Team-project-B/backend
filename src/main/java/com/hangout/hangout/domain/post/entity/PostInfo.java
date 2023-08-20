@@ -2,7 +2,6 @@ package com.hangout.hangout.domain.post.entity;
 
 import com.hangout.hangout.domain.post.dto.PostRequest;
 import com.hangout.hangout.global.common.domain.entity.BaseEntity;
-import com.hangout.hangout.global.common.domain.entity.Map;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.domain.user.entity.Gender;
 import lombok.AccessLevel;
@@ -26,8 +25,7 @@ public class PostInfo extends BaseEntity {
     @OneToOne(mappedBy = "postInfo")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MAP_ID")
+    @Embedded
     private Map map;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,9 +39,6 @@ public class PostInfo extends BaseEntity {
     @Column(name = "TRAVEL_AGE", nullable = false)
     private String travelAge; // 연령대
 
-    @Column(name = "TRAVEL_AT", nullable = false)
-    private String travelAt; // 여행지
-
     @Column(name = "TRAVEL_MEMBER", nullable = false)
     private int travelMember; // 여행 모집 인원
 
@@ -56,15 +51,14 @@ public class PostInfo extends BaseEntity {
     private Date travelDateEnd; // 여행 종료 날짜
 
     @Builder
-    public PostInfo(Post post, Map map, Status status,
-                    Gender travelGender, String travelAge, String travelAt, int travelMember,
+    public PostInfo(Post post, Status status, Map map,
+                    Gender travelGender, String travelAge, int travelMember,
                     Date travelDateStart, Date travelDateEnd){
         this.post = post;
-        this.map = map;
         this.status = status;
+        this.map = map;
         this.travelGender = travelGender;
         this.travelAge = travelAge;
-        this.travelAt = travelAt;
         this.travelMember = travelMember;
         this.travelDateStart = travelDateStart;
         this.travelDateEnd = travelDateEnd;
@@ -72,8 +66,9 @@ public class PostInfo extends BaseEntity {
 
     public void updatePostInfo(PostRequest postRequest) {
         this.travelGender = postRequest.trueGender(postRequest.getTravelGender());
-        this.travelAt = postRequest.getTravelAt();
         this.travelAge = postRequest.getTravelAge();
+        this.map.state = postRequest.getTravelState();
+        this.map.city = postRequest.getTravelCity();
         this.travelMember = postRequest.getTravelMember();
         this.travelDateStart = postRequest.getTravelDateStart();
         this.travelDateEnd = postRequest.getTravelDateEnd();

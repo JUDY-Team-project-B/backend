@@ -30,7 +30,9 @@ public class PostRequest {
     @NotNull
     private final String travelGender; // 성별
     @NotEmpty
-    private final String travelAt; // 여행 지역
+    private final String travelState; // 여행 지역(도)
+    @NotEmpty
+    private final String travelCity; // 여행 지역(시)
     @NotEmpty
     private final String travelAge; // 연령대
     @NotNull

@@ -1,7 +1,7 @@
 package com.hangout.hangout.domain.image.util;
 
 import com.hangout.hangout.global.error.ResponseType;
-import com.hangout.hangout.domain.image.exception.UnSupportedFileTypeException;
+import com.hangout.hangout.global.exception.UnSupportedFileTypeException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 

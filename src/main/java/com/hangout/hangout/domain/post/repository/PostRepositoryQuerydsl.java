@@ -16,12 +16,14 @@ public interface PostRepositoryQuerydsl {
 
     Page<Post> findAllPostByCreatedAtDesc(Pageable pageable);
 
-    Page<Post> findAllContainTitleAndContextByCreatedAtDesc(Pageable pageable,
-        String searchKeyword);
+    Page<Post> findAllContainTitleAndContextByCreatedAtDesc(Pageable pageable, String searchKeyword);
 
     Page<Post> findAllContainTitleByCreatedAtDesc(Pageable pageable, String searchKeyword);
 
     Page<Post> findAllContainContextByCreatedAtDesc(Pageable pageable, String searchKeyword);
+    Page<Post> findAllContainStateByCreatedAtDesc(Pageable pageable, String searchKeyword);
+    Page<Post> findAllContainCityByCreatedAtDesc(Pageable pageable, String searchKeyword);
+    Page<Post> findAllContainStateAndCityByCreatedAtDesc(Pageable pageable, String searchKeyword1, String searchKeyword2);
 
     Page<Post> findAllContainNicknameByCreatedAtDesc(Pageable pageable, String searchKeyword);
 

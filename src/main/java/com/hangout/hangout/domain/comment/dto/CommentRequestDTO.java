@@ -14,14 +14,18 @@ import java.util.List;
 @NoArgsConstructor
 public class CommentRequestDTO {
     private Long Id;
+    private Long postId;
+    private String postTitle;
     private String nickname;
     private String content;
     private Integer likeCount;
     private LocalDateTime createdAt;
     private List<CommentRequestDTO> children;
 
-    public CommentRequestDTO(Long Id,String nickname,String content,Integer likeCount, LocalDateTime createdAt) {
+    public CommentRequestDTO(Long Id,Long postId,String postTitle,String nickname,String content,Integer likeCount, LocalDateTime createdAt) {
         this.Id = Id;
+        this.postId = postId;
+        this.postTitle = postTitle;
         this.nickname = nickname;
         this.content = content;
         this.likeCount = likeCount;
@@ -35,7 +39,7 @@ public class CommentRequestDTO {
     }
 
     public CommentRequestDTO convertCommentTODto(Comment comment){
-        return new CommentRequestDTO(comment.getId(),comment.getUser().getNickname()
-                ,comment.getContent(),comment.getLikeCount(), comment.getCreatedAt());
+        return new CommentRequestDTO(comment.getId(),comment.getPost().getId(), comment.getPost().getTitle()
+                ,comment.getUser().getNickname(),comment.getContent(),comment.getLikeCount(), comment.getCreatedAt());
     }
 }

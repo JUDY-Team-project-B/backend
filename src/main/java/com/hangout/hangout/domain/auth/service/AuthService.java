@@ -1,7 +1,9 @@
 package com.hangout.hangout.domain.auth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
+import com.hangout.hangout.domain.auth.dto.request.NicknameCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.SignUpRequest;
 import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.repository.TokenRepository;
@@ -37,11 +39,22 @@ public class AuthService {
 
     public Long signup(SignUpRequest request) {
         if (Boolean.TRUE.equals(userRepository.existsByEmail(request.getEmail()))) {
-            throw new AuthException(ResponseType.USER_NOT_EXIST_EMAIL);
+            throw new AuthException(ResponseType.AUTH_INVALID_EMAIL);
+        }
+        if (Boolean.TRUE.equals(userRepository.existsByNickname(request.getNickname()))){
+            throw new AuthException(ResponseType.AUTH_INVALID_NICKNAME);
         }
         User user = request.toEntity(passwordEncoder);
         User savedUser = userRepository.save(user);
         return savedUser.getId();
+    }
+
+    public Boolean checkEmail(EmailCheckRequest request) {
+        return userRepository.existsByEmail(request.getEmail());
+    }
+
+    public Boolean checkNickname(NicknameCheckRequest request) {
+        return userRepository.existsByNickname(request.getNickname());
     }
 
     public AuthResponse login(LoginReqeust request) {
