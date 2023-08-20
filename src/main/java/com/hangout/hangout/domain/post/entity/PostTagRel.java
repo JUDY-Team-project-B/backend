@@ -33,7 +33,7 @@ public class PostTagRel extends BaseEntity { // 게시물과 태그의 many to m
     @Setter
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "TAG_ID")
     @Setter
     private Tag tag;

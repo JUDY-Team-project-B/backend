@@ -22,7 +22,7 @@ public class PostInfo extends BaseEntity {
     @Column(name = "POST_INFO_ID")
     private Long id;
 
-    @OneToOne(mappedBy = "postInfo")
+    @OneToOne(mappedBy = "postInfo", cascade = CascadeType.ALL)
     private Post post;
 
     @Embedded
