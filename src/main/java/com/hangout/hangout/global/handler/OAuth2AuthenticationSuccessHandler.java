@@ -77,7 +77,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Optional<String> redirectUri = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
             .map(Cookie::getValue);
 
-        if (redirectUri.isEmpty() || !isAuthorizedRedirectUri(redirectUri.get())) {
+        if (redirectUri.isEmpty() || !isAuthorizedRedirectUri(redirectUri.get(),request.getServletPath())) {
             throw new AuthException(ResponseType.OAUTH2_INVALID_REDIRECT_URL);
         }
 
@@ -127,10 +127,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * redirect-url 검증 처리
      *
      * @param uri client가 요청한 request의 redirect_url 값
+     * @param requestRegistration Client 요청 url
      * @return boolean
      */
-    private boolean isAuthorizedRedirectUri(String uri) {
-        String[] uriInfo = uri.split("/");
+    private boolean isAuthorizedRedirectUri(String uri, String requestRegistration) {
+        String[] uriInfo = requestRegistration.split("/");
         String registrationInfo = uriInfo[uriInfo.length - 1].toUpperCase();
         Registration registration;
 
@@ -138,7 +139,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             case "GOOGLE":
                 registration = appProperties.getGoogle();
                 break;
-
             default:
                 return false;
         }
