@@ -9,6 +9,7 @@ import com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRe
 import com.hangout.hangout.global.handler.OAuth2AuthenticationFailureHandler;
 import com.hangout.hangout.global.handler.OAuth2AuthenticationSuccessHandler;
 import com.hangout.hangout.global.security.JwtAuthenticateFilter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -106,8 +107,9 @@ public class SecurityConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedMethod("*");
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedMethods(
+            List.of("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "TRACE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.addAllowedHeader("*");
 
