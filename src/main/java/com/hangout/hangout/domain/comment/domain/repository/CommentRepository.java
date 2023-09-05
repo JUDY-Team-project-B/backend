@@ -16,10 +16,9 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     void deleteById(Long id);
 
-    @Query("SELECT c FROM Comment c WHERE c.post.id = :id AND c.status.id = 1 ORDER BY c.id DESC")
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :id AND c.status.id = 1")
     List<Comment> findByPostId(Long id);
     Optional<Comment> findCommentById(Long commentId);
-
     @Query("SELECT c FROM Comment c WHERE c.user = :user AND c.status.id = 1 ORDER BY c.id DESC")
     List<Comment> findCommentByUser(User user);
 
