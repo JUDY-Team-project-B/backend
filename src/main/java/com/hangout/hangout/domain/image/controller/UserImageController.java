@@ -33,6 +33,6 @@ public class UserImageController {
     public ResponseEntity<HttpStatus> deleteImages(@PathVariable Long userId) {
         userImageFileUploadService.delete(userId);
 
-        return successResponse("이미지 삭제 성공!");
+        return successResponse("프로필 이미지 삭제 성공!");
     }
 }

@@ -32,4 +32,13 @@ public class PostImageController {
 
         return successResponse();
     }
+
+    @DeleteMapping("/{postId}/images")
+    public ResponseEntity<HttpStatus> deleteImages(@PathVariable Long postId) {
+
+        Post post = postService.findPostById(postId);
+
+        imageFileUploadService.delete(post);
+        return successResponse("게시글 이미지 삭제 성공!");
+    }
 }
