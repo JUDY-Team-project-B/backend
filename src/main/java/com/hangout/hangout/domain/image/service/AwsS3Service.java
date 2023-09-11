@@ -3,6 +3,7 @@ package com.hangout.hangout.domain.image.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
@@ -42,5 +43,10 @@ public class AwsS3Service {
         byte[] bytes = IOUtils.toByteArray(file.getInputStream());
         metadata.setContentLength(bytes.length);
         return new ByteArrayInputStream(bytes);
+    }
+
+    public void deleteFile(String fileKey) {
+        DeleteObjectRequest request = new DeleteObjectRequest(bucket,fileKey);
+        client.deleteObject(request);
     }
 }
