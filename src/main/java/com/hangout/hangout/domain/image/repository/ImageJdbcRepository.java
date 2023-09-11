@@ -23,12 +23,12 @@ public class ImageJdbcRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
     private static final String POST_BULK_INSERT_SQL = "INSERT INTO " +
-            "`postimage`(`post_image_name` , `post_image_url`, `created_At`, `updated_At`, `post_id`, `is_removed`) " +
-            "VALUES(?, ?, ?, ?, ?, ?)";
+            "`postimage`(`post_image_name` , `post_image_url`, `created_At`, `updated_At`, `post_id`) " +
+            "VALUES(?, ?, ?, ?, ?)";
 
     private static final String USER_BULK_INSERT_SQL = "INSERT INTO " +
-            "`userimage`(`user_image_name` , `user_image_url`, `created_At`, `updated_At`, `user_id`, `is_removed`) " +
-            "VALUES(?, ?, ?, ?, ?, ?)";
+            "`userimage`(`user_image_name` , `user_image_url`, `created_At`, `updated_At`, `user_id`) " +
+            "VALUES(?, ?, ?, ?, ?)";
 
     public void saveAllPostImage(List<PostImage> postImages) {
         jdbcTemplate.batchUpdate(POST_BULK_INSERT_SQL,
@@ -41,7 +41,6 @@ public class ImageJdbcRepository {
                     ps.setTimestamp(3, Timestamp.valueOf(now));
                     ps.setTimestamp(4, Timestamp.valueOf(now));
                     ps.setLong(5, postImage.getPost().getId());
-                    ps.setBoolean(6, postImage.isRemoved());
                 });
     }
 
@@ -56,7 +55,6 @@ public class ImageJdbcRepository {
                     us.setTimestamp(3, Timestamp.valueOf(now));
                     us.setTimestamp(4, Timestamp.valueOf(now));
                     us.setLong(5, userImage.getUser().getId());
-                    us.setBoolean(6, userImage.isRemoved());
                 });
     }
 }
