@@ -28,4 +28,11 @@ public class UserImageController {
 
         return successResponse();
     }
+
+    @DeleteMapping("/{userId}/image")
+    public ResponseEntity<HttpStatus> deleteImages(@PathVariable Long userId) {
+        userImageFileUploadService.delete(userId);
+
+        return successResponse("이미지 삭제 성공!");
+    }
 }
