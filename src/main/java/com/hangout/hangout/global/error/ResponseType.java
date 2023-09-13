@@ -35,6 +35,7 @@ public enum ResponseType {
     AUTH_INVALID_PROVIDER(403,"AU09", "지원하지 않는 소셜 로그인입니다"),
     OAUTH2_USER_NOT_EXIST_EMAIL(409,"AU10", "OAuth2 provider의 email이 존재하지 않습니다"),
     OAUTH2_INVALID_REDIRECT_URL(403,"AU11", "redirect url이 유효하지 않습니다"),
+    INVALID_PASSWORD(401, "AU12", "패스워드가 일치하지 않습니다."),
 
 
     // USER
