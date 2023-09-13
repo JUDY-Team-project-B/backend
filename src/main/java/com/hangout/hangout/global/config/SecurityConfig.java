@@ -1,8 +1,8 @@
 package com.hangout.hangout.global.config;
 
 import static com.hangout.hangout.global.common.domain.entity.Constants.AUTHORIZATION_ENDPOINT;
-import static com.hangout.hangout.global.common.domain.entity.Constants.PERMIT_GET_URI_LIST;
 import static com.hangout.hangout.global.common.domain.entity.Constants.PERMIT_ALL_URI_LIST;
+import static com.hangout.hangout.global.common.domain.entity.Constants.PERMIT_GET_URI_LIST;
 
 import com.hangout.hangout.domain.user.service.CustomOAuth2UserService;
 import com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository;
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -56,6 +57,9 @@ public class SecurityConfig {
             .cors().configurationSource(corsConfigurationSource()).and()
             .httpBasic().disable()
             .csrf().disable()
+            .exceptionHandling().authenticationEntryPoint((request, response, authException)
+                -> response.sendError(HttpStatus.UNAUTHORIZED.value()))
+            .and()
             .rememberMe().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
