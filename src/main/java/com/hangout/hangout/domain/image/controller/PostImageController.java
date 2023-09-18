@@ -33,6 +33,17 @@ public class PostImageController {
         return successResponse();
     }
 
+    @PutMapping("/{postId}/images")
+    public ResponseEntity<HttpStatus> updateImages(@PathVariable Long postId,
+                                                   @RequestParam("file")List<MultipartFile> files) throws IOException {
+        Post post = postService.findPostById(postId);
+
+        imageFileUploadService.delete(post);
+        imageFileUploadService.upload(files, post);
+
+        return successResponse("게시글 이미지 수정 성공!");
+    }
+
     @DeleteMapping("/{postId}/images")
     public ResponseEntity<HttpStatus> deleteImages(@PathVariable Long postId) {
 

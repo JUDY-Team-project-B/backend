@@ -29,6 +29,15 @@ public class UserImageController {
         return successResponse();
     }
 
+    @PutMapping("/{userId}/image")
+    public ResponseEntity<HttpStatus> updateImages(@PathVariable Long userId,
+                                                   @RequestParam("file")List<MultipartFile> files) throws IOException {
+        userImageFileUploadService.delete(userId);
+        userImageFileUploadService.upload(userId, files);
+
+        return successResponse("프로필 이미지 수정 성공!");
+    }
+
     @DeleteMapping("/{userId}/image")
     public ResponseEntity<HttpStatus> deleteImages(@PathVariable Long userId) {
         userImageFileUploadService.delete(userId);
