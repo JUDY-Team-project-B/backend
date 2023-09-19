@@ -28,7 +28,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     public Optional<Post> findPostById(Long postId) {
         Post post1 = queryFactory
             .selectFrom(post)
-            .join(post.postInfo, postInfo)
+            .join(post.postInfo, postInfo).fetchJoin()
             .where(
                 post.id.eq(postId),
                 postInfo.status.id.eq(1L)
@@ -47,7 +47,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
         List<Post> postList = queryFactory
                 .selectFrom(post)
-                .join(post.postInfo, postInfo)
+                .join(post.postInfo, postInfo).fetchJoin()
                 .where(
                     postInfo.status.id.eq(1L),
                     post.user.eq(currentUser)
@@ -60,7 +60,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         JPAQuery<Long> countQuery = queryFactory
                 .select(post.count())
                 .from(post)
-                .join(post.postInfo, postInfo)
+                .join(post.postInfo, postInfo).fetchJoin()
                 .where(
                         postInfo.status.id.eq(1L),
                         post.user.eq(currentUser)
@@ -80,8 +80,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
         List<Post> postList = queryFactory
                 .selectFrom(post)
-                .join(post.postInfo, postInfo)
-                .join(post.postLikes , postLike)
+                .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.postLikes , postLike).fetchJoin()
                 .where(
                         postInfo.status.id.eq(1L),
                         postLike.user.eq(currentUser)
@@ -94,8 +94,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         JPAQuery<Long> countQuery = queryFactory
                 .select(post.count())
                 .from(post)
-                .join(post.postInfo, postInfo)
-                .join(post.postLikes , postLike)
+                .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.postLikes , postLike).fetchJoin()
                 .where(
                         postInfo.status.id.eq(1L),
                         postLike.user.eq(currentUser)
@@ -110,7 +110,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
         List<Post> postList = queryFactory
             .selectFrom(post)
-            .join(post.postInfo, postInfo)
+            .join(post.postInfo, postInfo).fetchJoin()
             .where(postInfo.status.id.eq(1L))
             .orderBy(post.id.desc())
             .offset(pageable.getOffset())
@@ -120,7 +120,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         JPAQuery<Long> countQuery = queryFactory
             .select(post.count())
             .from(post)
-            .join(post.postInfo, postInfo)
+            .join(post.postInfo, postInfo).fetchJoin()
             .where(postInfo.status.id.eq(1L));
 
         return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
@@ -204,7 +204,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     public List<Post> postListKeyword(Pageable pageable, BooleanExpression booleanExpression) {
         List<Post> postList = queryFactory
             .selectFrom(post)
-            .join(post.postInfo, postInfo)
+            .join(post.postInfo, postInfo).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 booleanExpression
@@ -220,7 +220,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         JPAQuery<Long> countQuery = queryFactory
             .select(post.count())
             .from(post)
-            .join(post.postInfo, postInfo)
+            .join(post.postInfo, postInfo).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 booleanExpression
@@ -237,8 +237,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
         List<Post> postList = queryFactory
             .selectFrom(post)
-            .join(post.postInfo, postInfo)
-            .join(post.user, user)
+            .join(post.postInfo, postInfo).fetchJoin()
+            .join(post.user, user).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 nicknameContainsKeyword
@@ -251,8 +251,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         JPAQuery<Long> countQuery = queryFactory
             .select(post.count())
             .from(post)
-            .join(post.postInfo, postInfo)
-            .join(post.user, user)
+            .join(post.postInfo, postInfo).fetchJoin()
+            .join(post.user, user).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 nicknameContainsKeyword
