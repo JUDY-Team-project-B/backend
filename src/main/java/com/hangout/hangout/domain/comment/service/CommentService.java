@@ -10,7 +10,7 @@ import com.hangout.hangout.domain.like.dto.LikeCommentRequest;
 import com.hangout.hangout.domain.like.entity.CommentLike;
 import com.hangout.hangout.domain.like.repository.LikeCommentRepository;
 import com.hangout.hangout.domain.post.entity.Post;
-import com.hangout.hangout.domain.post.repository.PostRepository;
+import com.hangout.hangout.domain.post.service.PostService;
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
@@ -28,21 +28,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//import static com.hangout.hangout.domain.comment.entity.Comment.comment;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
     private final StatusRepository statusRepository;
     private final LikeCommentRepository likeCommentRepository;
 
     @Transactional
     public void saveComment(CommentCreateDto commentCreateDto, User user) {
-        Post post = postRepository.findPostById(commentCreateDto.getPostId()).orElseThrow(() ->
-            new NotFoundException(ResponseType.POST_NOT_FOUND));
+        Post post = postService.findPostById(commentCreateDto.getPostId());
         Comment comment = commentCreateDto.toEntity(commentCreateDto, user, post);
 
         Long newStatus = 1L;
@@ -83,7 +80,7 @@ public class CommentService {
         String userNickname = user.getNickname();
 
         if (!comment.getUser().getNickname().equals(userNickname)) {
-            throw new UnAuthorizedAccessException(ResponseType.INVALID_REQUEST);
+            throw new UnAuthorizedAccessException(ResponseType.UNMATCHED_COMMENT_AND_USER);
         }
         return true;
     }
@@ -141,8 +138,8 @@ public class CommentService {
 
     @Transactional
     public List<CommentRequestDTO> getAllCommentsByPost(Long postId) {
-
-        List<Comment> comments = commentRepository.findByPostId(postId);
+        Post post = postService.findPostById(postId);
+        List<Comment> comments = commentRepository.findByPostId(post.getId());
         List<CommentRequestDTO> commentRequestDTOList = new ArrayList<>();
         Map<Long, CommentRequestDTO> commentDTOHashMap = new HashMap<>();
 

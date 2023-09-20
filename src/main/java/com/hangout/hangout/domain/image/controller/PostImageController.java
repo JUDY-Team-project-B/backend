@@ -28,7 +28,7 @@ public class PostImageController {
                                                    @RequestParam("file")List<MultipartFile> files) throws IOException {
         Post post = postService.findPostById(postId);
 
-        imageFileUploadService.upload (files,post);
+        imageFileUploadService.upload(files,post);
 
         return successResponse();
     }

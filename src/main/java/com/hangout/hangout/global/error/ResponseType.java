@@ -1,6 +1,11 @@
 package com.hangout.hangout.global.error;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.LOCKED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +56,12 @@ public enum ResponseType {
     // POST
     POST_NOT_FOUND(NOT_FOUND.value(), "PO01", "해당 게시글을 찾을 수 없습니다."),
     STATUS_NOT_FOUND(NOT_FOUND.value(), "PO02", "상태값을 찾을 수 없습니다."),
+    UNMATCHED_POST_AND_USER(UNAUTHORIZED.value(), "P003", "해당 유저가 작성한 게시물이 아닙니다."),
+    INVALID_POST_SEARCH_TYPE(UNAUTHORIZED.value(), "P004", "게시물 검색 타입이 잘못되었습니다."),
 
     // COMMENT
     COMMENT_NOT_FOUND(NOT_FOUND.value(), "C001", "해당 댓글을 찾을 수 없습니다."),
+    UNMATCHED_COMMENT_AND_USER(UNAUTHORIZED.value(), "C002", "해당 유저가 작성한 댓글이 아닙니다."),
 
     // ABUSE REPORT
     COMMENT_ABUSE_REPORT_NOT_FOUND(NOT_FOUND.value(), "R001", "해당 댓글 신고건을 찾을 수 없습니다."),

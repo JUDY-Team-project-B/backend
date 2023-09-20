@@ -18,10 +18,10 @@ import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.InvalidFormatException;
 import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -83,24 +83,21 @@ public class PostService {
     }
 
     public List<PostListResponse> getPostsByUserLike(int page, int size, User user) {
-        List<Post> posts;
         PageRequest pageRequest = PageRequest.of(page, size);
-        posts = postRepository.findAllPostByUserLike(pageRequest, user).getContent();
+        List<Post> posts = postRepository.findAllPostByUserLike(pageRequest, user).getContent();
 
         return mapper.toDtoList(posts);
     }
 
     public List<PostListResponse> getPostsByUser(int page, int size, User user) {
-        List<Post> posts;
         PageRequest pageRequest = PageRequest.of(page, size);
-
-        posts = postRepository.findAllPostByUser(pageRequest, user).getContent();
+        List<Post> posts = postRepository.findAllPostByUser(pageRequest, user).getContent();
         return mapper.toDtoList(posts);
     }
 
     public List<PostListResponse> getPosts(int page, int size,
         PostSearchRequest postSearchRequest) {
-        List<Post> posts = new LinkedList<>();
+        List<Post> posts;
         PageRequest pageRequest = PageRequest.of(page, size);
 
         if (postSearchRequest.getSearchType() == null) {
@@ -138,6 +135,8 @@ public class PostService {
             posts = postRepository.findAllContainStateAndCityByCreatedAtDesc(pageRequest,
                     postSearchRequest.getSearchKeyword1(), postSearchRequest.getSearchKeyword2())
                 .getContent();
+        } else {
+            throw new InvalidFormatException(ResponseType.INVALID_POST_SEARCH_TYPE);
         }
         return mapper.toDtoList(posts);
     }
@@ -179,7 +178,7 @@ public class PostService {
         String userNickname = user.getNickname();
 
         if (!post.getUser().getNickname().equals(userNickname)) {
-            throw new UnAuthorizedAccessException(ResponseType.INVALID_REQUEST);
+            throw new UnAuthorizedAccessException(ResponseType.UNMATCHED_POST_AND_USER);
         }
         return true;
     }
