@@ -56,10 +56,9 @@ public class AuthController {
     @ApiResponse(responseCode = "500", description = "Internal Server Error")
     @PostMapping("/check/email")
     public ResponseEntity<HttpStatus> checkEmail(@Valid @RequestBody EmailCheckRequest request) {
-        if(authService.checkEmail(request)) {
-            throw new AuthException(ResponseType.AUTH_INVALID_EMAIL);
-        }
-        else {
+        if (authService.checkEmail(request)) {
+            throw new AuthException(ResponseType.DUPLICATED_EMAIL);
+        } else {
             return ResponseEntity.successResponse(request.getEmail() + "은 중복되지 않은 이메일입니다!");
         }
     }
@@ -70,11 +69,11 @@ public class AuthController {
     @ApiResponse(responseCode = "404", description = "Not Found")
     @ApiResponse(responseCode = "500", description = "Internal Server Error")
     @PostMapping("/check/nickname")
-    public ResponseEntity<HttpStatus> checkNickname(@Valid @RequestBody NicknameCheckRequest request) {
-        if(authService.checkNickname(request)) {
-            throw new AuthException(ResponseType.AUTH_INVALID_NICKNAME);
-        }
-        else {
+    public ResponseEntity<HttpStatus> checkNickname(
+        @Valid @RequestBody NicknameCheckRequest request) {
+        if (authService.checkNickname(request)) {
+            throw new AuthException(ResponseType.DUPLICATED_NICKNAME);
+        } else {
             return ResponseEntity.successResponse(request.getNickname() + "은 중복되지 않은 닉네임입니다!");
         }
     }
@@ -114,12 +113,10 @@ public class AuthController {
 
     @GetMapping(FAILURE_ENDPOINT)
     @Operation(summary = "소셜 로그인 실패 redirect")
-    public org.springframework.http.ResponseEntity<String> redirectLoginFail(
+    public ResponseEntity redirectLoginFail(
         @RequestParam String error
     ) {
-        ResponseType responseType = ResponseType.FAILURE;
-        return org.springframework.http.ResponseEntity.status(responseType.getStatus()).body(error);
-        //return ResponseEntity.failureResponse(ResponseType.FAILURE, error);
+        return ResponseEntity.failureResponse(ResponseType.FAILURE, error);
     }
 
 }

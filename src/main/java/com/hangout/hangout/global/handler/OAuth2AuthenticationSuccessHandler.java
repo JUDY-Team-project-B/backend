@@ -47,7 +47,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * @param response       the response
      * @param authentication the <tt>Authentication</tt> object which was created during the
      *                       authentication process.
-     * @throws IOException
+     * @throws IOException 인증 성공 처리 과정에서 생기는 에러
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -77,8 +77,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Optional<String> redirectUri = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
             .map(Cookie::getValue);
 
-        if (redirectUri.isEmpty() || !isAuthorizedRedirectUri(redirectUri.get(),request.getServletPath())) {
-            throw new AuthException(ResponseType.OAUTH2_INVALID_REDIRECT_URL);
+        if (redirectUri.isEmpty() || !isAuthorizedRedirectUri(redirectUri.get(),
+            request.getServletPath())) {
+            throw new AuthException(ResponseType.INVALID_REDIRECT_URL);
         }
 
         return generateToken(authentication, redirectUri.get(), response);
@@ -97,7 +98,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     ) {
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         User user = userRepository.findById(principal.getId())
-            .orElseThrow(() -> new AuthException(ResponseType.USER_NOT_EXIST_EMAIL));
+            .orElseThrow(() -> new AuthException(ResponseType.USER_NOT_FOUND));
 
         writeTokenResponse(response, user);
 
@@ -126,7 +127,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     /**
      * redirect-url 검증 처리
      *
-     * @param uri client가 요청한 request의 redirect_url 값
+     * @param uri                 client가 요청한 request의 redirect_url 값
      * @param requestRegistration Client 요청 url
      * @return boolean
      */

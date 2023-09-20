@@ -19,10 +19,10 @@ public class AuthenticationFacade {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AuthException(ResponseType.REQUEST_UNAUTHORIZED);
+            throw new AuthException(ResponseType.UNAUTHORIZED_REQUEST);
         }
         String userEmail = authentication.getName();
         return userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
+            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_FOUND));
     }
 }

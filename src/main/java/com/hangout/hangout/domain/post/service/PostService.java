@@ -21,12 +21,10 @@ import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.PostNotFoundException;
 import com.hangout.hangout.global.exception.StatusNotFoundException;
 import com.hangout.hangout.global.exception.UnAuthorizedAccessException;
-
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +83,7 @@ public class PostService {
     }
 
     public List<PostListResponse> getPostsByUserLike(int page, int size, User user) {
-        List<Post> posts = null;
+        List<Post> posts;
         PageRequest pageRequest = PageRequest.of(page, size);
         posts = postRepository.findAllPostByUserLike(pageRequest, user).getContent();
 
@@ -93,59 +91,53 @@ public class PostService {
     }
 
     public List<PostListResponse> getPostsByUser(int page, int size, User user) {
-        List<Post> posts = null;
+        List<Post> posts;
         PageRequest pageRequest = PageRequest.of(page, size);
 
         posts = postRepository.findAllPostByUser(pageRequest, user).getContent();
         return mapper.toDtoList(posts);
     }
 
-    public List<PostListResponse> getPosts(int page, int size, PostSearchRequest postSearchRequest) {
-        List<Post> posts = null;
+    public List<PostListResponse> getPosts(int page, int size,
+        PostSearchRequest postSearchRequest) {
+        List<Post> posts = new LinkedList<>();
         PageRequest pageRequest = PageRequest.of(page, size);
 
         if (postSearchRequest.getSearchType() == null) {
             posts = postRepository.findAllPostByCreatedAtDesc(pageRequest).getContent();
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("title")
-                && postSearchRequest.getSearchKeyword2() == null) {
+        } else if (postSearchRequest.getSearchType().toString().equals("title")
+            && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainTitleByCreatedAtDesc(pageRequest,
                 postSearchRequest.getSearchKeyword1()).getContent();
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("context")
-                && postSearchRequest.getSearchKeyword2() == null) {
+        } else if (postSearchRequest.getSearchType().toString().equals("context")
+            && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainContextByCreatedAtDesc(pageRequest,
                 postSearchRequest.getSearchKeyword1()).getContent();
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("tag")
-                && postSearchRequest.getSearchKeyword2() == null) {
+        } else if (postSearchRequest.getSearchType().toString().equals("tag")
+            && postSearchRequest.getSearchKeyword2() == null) {
             posts = postTagService.findAllPostByTag(pageRequest,
                 postSearchRequest.getSearchKeyword1());
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("nickname")
-                && postSearchRequest.getSearchKeyword2() == null) {
+        } else if (postSearchRequest.getSearchType().toString().equals("nickname")
+            && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainNicknameByCreatedAtDesc(pageRequest,
                 postSearchRequest.getSearchKeyword1()).getContent();
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("all")
-                && postSearchRequest.getSearchKeyword2() == null) {
+        } else if (postSearchRequest.getSearchType().toString().equals("all")
+            && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainTitleAndContextByCreatedAtDesc(pageRequest,
                 postSearchRequest.getSearchKeyword1()).getContent();
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("state")
-                && postSearchRequest.getSearchKeyword2() == null) {
+        } else if (postSearchRequest.getSearchType().toString().equals("state")
+            && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainStateByCreatedAtDesc(pageRequest,
-                    postSearchRequest.getSearchKeyword1()).getContent();
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("city")
-                && postSearchRequest.getSearchKeyword2() == null) {
+                postSearchRequest.getSearchKeyword1()).getContent();
+        } else if (postSearchRequest.getSearchType().toString().equals("city")
+            && postSearchRequest.getSearchKeyword2() == null) {
             posts = postRepository.findAllContainCityByCreatedAtDesc(pageRequest,
-                    postSearchRequest.getSearchKeyword1()).getContent();
-        }
-        else if (postSearchRequest.getSearchType().toString().equals("stateAndCity")
-                && postSearchRequest.getSearchKeyword2() != null) {
+                postSearchRequest.getSearchKeyword1()).getContent();
+        } else if (postSearchRequest.getSearchType().toString().equals("stateAndCity")
+            && postSearchRequest.getSearchKeyword2() != null) {
             posts = postRepository.findAllContainStateAndCityByCreatedAtDesc(pageRequest,
-                    postSearchRequest.getSearchKeyword1(), postSearchRequest.getSearchKeyword2()).getContent();
+                    postSearchRequest.getSearchKeyword1(), postSearchRequest.getSearchKeyword2())
+                .getContent();
         }
         return mapper.toDtoList(posts);
     }
@@ -187,7 +179,7 @@ public class PostService {
         String userNickname = user.getNickname();
 
         if (!post.getUser().getNickname().equals(userNickname)) {
-            throw new UnAuthorizedAccessException(ResponseType.REQUEST_NOT_VALID);
+            throw new UnAuthorizedAccessException(ResponseType.INVALID_REQUEST);
         }
         return true;
     }
