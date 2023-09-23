@@ -21,8 +21,6 @@ public class PostImage extends BaseEntity {
     private String name;
     @Column(name = "POST_IMAGE_URL")
     private String url;
-    @Column(name = "IS_REMOVED")
-    private boolean removed;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;

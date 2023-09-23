@@ -43,7 +43,7 @@ public class LikeService {
             likeRepository.save(like);
             postRepository.addLikeCount(post);
         } else {
-            likeRepository.deleteByUserAndPost(user, post);
+            likeRepository.deletePostLikeByUserAndPost(user, post);
             postRepository.subLikeCount(post);
         }
     }
@@ -62,7 +62,7 @@ public class LikeService {
             likeCommentRepository.save(like);
             commentRepository.addLikeCount(comment);
         } else {
-            likeCommentRepository.deleteByUserAndComment(user, comment);
+            likeCommentRepository.deleteCommentLikeByUserAndComment(user, comment);
             commentRepository.subLikeCount(comment);
         }
     }

@@ -36,9 +36,9 @@ public class PostTagRepositoryQuerydslImpl implements PostTagRepositoryQuerydsl 
 
         List<PostTagRel> postTagRels = queryFactory
             .selectFrom(postTagRel)
-            .join(postTagRel.post, post)
-            .join(post.postInfo, postInfo)
-            .join(postTagRel.tag, tag)
+            .join(postTagRel.post, post).fetchJoin()
+            .join(post.postInfo, postInfo).fetchJoin()
+            .join(postTagRel.tag, tag).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 tagNameContainsKeyword
@@ -51,9 +51,9 @@ public class PostTagRepositoryQuerydslImpl implements PostTagRepositoryQuerydsl 
         JPAQuery<Long> countQuery = queryFactory
             .select(postTagRel.count())
             .from(postTagRel)
-            .join(postTagRel.post, post)
-            .join(post.postInfo, postInfo)
-            .join(postTagRel.tag, tag)
+            .join(postTagRel.post, post).fetchJoin()
+            .join(post.postInfo, postInfo).fetchJoin()
+            .join(postTagRel.tag, tag).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 tagNameContainsKeyword

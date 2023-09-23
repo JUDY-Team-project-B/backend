@@ -51,6 +51,24 @@ public class UserImageFileUploadService {
         return userImages;
     }
 
+    @Transactional
+    public void delete(Long userId) {
+        User user = userService.getUserById(userId);
+        List<UserImage> userImages = findImageListByUser(user);
+        if(!userImages.isEmpty()) {
+            for(UserImage userImage : userImages) {
+                String path = userImage.getUrl();
+
+                // 파일의 Url에서 55를 기준으로 문자열을 나누면 파일 키가 나옵니다.
+                String filename = path.substring(55);
+
+                // 위에서 구한 파일 키를 통해서 S3에서 해당 파일 삭제
+                awsS3Service.deleteFile(filename);
+            }
+            userImageRepository.deleteAllByUser(user);
+        }
+    }
+
     public List<UserImage> findImageListByUser(User user) {
         return userImageRepository.findAllByUser(user);
     }

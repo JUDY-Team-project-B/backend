@@ -21,8 +21,6 @@ public class UserImage extends BaseEntity {
     private String name;
     @Column(name = "USER_IMAGE_URL")
     private String url;
-    @Column(name = "IS_REMOVED")
-    private boolean removed;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;

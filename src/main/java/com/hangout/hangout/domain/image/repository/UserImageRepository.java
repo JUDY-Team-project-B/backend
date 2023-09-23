@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserImageRepository extends JpaRepository<UserImage, Long> {
     @Query("SELECT ui FROM UserImage ui WHERE ui.user = :user")
     List<UserImage> findAllByUser(User user);
+
+    void deleteAllByUser(User user);
 }

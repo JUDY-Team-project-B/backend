@@ -5,6 +5,7 @@ import com.hangout.hangout.domain.image.repository.ImageJdbcRepository;
 import com.hangout.hangout.domain.image.repository.PostImageRepository;
 import com.hangout.hangout.domain.image.util.FileUtils;
 import com.hangout.hangout.domain.post.entity.Post;
+import com.hangout.hangout.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,23 @@ public class ImageFileUploadService {
         }
 
         return postImages;
+    }
+
+    @Transactional
+    public void delete(Post post) {
+        List<PostImage> postImages = findImageListByPost(post);
+        if(!postImages.isEmpty()) {
+            for (PostImage postImage : postImages) {
+                String path = postImage.getUrl();
+
+                // 파일의 Url에서 55를 기준으로 문자열을 나누면 파일 키가 나옵니다.
+                String filename = path.substring(55);
+
+                // 위에서 구한 파일 키를 통해서 S3에서 해당 파일 삭제
+                awsS3Service.deleteFile(filename);
+            }
+            postImageRepository.deleteAllByPost(post);
+        }
     }
 
     public List<PostImage> findImageListByPost(Post post) {
