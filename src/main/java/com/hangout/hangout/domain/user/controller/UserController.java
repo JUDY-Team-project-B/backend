@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.user.controller;
 
 import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
+import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
 import com.hangout.hangout.domain.image.service.UserImageFileUploadService;
 import com.hangout.hangout.domain.user.dto.UserProfileUpdateRequest;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(API_PREFIX + "/user")
@@ -38,7 +38,7 @@ public class UserController {
     @Operation(summary = "현재 유저의 정보 조회", tags = {"User Controller"})
     public ResponseEntity<UserResponse> getCurrentUser(@CurrentUser User user) {
         List<String> imagesByUser = userImageFileUploadService.getImagesByUser(user);
-        return ResponseEntity.successResponse(UserResponse.of(user, imagesByUser));
+        return successResponse(UserResponse.of(user, imagesByUser));
     }
 
     /*
@@ -50,7 +50,7 @@ public class UserController {
     public ResponseEntity<UserResponse> updateProfile(@CurrentUser User user,
         @RequestBody @Valid UserProfileUpdateRequest request) {
         userService.updateProfile(user, request);
-        return ResponseEntity.successResponse();
+        return successResponse();
     }
 
     @GetMapping("/{id}")
@@ -59,7 +59,7 @@ public class UserController {
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         User userById = userService.getUserById(id);
         List<String> imagesByUser = userImageFileUploadService.getImagesByUser(userById);
-        return ResponseEntity.successResponse(UserResponse.of(userById, imagesByUser));
+        return successResponse(UserResponse.of(userById, imagesByUser));
     }
 
 }
