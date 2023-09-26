@@ -39,10 +39,10 @@ public class AuthService {
 
     public Long signup(SignUpRequest request) {
         if (Boolean.TRUE.equals(userRepository.existsByEmail(request.getEmail()))) {
-            throw new AuthException(ResponseType.AUTH_INVALID_EMAIL);
+            throw new AuthException(ResponseType.DUPLICATED_EMAIL);
         }
-        if (Boolean.TRUE.equals(userRepository.existsByNickname(request.getNickname()))){
-            throw new AuthException(ResponseType.AUTH_INVALID_NICKNAME);
+        if (Boolean.TRUE.equals(userRepository.existsByNickname(request.getNickname()))) {
+            throw new AuthException(ResponseType.DUPLICATED_NICKNAME);
         }
         User user = request.toEntity(passwordEncoder);
         User savedUser = userRepository.save(user);
@@ -66,7 +66,7 @@ public class AuthService {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
+            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_FOUND));
         String jwtToken = jwtService.generateToken(UserPrincipal.create(user));
         String refreshToken = jwtService.generateRefreshToken(UserPrincipal.create(user));
         jwtService.revokeAllUserTokens(user);
@@ -103,7 +103,8 @@ public class AuthService {
         userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
             User user = this.userRepository.findByEmail(userEmail)
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_FOUND));
+
             if (jwtService.isTokenValid(refreshToken, UserPrincipal.create(user))) {
                 String accessToken = jwtService.generateToken(UserPrincipal.create(user));
                 jwtService.revokeAllUserTokens(user);
@@ -113,6 +114,8 @@ public class AuthService {
                     .refreshToken(refreshToken)
                     .build();
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            } else {
+                throw new AuthException(ResponseType.JWT_NOT_VALID);
             }
         }
     }
@@ -120,23 +123,23 @@ public class AuthService {
     /**
      * 소셜 로그인에 따른 처리 과정 분리
      *
-     * @param request
+     * @param request        http request
      * @param registrationId 소셜 로그인 분리
-     * @return
+     * @return 처리 후 AuthResponse 반환
      */
     public AuthResponse redirectLogin(HttpServletRequest request, String registrationId) {
         switch (registrationId.toUpperCase()) {
             case "GOOGLE":
                 return redirectGoogleLogin(request);
             default:
-                throw new AuthException(ResponseType.AUTH_INVALID_PROVIDER);
+                throw new AuthException(ResponseType.UNSUPPORTED_PROVIDER);
         }
     }
 
     /**
      * google 소셜 로그인 처리, cookie에 담긴 jwt 정보를 AuthResponse로 반환
      *
-     * @param request
+     * @param request http request
      * @return AuthResponse
      */
     private AuthResponse redirectGoogleLogin(HttpServletRequest request) {

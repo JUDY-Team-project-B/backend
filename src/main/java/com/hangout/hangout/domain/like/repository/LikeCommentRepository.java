@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface LikeCommentRepository extends JpaRepository<CommentLike, Long>, LikeCommentRepositoryQuerydsl {
+public interface LikeCommentRepository extends JpaRepository<CommentLike, Long>,
+    LikeCommentRepositoryQuerydsl {
+
 }

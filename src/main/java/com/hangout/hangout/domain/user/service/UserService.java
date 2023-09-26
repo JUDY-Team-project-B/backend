@@ -18,12 +18,12 @@ public class UserService {
 
     public User getUserByEmail(String userEmail) {
         return userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_EMAIL));
+            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_FOUND));
     }
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_EXIST_ID));
+            .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_FOUND));
     }
 
     @Transactional

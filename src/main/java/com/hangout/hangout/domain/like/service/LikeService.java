@@ -11,19 +11,18 @@ import com.hangout.hangout.domain.like.repository.LikeRepository;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.domain.user.repository.UserRepository;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.NotFoundException;
 import com.hangout.hangout.global.exception.PostNotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class LikeService {
+
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
@@ -32,14 +31,14 @@ public class LikeService {
     @Transactional
     public void insert(User user, LikeRequest request) {
         Post post = postRepository.findPostById(request.getPostId())
-                .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
+            .orElseThrow(() -> new PostNotFoundException(ResponseType.POST_NOT_FOUND));
         Optional<PostLike> postLike = likeRepository.findByUserAndPost(user, post);
 
-        if (postLike.isEmpty()){
+        if (postLike.isEmpty()) {
             PostLike like = PostLike.builder()
-                    .post(post)
-                    .user(user)
-                    .build();
+                .post(post)
+                .user(user)
+                .build();
             likeRepository.save(like);
             postRepository.addLikeCount(post);
         } else {
@@ -51,14 +50,15 @@ public class LikeService {
     @Transactional
     public void insert(User user, LikeCommentRequest request) {
         Comment comment = commentRepository.findCommentById(request.getCommentId())
-                .orElseThrow(() -> new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
-        Optional<CommentLike> commentLike = likeCommentRepository.findByUserAndComment(user, comment);
+            .orElseThrow(() -> new NotFoundException(ResponseType.COMMENT_NOT_FOUND));
+        Optional<CommentLike> commentLike = likeCommentRepository.findByUserAndComment(user,
+            comment);
 
-        if(commentLike.isEmpty()) {
+        if (commentLike.isEmpty()) {
             CommentLike like = CommentLike.builder()
-                    .comment(comment)
-                    .user(user)
-                    .build();
+                .comment(comment)
+                .user(user)
+                .build();
             likeCommentRepository.save(like);
             commentRepository.addLikeCount(comment);
         } else {

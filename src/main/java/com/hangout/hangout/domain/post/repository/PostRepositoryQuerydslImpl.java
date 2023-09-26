@@ -1,10 +1,10 @@
 package com.hangout.hangout.domain.post.repository;
 
+import static com.hangout.hangout.domain.like.entity.QPostLike.postLike;
 import static com.hangout.hangout.domain.post.entity.QPost.post;
 import static com.hangout.hangout.domain.post.entity.QPostHits.postHits;
 import static com.hangout.hangout.domain.post.entity.QPostInfo.postInfo;
 import static com.hangout.hangout.domain.user.entity.QUser.user;
-import static com.hangout.hangout.domain.like.entity.QPostLike.postLike;
 
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.user.entity.User;
@@ -38,7 +38,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
     /**
      * 현재 로그인 중인 유저가 작성한 게시물 조회
-     * @param pageable pagination의 offset과 limit정보 전달을 위한 Pageable 객체
+     *
+     * @param pageable    pagination의 offset과 limit정보 전달을 위한 Pageable 객체
      * @param currentUser 현재 로그인 중인 유저
      * @return Page<Post>
      */
@@ -46,32 +47,33 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     public Page<Post> findAllPostByUser(Pageable pageable, User currentUser) {
 
         List<Post> postList = queryFactory
-                .selectFrom(post)
-                .join(post.postInfo, postInfo).fetchJoin()
-                .where(
-                    postInfo.status.id.eq(1L),
-                    post.user.eq(currentUser)
-                )
-                .orderBy(post.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            .selectFrom(post)
+            .join(post.postInfo, postInfo).fetchJoin()
+            .where(
+                postInfo.status.id.eq(1L),
+                post.user.eq(currentUser)
+            )
+            .orderBy(post.id.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(post.count())
-                .from(post)
-                .join(post.postInfo, postInfo).fetchJoin()
-                .where(
-                        postInfo.status.id.eq(1L),
-                        post.user.eq(currentUser)
-                );
+            .select(post.count())
+            .from(post)
+            .join(post.postInfo, postInfo).fetchJoin()
+            .where(
+                postInfo.status.id.eq(1L),
+                post.user.eq(currentUser)
+            );
 
         return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
     }
 
     /**
      * 현재 유저가 좋아요를 누른 게시물 조회
-     * @param pageable pagination의 offset과 limit정보 전달을 위한 Pageable 객체
+     *
+     * @param pageable    pagination의 offset과 limit정보 전달을 위한 Pageable 객체
      * @param currentUser 현재 로그인 중인 유저
      * @return Page<Post>
      */
@@ -79,27 +81,27 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     public Page<Post> findAllPostByUserLike(Pageable pageable, User currentUser) {
 
         List<Post> postList = queryFactory
-                .selectFrom(post)
-                .join(post.postInfo, postInfo).fetchJoin()
-                .join(post.postLikes , postLike).fetchJoin()
-                .where(
-                        postInfo.status.id.eq(1L),
-                        postLike.user.eq(currentUser)
-                )
-                .orderBy(post.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            .selectFrom(post)
+            .join(post.postInfo, postInfo).fetchJoin()
+            .join(post.postLikes, postLike).fetchJoin()
+            .where(
+                postInfo.status.id.eq(1L),
+                postLike.user.eq(currentUser)
+            )
+            .orderBy(post.id.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(post.count())
-                .from(post)
-                .join(post.postInfo, postInfo).fetchJoin()
-                .join(post.postLikes , postLike).fetchJoin()
-                .where(
-                        postInfo.status.id.eq(1L),
-                        postLike.user.eq(currentUser)
-                );
+            .select(post.count())
+            .from(post)
+            .join(post.postInfo, postInfo).fetchJoin()
+            .join(post.postLikes, postLike).fetchJoin()
+            .where(
+                postInfo.status.id.eq(1L),
+                postLike.user.eq(currentUser)
+            );
 
         return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
     }
@@ -132,7 +134,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         String searchKeyword) {
 
         BooleanExpression titleOrContextContainsKeyword = post.title.containsIgnoreCase(
-                searchKeyword).or(post.context.containsIgnoreCase(searchKeyword));
+            searchKeyword).or(post.context.containsIgnoreCase(searchKeyword));
 
         List<Post> postList = postListKeyword(pageable, titleOrContextContainsKeyword);
 
@@ -168,7 +170,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
     @Override
     public Page<Post> findAllContainStateByCreatedAtDesc(Pageable pageable, String searchKeyword) {
-        BooleanExpression ContextStatesKeyword = post.postInfo.map.state.containsIgnoreCase(searchKeyword);
+        BooleanExpression ContextStatesKeyword = post.postInfo.map.state.containsIgnoreCase(
+            searchKeyword);
 
         List<Post> postList = postListKeyword(pageable, ContextStatesKeyword);
 
@@ -179,7 +182,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
     @Override
     public Page<Post> findAllContainCityByCreatedAtDesc(Pageable pageable, String searchKeyword) {
-        BooleanExpression ContextCityKeyword = post.postInfo.map.city.containsIgnoreCase(searchKeyword);
+        BooleanExpression ContextCityKeyword = post.postInfo.map.city.containsIgnoreCase(
+            searchKeyword);
 
         List<Post> postList = postListKeyword(pageable, ContextCityKeyword);
 
@@ -189,9 +193,11 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     }
 
     @Override
-    public Page<Post> findAllContainStateAndCityByCreatedAtDesc(Pageable pageable, String searchKeyword1, String searchKeyword2) {
-        BooleanExpression ContextStateAndCityKeyword = post.postInfo.map.state.containsIgnoreCase(searchKeyword1)
-                .and(post.postInfo.map.city.containsIgnoreCase(searchKeyword2));
+    public Page<Post> findAllContainStateAndCityByCreatedAtDesc(Pageable pageable,
+        String searchKeyword1, String searchKeyword2) {
+        BooleanExpression ContextStateAndCityKeyword = post.postInfo.map.state.containsIgnoreCase(
+                searchKeyword1)
+            .and(post.postInfo.map.city.containsIgnoreCase(searchKeyword2));
 
         List<Post> postList = postListKeyword(pageable, ContextStateAndCityKeyword);
 
@@ -279,7 +285,8 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
     /**
      * 조회수에 따라 정렬된 게시물 조회
-     * @param page pagination의 offset과 limit정보 전달을 위한 Pageable 객체
+     *
+     * @param page         pagination의 offset과 limit정보 전달을 위한 Pageable 객체
      * @param isDescending false인 경우 오름차순, true인 경우 내림차순 조회
      * @return Page<Post>
      */
@@ -310,10 +317,12 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
     /**
      * 좋아요 수에 따라 정렬된 게시물 조회
-     * @param page pagination의 offset과 limit정보 전달을 위한 Pageable 객체
+     *
+     * @param page         pagination의 offset과 limit정보 전달을 위한 Pageable 객체
      * @param isDescending false인 경우 오름차순, true인 경우 내림차순 조회
      * @return Page<Post>
-     */    @Override
+     */
+    @Override
     public Page<Post> findAllByOrderByPostLikes(Pageable page, boolean isDescending) {
         JPAQuery<Post> postJPAQuery = queryFactory.selectFrom(post)
             .groupBy(post)

@@ -1,11 +1,11 @@
 package com.hangout.hangout.domain.user.service;
 
-import com.hangout.hangout.domain.user.entity.Role;
-import com.hangout.hangout.domain.user.entity.User;
-import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.domain.auth.entity.oauth2.GoogleOAuth2User;
 import com.hangout.hangout.domain.auth.entity.oauth2.OAuth2UserInfo;
+import com.hangout.hangout.domain.user.entity.Role;
+import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
+import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.AuthException;
 import com.hangout.hangout.global.security.UserPrincipal;
 import java.util.Map;
@@ -30,9 +30,10 @@ public class CustomOAuth2UserService
 
     /**
      * <p> OAuth2의 인증이 정상적으로 완료되었을 때, 회원 정보에 대한 logic 처리
+     *
      * @param userRequest access token을 포함한 객체
      * @return OAuth2User
-     * @throws OAuth2AuthenticationException
+     * @throws OAuth2AuthenticationException 회원 조회 과정에서 생기는 exception
      */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -43,10 +44,10 @@ public class CustomOAuth2UserService
     }
 
     /**
-     * OAuth2 인증 요청 플랫폼(kakao, google 등)을 구분하고,
-     * 이에 맞는 OAuth2UserInfo 객체를 생성하여 logic 처리
+     * OAuth2 인증 요청 플랫폼(kakao, google 등)을 구분하고, 이에 맞는 OAuth2UserInfo 객체를 생성하여 logic 처리
+     *
      * @param oAuth2UserRequest access token을 포함한 객체
-     * @param oAuth2User 리소스 서버에서 받아온 사용자 정보 객체
+     * @param oAuth2User        리소스 서버에서 받아온 사용자 정보 객체
      * @return UserPrincipal
      */
     public OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest,
@@ -60,7 +61,7 @@ public class CustomOAuth2UserService
 
         // email 정보가 담겨있지 않은 경우
         if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {
-            throw new AuthException(ResponseType.OAUTH2_USER_NOT_EXIST_EMAIL);
+            throw new AuthException(ResponseType.OAUTH2_USER_NOT_FOUND);
         }
 
         User user = userRepository.findByEmail(oAuth2UserInfo.getEmail()).orElse(null);
@@ -74,10 +75,10 @@ public class CustomOAuth2UserService
     }
 
     /**
-     * OAuth2 인증 요청 플랫폼(kakao, google 등)을 구분하여
-     * 이에 맞는 OAuth2UserInfo 객체 생성
+     * OAuth2 인증 요청 플랫폼(kakao, google 등)을 구분하여 이에 맞는 OAuth2UserInfo 객체 생성
+     *
      * @param registrationId OAuth2 인증 요청 플랫폼 구분을 위한 값
-     * @param attributes 리소스 서버에서 받아온 사용자 정보 객체에 포함된 attribute
+     * @param attributes     리소스 서버에서 받아온 사용자 정보 객체에 포함된 attribute
      * @return OAuth2UserInfo
      */
     public static OAuth2UserInfo getOAuth2UserInfo(String registrationId,
@@ -87,12 +88,13 @@ public class CustomOAuth2UserService
                 return new GoogleOAuth2User(attributes);
 
             default:
-                throw new AuthException(ResponseType.AUTH_INVALID_PROVIDER);
+                throw new AuthException(ResponseType.UNSUPPORTED_PROVIDER);
         }
     }
 
     /**
      * 소셜 로그인이 처음 진행되었을 때, 회원 가입 logic 처리
+     *
      * @param oAuth2UserInfo OAuth2 유저 정보가 포함된 객체
      * @return User
      */

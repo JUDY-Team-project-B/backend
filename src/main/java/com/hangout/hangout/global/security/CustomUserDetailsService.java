@@ -2,6 +2,7 @@ package com.hangout.hangout.global.security;
 
 import com.hangout.hangout.domain.user.entity.User;
 import com.hangout.hangout.domain.user.repository.UserRepository;
+import com.hangout.hangout.global.error.ResponseType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         User user = this.userRepository.findByEmail(email)
             .orElseThrow(() ->
-                new UsernameNotFoundException("유저를 찾을 수 없습니다. email: " + email)
+                new UsernameNotFoundException(ResponseType.USER_NOT_FOUND.getMessage())
             );
         return new UserPrincipal(user);
     }
