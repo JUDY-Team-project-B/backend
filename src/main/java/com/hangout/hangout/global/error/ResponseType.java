@@ -21,7 +21,7 @@ public enum ResponseType {
     // Internal Server Error
     INVALID_ARGUMENT(UNAUTHORIZED.value(), "CM01", "Argument 유효성 검증에 실패하였습니다."),
     INVALID_REQUEST(BAD_REQUEST.value(), "CM02", "유효하지 않는 요청입니다."),
-    UNAUTHORIZED_REQUEST(BAD_REQUEST.value(), "CM03", "비인증된 요청입니다."),
+    UNAUTHORIZED_REQUEST(UNAUTHORIZED.value(), "CM03", "비인증된 요청입니다."),
     JWT_NOT_VALID(UNAUTHORIZED.value(), "CM04", "올바르지 않은 토큰입니다."),
     JWT_MALFORMED(UNAUTHORIZED.value(), "CM05", "위조된 토큰입니다."),
     JWT_UNSUPPORTED(UNAUTHORIZED.value(), "CM06", "지원하지 않는 토큰입니다."),

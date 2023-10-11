@@ -1,6 +1,8 @@
 package com.hangout.hangout.global.handler;
 
 
+import static com.hangout.hangout.global.error.ResponseEntity.failureResponse;
+
 import com.hangout.hangout.global.error.ResponseEntity;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.BaseException;
@@ -11,6 +13,7 @@ import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,7 +34,7 @@ public class GlobalExceptionHandler {
         StackTraceElement ste = e.getStackTrace()[0];
         log.error("[{}-{}] : {}", ste.getClassName(), ste.getLineNumber(),
             e.getResponseType().getMessage());
-        return ResponseEntity.failureResponse(e.getResponseType());
+        return failureResponse(e.getResponseType());
     }
 
     @ExceptionHandler(value = Exception.class)
@@ -40,13 +43,13 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage(), e);
         StackTraceElement ste = e.getStackTrace()[0];
         log.error("[{}-{}] : {}", ste.getClassName(), ste.getLineNumber(), e.getMessage());
-        return ResponseEntity.failureResponse(ResponseType.FAILURE);
+        return failureResponse(ResponseType.FAILURE);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(value = HttpStatus.PAYLOAD_TOO_LARGE)
     public ResponseEntity fileSizeLimitExceededException() {
-        return ResponseEntity.failureResponse(ResponseType.MAX_UPLOAD_SIZE_EXCEEDED);
+        return failureResponse(ResponseType.MAX_UPLOAD_SIZE_EXCEEDED);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -54,24 +57,27 @@ public class GlobalExceptionHandler {
         AuthenticationException e, HttpServletResponse response) {
         if (e instanceof UsernameNotFoundException) {
             response.setStatus(ResponseType.USER_NOT_FOUND.getStatus());
-            return ResponseEntity.failureResponse(ResponseType.USER_NOT_FOUND);
+            return failureResponse(ResponseType.USER_NOT_FOUND);
         } else if (e instanceof BadCredentialsException) {
             response.setStatus(ResponseType.INVALID_USER_PASSWORD.getStatus());
-            return ResponseEntity.failureResponse(ResponseType.INVALID_USER_PASSWORD);
+            return failureResponse(ResponseType.INVALID_USER_PASSWORD);
         } else if (e instanceof AccountExpiredException) {
             response.setStatus(ResponseType.USER_ACCOUNT_EXPIRED.getStatus());
-            return ResponseEntity.failureResponse(ResponseType.USER_ACCOUNT_EXPIRED);
+            return failureResponse(ResponseType.USER_ACCOUNT_EXPIRED);
         } else if (e instanceof CredentialsExpiredException) {
             response.setStatus(ResponseType.USER_PASSWORD_EXPIRED.getStatus());
-            return ResponseEntity.failureResponse(ResponseType.USER_PASSWORD_EXPIRED);
+            return failureResponse(ResponseType.USER_PASSWORD_EXPIRED);
         } else if (e instanceof LockedException) {
             response.setStatus(ResponseType.USER_ACCOUNT_LOCKED.getStatus());
-            return ResponseEntity.failureResponse(ResponseType.USER_ACCOUNT_LOCKED);
+            return failureResponse(ResponseType.USER_ACCOUNT_LOCKED);
         } else if (e instanceof DisabledException) {
             response.setStatus(ResponseType.USER_ACCOUNT_DISABLED.getStatus());
-            return ResponseEntity.failureResponse(ResponseType.USER_ACCOUNT_DISABLED);
+            return failureResponse(ResponseType.USER_ACCOUNT_DISABLED);
+        } else if (e instanceof InsufficientAuthenticationException) {
+            response.setStatus(ResponseType.UNAUTHORIZED_REQUEST.getStatus());
+            return failureResponse(ResponseType.UNAUTHORIZED_REQUEST);
         } else {
-            return ResponseEntity.failureResponse(String.valueOf(HttpStatus.UNAUTHORIZED.value()),
+            return failureResponse(String.valueOf(HttpStatus.UNAUTHORIZED.value()),
                 e.getMessage());
         }
     }
@@ -80,7 +86,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e) {
-        return ResponseEntity.failureResponse(
+        return failureResponse(
             String.valueOf(HttpStatus.BAD_REQUEST.value()),
             e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
