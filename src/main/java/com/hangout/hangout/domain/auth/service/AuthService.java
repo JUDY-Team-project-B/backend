@@ -72,6 +72,7 @@ public class AuthService {
         jwtService.revokeAllUserTokens(user);
         jwtService.saveUserToken(user, refreshToken);
         return createAuthResponse(jwtToken, refreshToken);
+
     }
 
     private AuthResponse createAuthResponse(String accessToken, String refreshToken) {
@@ -96,7 +97,7 @@ public class AuthService {
         final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return;
+            throw new NotFoundException(ResponseType.AUTH_NULL_TOKEN);
         }
 
         refreshToken = authHeader.substring(7);
