@@ -83,7 +83,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         List<Post> postList = queryFactory
             .selectFrom(post)
             .join(post.postInfo, postInfo).fetchJoin()
-            .join(post.postLikes, postLike).fetchJoin()
+            .join(post.postLikes, postLike)
             .where(
                 postInfo.status.id.eq(1L),
                 postLike.user.eq(currentUser)
@@ -97,7 +97,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .select(post.count())
             .from(post)
             .join(post.postInfo, postInfo).fetchJoin()
-            .join(post.postLikes, postLike).fetchJoin()
+            .join(post.postLikes, postLike)
             .where(
                 postInfo.status.id.eq(1L),
                 postLike.user.eq(currentUser)
