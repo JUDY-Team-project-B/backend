@@ -199,14 +199,10 @@ public class PostService {
     /**
      * 특정 post의 조회수를 가져옴
      *
-     * @param postId post id
+     * @param post post
      * @return int
      */
-    public Long getPostHits(Long postId) {
-        Post post = postRepository.findPostById(postId).orElseThrow(
-            () -> new PostNotFoundException(ResponseType.POST_NOT_FOUND)
-        );
-
+    public Long getPostHits(Post post) {
         return postHitsRepository.findAllPostHits(post);
     }
 
