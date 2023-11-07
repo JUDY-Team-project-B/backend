@@ -29,6 +29,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         Post post1 = queryFactory
             .selectFrom(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(
                 post.id.eq(postId),
                 postInfo.status.id.eq(1L)
@@ -49,6 +50,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         List<Post> postList = queryFactory
             .selectFrom(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 post.user.eq(currentUser)
@@ -62,6 +64,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .select(post.count())
             .from(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 post.user.eq(currentUser)
@@ -83,6 +86,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         List<Post> postList = queryFactory
             .selectFrom(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .join(post.postLikes, postLike)
             .where(
                 postInfo.status.id.eq(1L),
@@ -97,6 +101,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .select(post.count())
             .from(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .join(post.postLikes, postLike)
             .where(
                 postInfo.status.id.eq(1L),
@@ -113,6 +118,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         List<Post> postList = queryFactory
             .selectFrom(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(postInfo.status.id.eq(1L))
             .orderBy(post.id.desc())
             .offset(pageable.getOffset())
@@ -123,6 +129,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .select(post.count())
             .from(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(postInfo.status.id.eq(1L));
 
         return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
@@ -211,6 +218,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         List<Post> postList = queryFactory
             .selectFrom(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 booleanExpression
@@ -227,6 +235,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .select(post.count())
             .from(post)
             .join(post.postInfo, postInfo).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(
                 postInfo.status.id.eq(1L),
                 booleanExpression
