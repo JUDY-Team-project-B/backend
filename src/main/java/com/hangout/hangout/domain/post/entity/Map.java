@@ -12,4 +12,7 @@ import javax.persistence.*;
 public class Map {
     protected String state;
     protected String city;
+    protected double latitude; // 위도
+    protected double longitude; // 경도
+
 }
