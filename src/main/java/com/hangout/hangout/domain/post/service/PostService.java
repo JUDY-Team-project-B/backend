@@ -15,6 +15,7 @@ import com.hangout.hangout.domain.post.repository.PostHitsRedisRepository;
 import com.hangout.hangout.domain.post.repository.PostHitsRepository;
 import com.hangout.hangout.domain.post.repository.PostRepository;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.common.domain.entity.SearchType;
 import com.hangout.hangout.global.common.domain.entity.Status;
 import com.hangout.hangout.global.common.domain.repository.StatusRepository;
 import com.hangout.hangout.global.error.ResponseType;
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 @Service
@@ -95,63 +97,37 @@ public class PostService {
         return mapper.toDtoList(posts);
     }
 
-    public List<PostListResponse> getPosts(int page, int size,
-        PostSearchRequest postSearchRequest) {
-        List<Post> posts;
+    public List<PostListResponse> getPosts(int page, int size, PostSearchRequest postSearchRequest) {
         PageRequest pageRequest = PageRequest.of(page, size);
+        SearchType searchType = postSearchRequest.getSearchType();
+        List<Post> posts;
 
-        // 검색 타입이 없을 때
-        if (postSearchRequest.getSearchType() == null) {
-            // 전체 게시물 조회
-            posts = postRepository.findAllPostByCreatedAtDesc(pageRequest).getContent();
-        }
-        // 이 이후부터는 검색 타입이 있으나 키워드 2번째가 없는 경우
-        else if (postSearchRequest.getSearchType().toString().equals("title")
-            && postSearchRequest.getSearchKeyword2() == null) {
-            // 게시물 제목 검색 조회
-            posts = postRepository.findAllContainTitleByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword1()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("context")
-            && postSearchRequest.getSearchKeyword2() == null) {
-            // 게시물 내용 검색 조회
-            posts = postRepository.findAllContainContextByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword1()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("tag")
-            && postSearchRequest.getSearchKeyword2() == null) {
-            // 게시물 태그 검색 조회
-            posts = postTagService.findAllPostByTag(pageRequest,
-                postSearchRequest.getSearchKeyword1());
-        } else if (postSearchRequest.getSearchType().toString().equals("nickname")
-            && postSearchRequest.getSearchKeyword2() == null) {
-            // 게시물 작성자 닉네임 검색 조회
-            posts = postRepository.findAllContainNicknameByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword1()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("all")
-            && postSearchRequest.getSearchKeyword2() == null) {
-            // 게시물 제목 및 내용 검색 조회
-            posts = postRepository.findAllContainTitleAndContextByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword1()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("state")
-            && postSearchRequest.getSearchKeyword2() == null) {
-            // 게시물 지역 검색 조회
-            posts = postRepository.findAllContainStateByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword1()).getContent();
-        } else if (postSearchRequest.getSearchType().toString().equals("city")
-            && postSearchRequest.getSearchKeyword2() == null) {
-            // 게시물 도시 검색 조회
-            posts = postRepository.findAllContainCityByCreatedAtDesc(pageRequest,
-                postSearchRequest.getSearchKeyword1()).getContent();
-        }
-        // 이 이후부터는 검색 타입이 도시,지역 둘 다 검색 , 키워드 2번째가 있는 경우
-        else if (postSearchRequest.getSearchType().toString().equals("stateAndCity")
-            && postSearchRequest.getSearchKeyword2() != null) {
-            posts = postRepository.findAllContainStateAndCityByCreatedAtDesc(pageRequest,
-                    postSearchRequest.getSearchKeyword1(), postSearchRequest.getSearchKeyword2())
-                .getContent();
-        } else {
+        // 올바른 SearchType 값인지 확인
+        if (searchType != null && !isValidSearchType(searchType)) {
             throw new InvalidFormatException(ResponseType.INVALID_POST_SEARCH_TYPE);
         }
+
+        if (searchType == null) {
+            posts = postRepository.findAllPostByCreatedAtDesc(pageRequest).getContent();
+        }
+        else if(postSearchRequest.getSearchType().toString().equals("tag")) {
+            posts = postTagService.findAllPostByTag(pageRequest, postSearchRequest.getSearchKeyword1());
+        }
+        else {
+            posts = postRepository.SearchAllPostByCreatedAtDesc(pageRequest, postSearchRequest).getContent();
+        }
+
         return mapper.toDtoList(posts);
+    }
+
+    private boolean isValidSearchType(SearchType searchType) {
+        // 유효한 검색 유형인지 확인
+        for (SearchType validType : SearchType.values()) {
+            if (validType.equals(searchType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Transactional

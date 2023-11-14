@@ -6,9 +6,10 @@ import static com.hangout.hangout.domain.post.entity.QPostHits.postHits;
 import static com.hangout.hangout.domain.post.entity.QPostInfo.postInfo;
 import static com.hangout.hangout.domain.user.entity.QUser.user;
 
+import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.entity.Post;
 import com.hangout.hangout.domain.user.entity.User;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
 public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
@@ -116,147 +118,36 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     public Page<Post> findAllPostByCreatedAtDesc(Pageable pageable) {
 
         List<Post> postList = queryFactory
-            .selectFrom(post)
-            .join(post.postInfo, postInfo).fetchJoin()
+                .selectFrom(post)
+                .join(post.postInfo, postInfo).fetchJoin()
                 .join(post.user, user).fetchJoin()
-            .where(postInfo.status.id.eq(1L))
-            .orderBy(post.id.desc())
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
+                .where(postInfo.status.id.eq(1l))
+                .orderBy(post.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
-            .select(post.count())
-            .from(post)
-            .join(post.postInfo, postInfo).fetchJoin()
+                .select(post.count())
+                .from(post)
+                .join(post.postInfo, postInfo).fetchJoin()
                 .join(post.user, user).fetchJoin()
-            .where(postInfo.status.id.eq(1L));
+                .where(postInfo.status.id.eq(1L));
 
         return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
     }
 
-    // 검색 조건 all(제목,내용) 인 모든 게시글 조회
+    // 검색 조건 있는 모든 게시글 조회
     @Override
-    public Page<Post> findAllContainTitleAndContextByCreatedAtDesc(Pageable pageable,
-        String searchKeyword) {
+    public Page<Post> SearchAllPostByCreatedAtDesc(Pageable pageable, PostSearchRequest postSearchRequest) {
 
-        BooleanExpression titleOrContextContainsKeyword = post.title.containsIgnoreCase(
-            searchKeyword).or(post.context.containsIgnoreCase(searchKeyword));
-
-        List<Post> postList = postListKeyword(pageable, titleOrContextContainsKeyword);
-
-        JPAQuery<Long> countQuery = countQueryMethod(titleOrContextContainsKeyword);
-
-        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
-    }
-
-    // 검색 조건 title(제목) 인 모든 게시글 조회
-    @Override
-    public Page<Post> findAllContainTitleByCreatedAtDesc(Pageable pageable, String searchKeyword) {
-        BooleanExpression titleContainsKeyword = post.title.containsIgnoreCase(searchKeyword);
-
-        List<Post> postList = postListKeyword(pageable, titleContainsKeyword);
-
-        JPAQuery<Long> countQuery = countQueryMethod(titleContainsKeyword);
-
-        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
-    }
-
-    // 검색 조건 context(내용) 인 모든 게시글 조회
-    @Override
-    public Page<Post> findAllContainContextByCreatedAtDesc(Pageable pageable,
-        String searchKeyword) {
-        BooleanExpression ContextContainsKeyword = post.context.containsIgnoreCase(searchKeyword);
-
-        List<Post> postList = postListKeyword(pageable, ContextContainsKeyword);
-
-        JPAQuery<Long> countQuery = countQueryMethod(ContextContainsKeyword);
-
-        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
-    }
-
-    @Override
-    public Page<Post> findAllContainStateByCreatedAtDesc(Pageable pageable, String searchKeyword) {
-        BooleanExpression ContextStatesKeyword = post.postInfo.map.state.containsIgnoreCase(
-            searchKeyword);
-
-        List<Post> postList = postListKeyword(pageable, ContextStatesKeyword);
-
-        JPAQuery<Long> countQuery = countQueryMethod(ContextStatesKeyword);
-
-        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
-    }
-
-    @Override
-    public Page<Post> findAllContainCityByCreatedAtDesc(Pageable pageable, String searchKeyword) {
-        BooleanExpression ContextCityKeyword = post.postInfo.map.city.containsIgnoreCase(
-            searchKeyword);
-
-        List<Post> postList = postListKeyword(pageable, ContextCityKeyword);
-
-        JPAQuery<Long> countQuery = countQueryMethod(ContextCityKeyword);
-
-        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
-    }
-
-    @Override
-    public Page<Post> findAllContainStateAndCityByCreatedAtDesc(Pageable pageable,
-        String searchKeyword1, String searchKeyword2) {
-        BooleanExpression ContextStateAndCityKeyword = post.postInfo.map.state.containsIgnoreCase(
-                searchKeyword1)
-            .and(post.postInfo.map.city.containsIgnoreCase(searchKeyword2));
-
-        List<Post> postList = postListKeyword(pageable, ContextStateAndCityKeyword);
-
-        JPAQuery<Long> countQuery = countQueryMethod(ContextStateAndCityKeyword);
-
-        return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
-    }
-
-    // 98 ~ 123 : 검색 조건(내용, 제목, all) 일 때 중복되는 코드를 함수로 묶어서 사용
-    public List<Post> postListKeyword(Pageable pageable, BooleanExpression booleanExpression) {
         List<Post> postList = queryFactory
             .selectFrom(post)
             .join(post.postInfo, postInfo).fetchJoin()
                 .join(post.user, user).fetchJoin()
             .where(
-                postInfo.status.id.eq(1L),
-                booleanExpression
-            )
-            .orderBy(post.id.desc())
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
-        return postList;
-    }
-
-    public JPAQuery<Long> countQueryMethod(BooleanExpression booleanExpression) {
-        JPAQuery<Long> countQuery = queryFactory
-            .select(post.count())
-            .from(post)
-            .join(post.postInfo, postInfo).fetchJoin()
-                .join(post.user, user).fetchJoin()
-            .where(
-                postInfo.status.id.eq(1L),
-                booleanExpression
-            );
-        return countQuery;
-    }
-
-    // 검색 조건 nickname(닉네임) 인 모든 게시글 조회
-    @Override
-    public Page<Post> findAllContainNicknameByCreatedAtDesc(Pageable pageable,
-        String searchKeyword) {
-        BooleanExpression nicknameContainsKeyword = user.nickname.likeIgnoreCase(
-            "%" + searchKeyword + "%");
-
-        List<Post> postList = queryFactory
-            .selectFrom(post)
-            .join(post.postInfo, postInfo).fetchJoin()
-            .join(post.user, user).fetchJoin()
-            .where(
-                postInfo.status.id.eq(1L),
-                nicknameContainsKeyword
+                    postInfo.status.id.eq(1L),
+                    searchByBuilder(postSearchRequest)
             )
             .orderBy(post.id.desc())
             .offset(pageable.getOffset())
@@ -267,13 +158,51 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             .select(post.count())
             .from(post)
             .join(post.postInfo, postInfo).fetchJoin()
-            .join(post.user, user).fetchJoin()
+                .join(post.user, user).fetchJoin()
             .where(
-                postInfo.status.id.eq(1L),
-                nicknameContainsKeyword
+                    postInfo.status.id.eq(1L),
+                    searchByBuilder(postSearchRequest)
             );
 
         return PageableExecutionUtils.getPage(postList, pageable, countQuery::fetchOne);
+    }
+
+    private BooleanBuilder searchByBuilder(PostSearchRequest postSearchRequest) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // 검색 타입이 있으나 키워드 2번째가 없는 경우
+        if (StringUtils.hasText(postSearchRequest.getSearchType().toString())
+                && !StringUtils.hasText(postSearchRequest.getSearchKeyword2())) {
+            if (postSearchRequest.getSearchType().toString().equals("title")){
+                builder.and(post.title.contains(postSearchRequest.getSearchKeyword1()));
+            }
+            if (postSearchRequest.getSearchType().toString().equals("context")){
+                builder.and(post.context.contains(postSearchRequest.getSearchKeyword1()));
+            }
+            if (postSearchRequest.getSearchType().toString().equals("nickname")){
+                builder.and(post.user.nickname.eq(postSearchRequest.getSearchKeyword1()));
+            }
+            if (postSearchRequest.getSearchType().toString().equals("all")){
+                builder.and(post.title.contains(postSearchRequest.getSearchKeyword1())
+                        .or(post.context.contains(postSearchRequest.getSearchKeyword1())));
+            }
+            if (postSearchRequest.getSearchType().toString().equals("state")){
+                builder.and(post.postInfo.map.state.contains(postSearchRequest.getSearchKeyword1()));
+            }
+            if (postSearchRequest.getSearchType().toString().equals("city")){
+                builder.and(post.postInfo.map.city.contains(postSearchRequest.getSearchKeyword1()));
+            }
+        }
+        // 검색 타입이 도시,지역 둘 다 검색 , 키워드 2번째가 있는 경우
+        else if (StringUtils.hasText(postSearchRequest.getSearchType().toString())
+                && StringUtils.hasText(postSearchRequest.getSearchKeyword2())){
+            if (postSearchRequest.getSearchType().toString().equals("stateAndCity")){
+                builder.and(post.postInfo.map.state.contains(postSearchRequest.getSearchKeyword1())
+                        .and(post.postInfo.map.city.contains(postSearchRequest.getSearchKeyword2())));
+            }
+        }
+
+        return builder;
     }
 
     @Override
