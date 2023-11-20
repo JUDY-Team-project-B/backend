@@ -85,7 +85,7 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId, @CurrentUser User user) {
 
         Post newPost = postService.findPostById(postId);
-        Long viewCount = postService.getPostHits(postId);
+        Long viewCount = postService.getPostHits(newPost);
         List<String> tagsByPost = postTagService.getTagsByPost(newPost);
         List<String> imagesByPost = imageFileUploadService.getImagesByPost(newPost);
         if (user.getId() != null) {
@@ -134,7 +134,8 @@ public class PostController {
     @Operation(summary = "게시물 조회 수 조회")
     @ApiResponse(responseCode = "200", description = "OK")
     public ResponseEntity<Long> getPostHits(@PathVariable Long postId) {
-        return successResponse(postService.getPostHits(postId));
+        Post newPost = postService.findPostById(postId);
+        return successResponse(postService.getPostHits(newPost));
     }
 
     @GetMapping("/hits/filter/{page}")

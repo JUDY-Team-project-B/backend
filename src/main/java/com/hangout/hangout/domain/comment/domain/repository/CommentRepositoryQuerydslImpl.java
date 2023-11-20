@@ -1,6 +1,7 @@
 package com.hangout.hangout.domain.comment.domain.repository;
 
 import static com.hangout.hangout.domain.comment.entity.QComment.comment;
+import static com.hangout.hangout.domain.user.entity.QUser.user;
 
 import com.hangout.hangout.domain.comment.entity.Comment;
 import com.hangout.hangout.domain.user.entity.User;
@@ -31,6 +32,7 @@ public class CommentRepositoryQuerydslImpl implements CommentRepositoryQuerydsl 
     public Optional<Comment> findCommentById(Long commentId) {
         Comment comment1 = queryFactory
             .selectFrom(comment)
+                .join(comment.user, user).fetchJoin()
             .where(
                 comment.id.eq(commentId),
                 comment.status.id.eq(1L)
@@ -39,11 +41,12 @@ public class CommentRepositoryQuerydslImpl implements CommentRepositoryQuerydsl 
     }
 
     @Override
-    public List<Comment> findCommentByUser(User user) {
+    public List<Comment> findCommentByUser(User cnUser) {
         JPAQuery<Comment> query = queryFactory
             .selectFrom(comment)
+                .join(comment.user, user).fetchJoin()
             .where(
-                comment.user.eq(user),
+                comment.user.eq(cnUser),
                 comment.status.id.eq(1L)
             )
             .orderBy(comment.id.desc());

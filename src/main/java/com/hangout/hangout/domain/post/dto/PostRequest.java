@@ -33,6 +33,10 @@ public class PostRequest {
     private final String travelState; // 여행 지역(도)
     @NotEmpty
     private final String travelCity; // 여행 지역(시)
+    @NotNull
+    private final double latitude; // 위도
+    @NotNull
+    private final double longitude; // 경도
     @NotEmpty
     private final String travelAge; // 연령대
     @NotNull

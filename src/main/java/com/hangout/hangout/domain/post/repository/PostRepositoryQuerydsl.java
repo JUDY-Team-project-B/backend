@@ -1,5 +1,6 @@
 package com.hangout.hangout.domain.post.repository;
 
+import com.hangout.hangout.domain.post.dto.PostSearchRequest;
 import com.hangout.hangout.domain.post.entity.Post;
 import java.util.Optional;
 
@@ -16,16 +17,8 @@ public interface PostRepositoryQuerydsl {
 
     Page<Post> findAllPostByCreatedAtDesc(Pageable pageable);
 
-    Page<Post> findAllContainTitleAndContextByCreatedAtDesc(Pageable pageable, String searchKeyword);
-
-    Page<Post> findAllContainTitleByCreatedAtDesc(Pageable pageable, String searchKeyword);
-
-    Page<Post> findAllContainContextByCreatedAtDesc(Pageable pageable, String searchKeyword);
-    Page<Post> findAllContainStateByCreatedAtDesc(Pageable pageable, String searchKeyword);
-    Page<Post> findAllContainCityByCreatedAtDesc(Pageable pageable, String searchKeyword);
-    Page<Post> findAllContainStateAndCityByCreatedAtDesc(Pageable pageable, String searchKeyword1, String searchKeyword2);
-
-    Page<Post> findAllContainNicknameByCreatedAtDesc(Pageable pageable, String searchKeyword);
+    // 검색 조건 있는 모든 게시글 조회
+    Page<Post> SearchAllPostByCreatedAtDesc(Pageable pageable, PostSearchRequest postSearchRequest);
 
     void addLikeCount(Post selectpost);
 
