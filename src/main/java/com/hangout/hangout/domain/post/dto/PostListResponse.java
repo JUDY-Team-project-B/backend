@@ -24,6 +24,8 @@ public class PostListResponse {
     private final String travelAge;
     private final String travelState; // 여행 지역(도)
     private final String travelCity; // 여행 지역(시)
+    private final double latitude; // 위도
+    private final double longitude; // 경도
     private final int travelMember;
     private final Date travelDateStart;
     private final Date travelDateEnd;

@@ -2,6 +2,8 @@ package com.hangout.hangout.domain.auth.controller;
 
 import static com.hangout.hangout.global.common.domain.entity.Constants.API_PREFIX;
 import static com.hangout.hangout.global.common.domain.entity.Constants.FAILURE_ENDPOINT;
+import static com.hangout.hangout.global.error.ResponseEntity.failureResponse;
+import static com.hangout.hangout.global.error.ResponseEntity.successResponse;
 
 import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
@@ -9,6 +11,7 @@ import com.hangout.hangout.domain.auth.dto.request.NicknameCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.SignUpRequest;
 import com.hangout.hangout.domain.auth.dto.response.AuthResponse;
 import com.hangout.hangout.domain.auth.service.AuthService;
+import com.hangout.hangout.domain.auth.service.LogoutService;
 import com.hangout.hangout.global.error.ResponseEntity;
 import com.hangout.hangout.global.error.ResponseType;
 import com.hangout.hangout.global.exception.AuthException;
@@ -23,6 +26,9 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final LogoutService logoutService;
 
     @Operation(summary = "회원가입", tags = {"Auth Controller"})
     @ApiResponse(responseCode = "200", description = "OK")
@@ -46,7 +53,7 @@ public class AuthController {
     @ApiResponse(responseCode = "500", description = "Internal Server Error")
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@Valid @RequestBody SignUpRequest request) {
-        return ResponseEntity.successResponse("회원가입 성공", authService.signup(request));
+        return successResponse("회원가입 성공", authService.signup(request));
     }
 
     @Operation(summary = "이메일 중복확인", tags = {"Auth Controller"})
@@ -59,7 +66,7 @@ public class AuthController {
         if (authService.checkEmail(request)) {
             throw new AuthException(ResponseType.DUPLICATED_EMAIL);
         } else {
-            return ResponseEntity.successResponse(request.getEmail() + "은 중복되지 않은 이메일입니다!");
+            return successResponse(request.getEmail() + "은 중복되지 않은 이메일입니다!");
         }
     }
 
@@ -74,7 +81,7 @@ public class AuthController {
         if (authService.checkNickname(request)) {
             throw new AuthException(ResponseType.DUPLICATED_NICKNAME);
         } else {
-            return ResponseEntity.successResponse(request.getNickname() + "은 중복되지 않은 닉네임입니다!");
+            return successResponse(request.getNickname() + "은 중복되지 않은 닉네임입니다!");
         }
     }
 
@@ -85,7 +92,24 @@ public class AuthController {
     @ApiResponse(responseCode = "500", description = "Internal Server Error")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginReqeust request) {
-        return ResponseEntity.successResponse("로그인 성공", authService.login(request));
+        return successResponse("로그인 성공", authService.login(request));
+    }
+
+    @Operation(summary = "로그아웃", tags = {"Auth Controller"})
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = AuthResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not Found")
+    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    @GetMapping("/logout")
+    public ResponseEntity<AuthResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication != null) {
+            logoutService.logout(request,response,authentication);
+        }
+
+        return successResponse("로그아웃 성공");
     }
 
     @Operation(summary = "token 재발급", tags = {"Auth Controller"})
@@ -97,7 +121,7 @@ public class AuthController {
     public ResponseEntity<Void> refreshToken(HttpServletRequest request,
         HttpServletResponse response) throws IOException {
         authService.refreshToken(request, response);
-        return ResponseEntity.successResponse("access token 갱신");
+        return successResponse("access token 갱신");
     }
 
     @GetMapping("/oauth2/callback/{registration}")
@@ -107,7 +131,7 @@ public class AuthController {
         @PathVariable String registration,
         HttpServletRequest request
     ) {
-        return ResponseEntity.successResponse("google login 완료",
+        return successResponse("google login 완료",
             authService.redirectLogin(request, registration));
     }
 
@@ -116,7 +140,7 @@ public class AuthController {
     public ResponseEntity redirectLoginFail(
         @RequestParam String error
     ) {
-        return ResponseEntity.failureResponse(ResponseType.FAILURE, error);
+        return failureResponse(ResponseType.FAILURE, error);
     }
 
 }

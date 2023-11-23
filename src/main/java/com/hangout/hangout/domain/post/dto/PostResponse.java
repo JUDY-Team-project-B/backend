@@ -20,6 +20,9 @@ public class PostResponse {
     private final String title;
     private final Long userId;
     private final String nickname;
+    private final String gender;
+    private final int age;
+    private final String description;
     private final String context;
     private final List<String> tags;
     private final List<String> imageUrls;
@@ -29,6 +32,8 @@ public class PostResponse {
     private final String travelAge;
     private final String travelState; // 여행 지역(도)
     private final String travelCity; // 여행 지역(시)
+    private final double latitude; // 위도
+    private final double longitude; // 경도
     private final int travelMember;
     private final Date travelDateStart;
     private final Date travelDateEnd;
