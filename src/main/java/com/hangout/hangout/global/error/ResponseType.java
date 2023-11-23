@@ -45,6 +45,7 @@ public enum ResponseType {
     UNSUPPORTED_PROVIDER(BAD_REQUEST.value(), "AU05", "지원하지 않는 소셜 로그인입니다"),
     OAUTH2_USER_NOT_FOUND(NOT_FOUND.value(), "AU06", "OAuth2 provider의 email이 존재하지 않습니다"),
     INVALID_REDIRECT_URL(UNAUTHORIZED.value(), "AU07", "redirect url이 유효하지 않습니다"),
+    REDIRECT_URL_NOT_FOUND(BAD_REQUEST.value(), "AU08", "요청에 redirect url이 포함되지 않았습니다."),
 
 
     // USER

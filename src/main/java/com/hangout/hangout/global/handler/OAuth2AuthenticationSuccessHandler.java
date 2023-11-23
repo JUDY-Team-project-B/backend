@@ -120,8 +120,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         jwtService.saveUserToken(user, refreshToken); // jwtService를 통해 토큰 저장
         jwtService.revokeAllUserTokens(user); // jwtService를 통해 토큰 폐기
 
-        CookieUtil.addCookie(response, "accessToken", jwtToken, 1);
-        CookieUtil.addCookie(response, "refreshToken", refreshToken, 1);
+        CookieUtil.addCookie(response, "accessToken", jwtToken, cookieAuthorizationRequestRepository.COOKIE_EXPIRE_SECONDS);
+        CookieUtil.addCookie(response, "refreshToken", refreshToken, cookieAuthorizationRequestRepository.COOKIE_EXPIRE_SECONDS);
     }
 
     /**
