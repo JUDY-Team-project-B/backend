@@ -1,14 +1,14 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hangout?rewriteBatchedStatements=true
-    username:
-    password:
+    url: jdbc:mysql://mysql:3306/hangout?rewriteBatchedStatements=true
+    username: hangout
+    password: password
 
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       use-new-id-generator-mappings: false
@@ -26,7 +26,7 @@ spring:
       matching-strategy: ant_path_matcher
 
   redis:
-    host: localhost
+    host: redis
     port: 6379
 
   config:
@@ -50,12 +50,12 @@ application:
 cloud:
   aws:
     credentials:
-      access-key: # accessKey
-      secret-key: # secretKey
+      access-key:  # accessKey
+      secret-key:  # secretKey
     region:
       static: ap-northeast-2
     s3:
-      bucket: hangoutbucket2
+      bucket: hangoutbucket
     stack:
       auto: false
 
