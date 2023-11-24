@@ -23,10 +23,14 @@ public class CookieUtil {
         return Optional.empty();
     }
 
-    public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
+    /**
+     *
+     * @param httpOnly  accessToken과 refreshToken의 접근 분리 (accessToken httpOnly false)
+     */
+    public static void addCookie(HttpServletResponse response, String name, String value, int maxAge, boolean httpOnly) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(httpOnly);
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }

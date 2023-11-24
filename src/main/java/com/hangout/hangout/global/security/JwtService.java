@@ -1,5 +1,8 @@
 package com.hangout.hangout.global.security;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTH_EXCEPTION;
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTH_HEADER;
+
 import com.hangout.hangout.domain.auth.entity.Token;
 import com.hangout.hangout.domain.auth.entity.TokenType;
 import com.hangout.hangout.domain.auth.repository.TokenRepository;
@@ -104,17 +107,17 @@ public class JwtService {
             Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
-            request.setAttribute("AuthException", new AuthException(ResponseType.JWT_MALFORMED));
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_MALFORMED));
         } catch (ExpiredJwtException ex) {
-            request.setAttribute("AuthException", new AuthException(ResponseType.JWT_EXPIRED));
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_EXPIRED));
         } catch (UnsupportedJwtException ex) {
-            request.setAttribute("AuthException", new AuthException(ResponseType.JWT_UNSUPPORTED));
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_UNSUPPORTED));
         } catch (IllegalArgumentException ex) {
-            request.setAttribute("AuthException", new AuthException(ResponseType.JWT_NULL_OR_EMPTY));
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_NULL_OR_EMPTY));
         } catch (PrematureJwtException ex) {
-            request.setAttribute("AuthException", new AuthException(ResponseType.JWT_PREMATURE));
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_PREMATURE));
         } catch (SignatureException ex){
-            request.setAttribute("AuthException", new AuthException(ResponseType.JWT_SIGNATURE));
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_SIGNATURE));
         }
         return false;
     }
@@ -154,7 +157,7 @@ public class JwtService {
     }
 
     public String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+        String bearerToken = request.getHeader(AUTH_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }

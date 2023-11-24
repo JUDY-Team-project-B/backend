@@ -1,5 +1,7 @@
 package com.hangout.hangout.global.handler;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTH_EXCEPTION;
+
 import com.hangout.hangout.global.exception.BaseException;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -22,9 +24,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException authException) throws IOException, ServletException {
-        if (request.getAttribute("AuthException") != null) {
+        if (request.getAttribute(AUTH_EXCEPTION) != null) {
             resolver.resolveException(request, response, null,
-                (BaseException) request.getAttribute("AuthException"));
+                (BaseException) request.getAttribute(AUTH_EXCEPTION));
         } else {
             resolver.resolveException(request, response, null, authException);
         }

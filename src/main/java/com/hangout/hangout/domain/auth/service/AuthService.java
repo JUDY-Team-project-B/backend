@@ -1,5 +1,9 @@
 package com.hangout.hangout.domain.auth.service;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.ACCESS_TOKEN_COOKIE_NAME;
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTH_EXCEPTION;
+import static com.hangout.hangout.global.common.domain.entity.Constants.REFRESH_TOKEN_COOKIE_NAME;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
@@ -91,7 +95,7 @@ public class AuthService {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException {
-        if (request.getAttribute("AuthException") == null) {
+        if (request.getAttribute(AUTH_EXCEPTION) == null) {
             String refreshToken = jwtService.getJwtFromRequest(request);
             String userEmail = jwtService.getUserEmailFromJWT(refreshToken);
             User user = userRepository.findByEmail(userEmail)
@@ -105,7 +109,7 @@ public class AuthService {
                 .build();
             new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
         } else {
-            throw (AuthException) request.getAttribute("AuthException");
+            throw (AuthException) request.getAttribute(AUTH_EXCEPTION);
         }
     }
 
@@ -136,9 +140,9 @@ public class AuthService {
         String jwtToken = "", refreshToken = "";
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("accessToken")) {
+            if (cookie.getName().equals(ACCESS_TOKEN_COOKIE_NAME)) {
                 jwtToken = cookie.getValue();
-            } else if (cookie.getName().equals("refreshToken")) {
+            } else if (cookie.getName().equals(REFRESH_TOKEN_COOKIE_NAME)) {
                 refreshToken = cookie.getValue();
             }
         }
