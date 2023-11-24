@@ -1,5 +1,7 @@
 package com.hangout.hangout.global.handler;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.ACCESS_TOKEN_COOKIE_NAME;
+import static com.hangout.hangout.global.common.domain.entity.Constants.REFRESH_TOKEN_COOKIE_NAME;
 import static com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 import com.hangout.hangout.domain.user.entity.User;
@@ -120,8 +122,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         jwtService.saveUserToken(user, refreshToken); // jwtService를 통해 토큰 저장
         jwtService.revokeAllUserTokens(user); // jwtService를 통해 토큰 폐기
 
-        CookieUtil.addCookie(response, "accessToken", jwtToken, 1);
-        CookieUtil.addCookie(response, "refreshToken", refreshToken, 1);
+        CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, jwtToken, cookieAuthorizationRequestRepository.COOKIE_EXPIRE_SECONDS,  false);
+        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieAuthorizationRequestRepository.COOKIE_EXPIRE_SECONDS, true);
     }
 
     /**

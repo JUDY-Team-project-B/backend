@@ -1,5 +1,6 @@
 # select * from status;
-insert into HangOut.status(STATUS_TYPE)
+use hangout;
+insert into hangout.STATUS(STATUS_TYPE)
 values ('공개'),
        ('삭제'),
        ('관리자 삭제');

@@ -1,5 +1,9 @@
 package com.hangout.hangout.domain.auth.service;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.ACCESS_TOKEN_COOKIE_NAME;
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTH_EXCEPTION;
+import static com.hangout.hangout.global.common.domain.entity.Constants.REFRESH_TOKEN_COOKIE_NAME;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hangout.hangout.domain.auth.dto.request.EmailCheckRequest;
 import com.hangout.hangout.domain.auth.dto.request.LoginReqeust;
@@ -20,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -72,6 +75,7 @@ public class AuthService {
         jwtService.revokeAllUserTokens(user);
         jwtService.saveUserToken(user, refreshToken);
         return createAuthResponse(jwtToken, refreshToken);
+
     }
 
     private AuthResponse createAuthResponse(String accessToken, String refreshToken) {
@@ -91,32 +95,21 @@ public class AuthService {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        final String refreshToken;
-        final String userEmail;
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return;
-        }
-
-        refreshToken = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(refreshToken);
-        if (userEmail != null) {
-            User user = this.userRepository.findByEmail(userEmail)
+        if (request.getAttribute(AUTH_EXCEPTION) == null) {
+            String refreshToken = jwtService.getJwtFromRequest(request);
+            String userEmail = jwtService.getUserEmailFromJWT(refreshToken);
+            User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new NotFoundException(ResponseType.USER_NOT_FOUND));
-
-            if (jwtService.isTokenValid(refreshToken, UserPrincipal.create(user))) {
-                String accessToken = jwtService.generateToken(UserPrincipal.create(user));
-                jwtService.revokeAllUserTokens(user);
-                jwtService.saveUserToken(user, accessToken);
-                var authResponse = AuthResponse.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-            } else {
-                throw new AuthException(ResponseType.JWT_NOT_VALID);
-            }
+            String accessToken = jwtService.generateToken(UserPrincipal.create(user));
+            jwtService.revokeAllUserTokens(user);
+            jwtService.saveUserToken(user, accessToken);
+            var authResponse = AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+            new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+        } else {
+            throw (AuthException) request.getAttribute(AUTH_EXCEPTION);
         }
     }
 
@@ -147,9 +140,9 @@ public class AuthService {
         String jwtToken = "", refreshToken = "";
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("accessToken")) {
+            if (cookie.getName().equals(ACCESS_TOKEN_COOKIE_NAME)) {
                 jwtToken = cookie.getValue();
-            } else if (cookie.getName().equals("refreshToken")) {
+            } else if (cookie.getName().equals(REFRESH_TOKEN_COOKIE_NAME)) {
                 refreshToken = cookie.getValue();
             }
         }

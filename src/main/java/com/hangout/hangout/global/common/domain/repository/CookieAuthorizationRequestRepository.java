@@ -18,11 +18,12 @@ public class CookieAuthorizationRequestRepository implements AuthorizationReques
 
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     public static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect-uri";
-    private static final int COOKIE_EXPIRE_SECONDS = 180;
+    public static final int COOKIE_EXPIRE_SECONDS = 180;
 
     /**
-     * 처음 social login uri로 요청 시, 소셜 로그인 페이지로 redirect와 동시에 인증 요청임을 증명하기 위해 Cookie에 저장
-     * (이 과정을 거치지 않는 경우, 인증 요청 실패 및 OAuth2AuthenticationFailureHandler의 처리 진행 )
+     * 처음 social login uri로 요청 시, 소셜 로그인 페이지로 redirect와 동시에 인증 요청임을 증명하기 위해 Cookie에 저장 (이 과정을 거치지 않는
+     * 경우, 인증 요청 실패 및 OAuth2AuthenticationFailureHandler의 처리 진행 )
+     *
      * @param request the {@code HttpServletRequest}
      * @return OAuth2AuthorizationRequest
      */
@@ -34,9 +35,9 @@ public class CookieAuthorizationRequestRepository implements AuthorizationReques
     }
 
     /**
-     * 처음 social login uri로 요청을 진행할 때, redirect-uri param 값을 Cookie에 저장하며, 이는 추후 소셜 로그인이
-     * 정상적으로 진행된 후 OAuth2AuthenticationSuccessHandler 처리 과정에서 redirect될 uri를 설정하는 과정에서
-     * 해당 Cookie가 사용됨
+     * 처음 social login uri로 요청을 진행할 때, redirect-uri param 값을 Cookie에 저장하며, 이는 추후 소셜 로그인이 정상적으로 진행된 후
+     * OAuth2AuthenticationSuccessHandler 처리 과정에서 redirect될 uri를 설정하는 과정에서 해당 Cookie가 사용됨
+     *
      * @param request the {@code HttpServletRequest}
      */
     @Override
@@ -48,12 +49,12 @@ public class CookieAuthorizationRequestRepository implements AuthorizationReques
             return;
         }
         CookieUtil.addCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
-            CookieUtil.serialize(authorizationRequest), COOKIE_EXPIRE_SECONDS);
+            CookieUtil.serialize(authorizationRequest), COOKIE_EXPIRE_SECONDS, true);
         String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
 
         if (StringUtils.isNotBlank(redirectUriAfterLogin)) {
             CookieUtil.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME,
-                redirectUriAfterLogin, COOKIE_EXPIRE_SECONDS);
+                redirectUriAfterLogin, COOKIE_EXPIRE_SECONDS, true);
         }
     }
 
@@ -64,7 +65,8 @@ public class CookieAuthorizationRequestRepository implements AuthorizationReques
 
     /**
      * request, response의 인가 요청 및 redirect-uri cookie 정보를 삭제 처리
-     * @param request the {@code HttpServletRequest}
+     *
+     * @param request  the {@code HttpServletRequest}
      * @param response the {@code HttpServletResponse}
      */
     public void removeAuthorizationRequestCookies(HttpServletRequest request,

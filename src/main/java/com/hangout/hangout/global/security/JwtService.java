@@ -1,29 +1,39 @@
 package com.hangout.hangout.global.security;
 
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTH_EXCEPTION;
+import static com.hangout.hangout.global.common.domain.entity.Constants.AUTH_HEADER;
+
 import com.hangout.hangout.domain.auth.entity.Token;
 import com.hangout.hangout.domain.auth.entity.TokenType;
 import com.hangout.hangout.domain.auth.repository.TokenRepository;
 import com.hangout.hangout.domain.user.entity.User;
+import com.hangout.hangout.global.error.ResponseType;
+import com.hangout.hangout.global.exception.AuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -91,31 +101,23 @@ public class JwtService {
         return claims.getSubject();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    public boolean validateToken(String authToken) {
+    public boolean validateToken(String authToken, HttpServletRequest request) {
         try {
             Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_MALFORMED));
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token");
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_EXPIRED));
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token");
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_UNSUPPORTED));
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty.");
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_NULL_OR_EMPTY));
+        } catch (PrematureJwtException ex) {
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_PREMATURE));
+        } catch (SignatureException ex){
+            request.setAttribute(AUTH_EXCEPTION, new AuthException(ResponseType.JWT_SIGNATURE));
         }
         return false;
     }
@@ -145,15 +147,21 @@ public class JwtService {
         tokenRepository.save(token);
     }
 
+    @Transactional
     public void revokeAllUserTokens(User user) {
         List<Token> validUserTokens = tokenRepository.findAllValidTokensByUserId(user.getId());
-        if (validUserTokens.isEmpty()) {
-            return;
-        }
-        validUserTokens.forEach(token -> {
+        for (Token token : validUserTokens) {
             token.setExpired(true);
             token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
+        }
     }
+
+    public String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTH_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
 }

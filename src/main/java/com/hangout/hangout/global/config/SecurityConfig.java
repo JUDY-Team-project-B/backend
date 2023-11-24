@@ -6,6 +6,8 @@ import static com.hangout.hangout.global.common.domain.entity.Constants.PERMIT_G
 
 import com.hangout.hangout.domain.user.service.CustomOAuth2UserService;
 import com.hangout.hangout.global.common.domain.repository.CookieAuthorizationRequestRepository;
+import com.hangout.hangout.global.handler.JwtAccessDeniedHandler;
+import com.hangout.hangout.global.handler.JwtAuthenticationEntryPoint;
 import com.hangout.hangout.global.handler.OAuth2AuthenticationFailureHandler;
 import com.hangout.hangout.global.handler.OAuth2AuthenticationSuccessHandler;
 import com.hangout.hangout.global.security.JwtAuthenticateFilter;
@@ -14,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,6 +42,8 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     /**
      * spring security + jwt + OAuth2 사용을 위한 설정
@@ -57,8 +60,9 @@ public class SecurityConfig {
             .cors().configurationSource(corsConfigurationSource()).and()
             .httpBasic().disable()
             .csrf().disable()
-            .exceptionHandling().authenticationEntryPoint((request, response, authException)
-                -> response.sendError(HttpStatus.UNAUTHORIZED.value()))
+            .exceptionHandling()
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .accessDeniedHandler(jwtAccessDeniedHandler)
             .and()
             .rememberMe().disable()
             .sessionManagement()
@@ -111,11 +115,11 @@ public class SecurityConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOriginPatterns(List.of(CorsConfiguration.ALL));
         configuration.setAllowedMethods(
             List.of("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "TRACE", "OPTIONS"));
         configuration.setAllowCredentials(true);
-        configuration.addAllowedHeader("*");
+        configuration.addAllowedHeader(CorsConfiguration.ALL);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
