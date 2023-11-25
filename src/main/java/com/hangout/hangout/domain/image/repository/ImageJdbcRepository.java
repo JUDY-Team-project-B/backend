@@ -23,12 +23,12 @@ public class ImageJdbcRepository {
     }
 
     private static final String POST_BULK_INSERT_SQL = "INSERT INTO " +
-        "`POSTIMAGE`(`POST_IMAGE_NAME` , `POST_IMAGE_URL`, `CREATED_AT`, `UPDATED_AT`, `POST_ID`) "
+        "`PostImage`(`POST_IMAGE_NAME` , `POST_IMAGE_URL`, `CREATED_AT`, `UPDATED_AT`, `POST_ID`) "
         +
         "VALUES(?, ?, ?, ?, ?)";
 
     private static final String USER_BULK_INSERT_SQL = "INSERT INTO " +
-        "`USERIMAGE`(`USER_IMAGE_NAME` , `USER_IMAGE_URL`, `CREATED_AT`, `UPDATED_AT`, `USER_ID`) "
+        "`UserImage`(`USER_IMAGE_NAME` , `USER_IMAGE_URL`, `CREATED_AT`, `UPDATED_AT`, `USER_ID`) "
         +
         "VALUES(?, ?, ?, ?, ?)";
 
