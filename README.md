@@ -1,4 +1,4 @@
-# Hang Out
+# Hang Out (Back-End)
 
 ![image](https://github.com/Team-hangout/backend/assets/101315462/c5b1188e-91f6-4a63-94c5-56fc4262a700)
 
@@ -56,7 +56,7 @@ TOKEN_EXPIRED = 3600 #3600 sec, If you want longer, you can change this time.
 
 # 팀원 역할
 
-| Name    | 오홍기                                       |조성현                            | 정종윤                                        | 이준희      |
-| ------- | --------------------------------------------- | ------------------------------------ | --------------------------------------------- | --------------------------------------- |
-| Role    |   PM, Backend, DevOps   |    Backend, DevOps     | Frontend | Frontend |
-| Github  | [@ohhonggi](https://github.com/ohhonggi) | [@vixloaze](https://github.com/vixloaze) | [@JongYun Jeong](https://github.com/BellYun) | [@Junhui Lee](https://github.com/junvhui) |
+| Name    | 오홍기                                       |조성현                            | 
+| ------- | --------------------------------------------- | ------------------------------------ | 
+| Role    |   PM, Backend, DevOps   |    Backend, DevOps     |
+| Github  | [@ohhonggi](https://github.com/ohhonggi) | [@vixloaze](https://github.com/vixloaze) |
