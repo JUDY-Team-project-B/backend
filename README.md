@@ -51,9 +51,13 @@ SECRET_KEY = "YOUR_TOKEN_SECRET_KEY"
 TOKEN_EXPIRED = 3600 #3600 sec, If you want longer, you can change this time.
 ```
 
+# 기술적 이슈와 해결 과정
+- [Querydsl을 사용한 프로젝트 내 N+1 문제 해결](https://velog.io/@vixloaze/Querydsl%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%9C-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%82%B4-N1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
+  - [추가로 생각해본 것들](https://iced-diver-005.notion.site/8438a52d6ee848159b26b4636a110dad?pvs=4)
+
 # 팀원 역할
 
-| Name    | 박수현                                       |정태원                               | 박수연                                        | 조성현      | 이민지 | 박준혁                              |
-| ------- | --------------------------------------------- | ------------------------------------ | --------------------------------------------- | --------------------------------------- | -----| ----- |
-| Role    |   PM, Backend, DevOps   |    Frontend, DevOps     | Backend, DevOps | Frontend | Frontend | Backend, AI, DevOps |
-| Github  | [@vivian0304](https://github.com/vivian0304) | [@teawon](https://github.com/teawon) | [@PARK-Su-yeon](https://github.com/PARK-Su-yeon) | [@vixloaze](https://github.com/vixloaze) | [@alswlfl29](https://github.com/alswlfl29)| [@JHPark02](https://github.com/JHPark02)|
+| Name    | 오홍기                                       |조성현                            | 정종윤                                        | 이준희      |
+| ------- | --------------------------------------------- | ------------------------------------ | --------------------------------------------- | --------------------------------------- |
+| Role    |   PM, Backend, DevOps   |    Backend, DevOps     | Frontend | Frontend |
+| Github  | [@ohhonggi](https://github.com/ohhonggi) | [@vixloaze](https://github.com/vixloaze) | [@JongYun Jeong](https://github.com/BellYun) | [@Junhui Lee](https://github.com/junvhui) |
