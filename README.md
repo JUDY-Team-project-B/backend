@@ -8,8 +8,7 @@
 # 개발 기간
 2023.4월 ~ 2023.11월
 
-# 기술스택 - 각 포지션별로
-## **:zap: Tech Stack**
+# **:zap: Tech Stack**
 
 ![image](https://github.com/Team-hangout/backend/assets/101315462/ebf3a20f-b7ce-4dd6-8cd1-6929fa08a20c)
 
