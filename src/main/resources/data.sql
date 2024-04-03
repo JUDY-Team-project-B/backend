@@ -1,4 +1,3 @@
-# select * from status;
 use hangout;
 insert into hangout.STATUS(STATUS_TYPE)
 values ('공개'),
