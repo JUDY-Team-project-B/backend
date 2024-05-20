@@ -1,12 +1,65 @@
-#
-#spring:
-#  datasource:
-#    url: jdbc:[Database]://localhost:3306/[Database???]
-#    username: [DB ???]
-#    password: [DB ????]
-#    driver-class-name: [JDBC ????]
-
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/hangout?rewriteBatchedStatements=true
+    username: hangout
+    password: password
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    show-sql: false
+    properties:
+      hibernate.format_sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+  redis:
+    host: redis
+    port: 6379
+
+  config:
+    import:
+      - application-oauth.yml
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
+application:
+  security:
+    jwt:
+      secret-key: 6D5A7134743777217A25432A46294A404E635266556A586E3272357538782F41
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+
+cloud:
+  aws:
+    credentials:
+      access-key:  # accessKey
+      secret-key:  # secretKey
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: hangoutbucket
+    stack:
+      auto: false
+
+# http url 괄호 허용
+server:
+  tomcat:
+    relaxed-query-chars: '|,{,},[,]'

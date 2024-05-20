@@ -1,0 +1,63 @@
+package com.hangout.hangout.domain.image.repository;
+
+import com.hangout.hangout.domain.image.entity.PostImage;
+import com.hangout.hangout.domain.image.entity.UserImage;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@RequiredArgsConstructor
+public class ImageJdbcRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public ImageJdbcRepository(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    private static final String POST_BULK_INSERT_SQL = "INSERT INTO " +
+        "`PostImage`(`POST_IMAGE_NAME` , `POST_IMAGE_URL`, `CREATED_AT`, `UPDATED_AT`, `POST_ID`) "
+        +
+        "VALUES(?, ?, ?, ?, ?)";
+
+    private static final String USER_BULK_INSERT_SQL = "INSERT INTO " +
+        "`UserImage`(`USER_IMAGE_NAME` , `USER_IMAGE_URL`, `CREATED_AT`, `UPDATED_AT`, `USER_ID`) "
+        +
+        "VALUES(?, ?, ?, ?, ?)";
+
+    public void saveAllPostImage(List<PostImage> postImages) {
+        jdbcTemplate.batchUpdate(POST_BULK_INSERT_SQL,
+            postImages,
+            postImages.size(),
+            (ps, postImage) -> {
+                LocalDateTime now = LocalDateTime.now();
+                ps.setString(1, postImage.getName());
+                ps.setString(2, postImage.getUrl());
+                ps.setTimestamp(3, Timestamp.valueOf(now));
+                ps.setTimestamp(4, Timestamp.valueOf(now));
+                ps.setLong(5, postImage.getPost().getId());
+            });
+    }
+
+    public void saveAllUserImage(List<UserImage> userImages) {
+        jdbcTemplate.batchUpdate(USER_BULK_INSERT_SQL,
+            userImages,
+            userImages.size(),
+            (us, userImage) -> {
+                LocalDateTime now = LocalDateTime.now();
+                us.setString(1, userImage.getName());
+                us.setString(2, userImage.getUrl());
+                us.setTimestamp(3, Timestamp.valueOf(now));
+                us.setTimestamp(4, Timestamp.valueOf(now));
+                us.setLong(5, userImage.getUser().getId());
+            });
+    }
+}
+
